@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Web;
 using Microsoft.Owin;
 using UAParser;
@@ -92,6 +94,31 @@ namespace HiveFive.Web.Extensions
 				return "-";
 
 			return header;
+		}
+
+		public static string ToUncompressedString(this IPAddress ipAddress)
+		{
+			if (ipAddress.AddressFamily == AddressFamily.InterNetwork)  // IPv4
+			{
+				var strings = ipAddress.GetAddressBytes()
+						.Select(b => string.Format("{0:D3}", b));   // format bytes with padded 0s
+
+				return string.Join(".", strings);   // join padded strings with '.' character
+			}
+
+			if (ipAddress.AddressFamily == AddressFamily.InterNetworkV6)    // IPv6
+			{
+
+				var strings = Enumerable.Range(0, 8)    // create index
+																.Select(i => ipAddress.GetAddressBytes().ToList().GetRange(i * 2, 2))       // get 8 chunks of bytes
+																.Select(i => { i.Reverse(); return i; })    // reverse bytes for endianness
+																.Select(bytes => BitConverter.ToInt16(bytes.ToArray(), 0))  // convert bytes to 16 bit int
+																.Select(int16 => string.Format("{0:X4}", int16).ToUpper()); // format int as a 4 digit hex 
+
+				return string.Join(":", strings);   // join hex ints with ':'
+			}
+
+			return ipAddress.ToString();    // all else treat as to string
 		}
 	}
 }

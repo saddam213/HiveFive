@@ -1,24 +1,195 @@
 ﻿@{
 	ViewBag.Title = "Home Page";
 }
+<div class="row">
+	<div class="col-md-3">
+		<div>
+			<h4>My Hives</h4>
+			<ul id="myhives-hives"></ul>
+			<input id="hive-input" class="form-control" />
+			<div style="display:flex">
+				<button id="joinhive-btn" type="button" class="btn btn-info" style="height:100%;width:100%">Join Hive</button>
+				<button id="leavehive-btn" type="button" class="btn btn-info" style="height:100%;width:100%">Leave Hive</button>
+			</div>
 
-<div class="jumbotron">
-	<h1>ASP.NET</h1>
-	<p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-	<p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-	<div>
-	<span>Websocket: <b id="socket">Disconnected</b></span>
+		</div>
+
+	</div>
+	<div class="col-md-6">
+		<div>
+			<spn>Total Hivers: <b id="hive-totalcount"></b></spn>
+		</div>
+		<ul id="hive-tabs" class="nav nav-tabs">
+			<li>
+				<a data-toggle="tab" href="#mentions">@@Mentions</a>
+			</li>
+		</ul>
+		<div id="hive-content" class="tab-content">
+			<div id="mentions" class="tab-pane fade">
+				<div>
+					<textarea class="form-control hive-message-content" rows="5" style="max-width:100%"></textarea>
+					<button type="button" class="btn btn-info hive-message-btn">Send Message</button>
+				</div>
+				<h3>Mentions</h3>
+				<ul id="messages-mention"></ul>
+			</div>
+		</div>
+
+	</div>
+	<div class="col-md-3">
+		<h4>Popular Hives</h4>
+		<ul id="popular-hives"></ul>
 	</div>
 </div>
+
+<script id="hiveTabTemplate" type="text/html">
+	<li id="hivetab-tab-{{Hive}}" class="user-hive active">
+		<a data-toggle="tab" href="#hivetab-content-{{Hive}}">#{{Hive}}</a>
+	</li>
+</script>
+
+
+<script id="hiveTabContentTemplate" type="text/html">
+	<div id="hivetab-content-{{Hive}}" class="user-hive tab-pane fade in active">
+		<div>
+			<textarea data-hive="{{Hive}}" class="form-control hive-message-content" rows="5" style="max-width:100%"></textarea>
+			<button data-hive="{{Hive}}" type="button" class="btn btn-info hive-message-btn">Send Message</button>
+		</div>
+		<h3>#{{Hive}} Messages</h3>
+		<ul id="hivetab-messages-{{Hive}}"></ul>
+	</div>
+</script>
+
+<script id="popularHiveTemplate" type="text/html">
+	<li id="hive-{{Hive}}">#{{Hive}}: {{Count}}</li>
+</script>
+
+<script id="subscribedHiveTemplate" type="text/html">
+	<li>{{Hive}}</li>
+</script>
+
+<script id="messageTemplate" type="text/html">
+	<li>{{Sender}}: {{Message}}</li>
+</script>
+
+<script id="mentionTemplate" type="text/html">
+	<li>{{Sender}}: {{Message}}</li>
+</script>
 
 @section Scripts {
 	<script>
 		(async ($) => {
+			const mentionTemplate = $("#mentionTemplate").html();
+			const messageTemplate = $("#messageTemplate").html();
+			const hiveTabTemplate = $("#hiveTabTemplate").html();
+			const hiveTabContentTemplate = $("#hiveTabContentTemplate").html();
+			const popularHiveTemplate = $("#popularHiveTemplate").html();
+			const subscribedHiveTemplate = $("#subscribedHiveTemplate").html();
+
+			const updateHiveCount = (hive) => {
+				const hiveName = hive.Hive.replace("#", "");
+				const existing = $("#hive-" + hiveName);
+				if (existing.length > 0) {
+					existing.text(hive.Hive + ": " + hive.Count);
+					return;
+				}
+				$("#popular-hives").prepend(Mustache.render(popularHiveTemplate, { Hive: hiveName, Count: hive.Count }));
+			}
+
+			const updateMyHives = (hives) => {
+				$("#myhives-hives").empty();
+				for (let hive of hives) {
+					$("#myhives-hives").prepend(Mustache.render(subscribedHiveTemplate, { Hive: hive }));
+				}
+			}
+
+			const addHiveTab = (hive) => {
+				const hiveName = hive.replace("#", "");
+				const existingTab = $("#hivetab-tab-" + hiveName);
+				if (existingTab.length == 0) {
+					$("#hive-tabs li").removeClass("active");
+					$("#hive-content .active").removeClass("in active");
+					$("#hive-tabs").prepend(Mustache.render(hiveTabTemplate, { Hive: hiveName }));
+					$("#hive-content").prepend(Mustache.render(hiveTabContentTemplate, { Hive: hiveName }));
+				}
+			}
+
+			const removeHiveTab = (hive) => {
+				const hiveName = hive.replace("#", "");
+				const tab = $("#hivetab-tab-" + hiveName);
+				const content = $("#hivetab-content-" + hiveName);
+				const updateCurrent = tab.hasClass("active");
+				tab.remove();
+				content.remove();
+				if (updateCurrent) {
+					$("#hive-tabs li:first-child").addClass("active");
+					$("#hive-content .tab-pane:first-child").addClass("in active");
+				}
+			}
+
+			const joinDefault = async () => {
+				var hiveName = "#global";
+				const hives = await hiveHub.server.joinHive(hiveName);
+				addHiveTab(hiveName);
+				updateMyHives(hives);
+			}
+
 			const hiveHub = $.connection.hiveHub;
-			hiveHub.client.OnConnect = function () {
-				$("#socket").text("Connected").addClass("text-success");
+			hiveHub.client.OnError = function (data) {
+				alert(data);
+				console.log(data);
 			};
+			hiveHub.client.OnMessage = function (data) {
+				const hiveName = data.Hive.replace("#", "");
+				$("#hivetab-messages-" + hiveName).prepend(Mustache.render(messageTemplate, data));
+			};
+			hiveHub.client.OnMention = function (data) {
+				$("#messages-mention").prepend(Mustache.render(mentionTemplate, data));
+			};
+			hiveHub.client.OnHiveUpdate = function (data) {
+				$("#hive-totalcount").text(data.Total);
+				updateHiveCount(data)
+			};
+
+			hiveHub.client.OnPopularHives = function (data) {
+				$("#popular-hives").empty();
+				$("#hive-totalcount").text(data.Total);
+				for (let hive of data.Hives) {
+					updateHiveCount(hive);
+				}
+			};
+
 			await $.connection.hub.start({ transport: ['webSockets'] });
+			await joinDefault();
+
+
+			$(".container").on("click", ".hive-message-btn", async function () {
+				const button = $(this);
+				let hive = button.data("hive");
+				const message = button.prev("textarea");
+				if (hive) {
+					hive = " #" + hive;
+				}
+				await hiveHub.server.sendMessage(message.val() + hive);
+			});
+
+			$("#joinhive-btn").on("click", async function () {
+				var hiveName = $("#hive-input").val();
+				const hives = await hiveHub.server.joinHive(hiveName);
+				updateMyHives(hives);
+				console.log(hives);
+				if (hives.includes(hiveName)) {
+					addHiveTab(hiveName)
+				}
+			});
+
+			$("#leavehive-btn").on("click", async function () {
+				const hiveName = $("#hive-input").val();
+				const hives = await hiveHub.server.leaveHive(hiveName);
+				updateMyHives(hives);
+				console.log(hives);
+				removeHiveTab(hiveName);
+			});
 		})(jQuery);
 	</script>
 }
