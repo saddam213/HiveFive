@@ -1,0 +1,49 @@
+﻿@model HiveFive.Core.Common.Account.VerifyTwoFactorModel
+@{
+	ViewBag.Title = Account.VerifyTwoFactorPageTitle;
+}
+
+
+<h2>@ViewBag.Title.</h2>
+<div class="row">
+	<div class="col-md-6">
+		<section>
+			@using (Html.BeginForm("VerifyTwoFactor", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+			{
+				@Html.AntiForgeryToken()
+				@Html.HiddenFor(m => m.Type)
+				@Html.HiddenFor(m => m.ReturnUrl)
+				<h4>@Account.VerifyTwoFactorTitle</h4>
+				<hr />
+				<div class="form-group">
+					@Html.LabelFor(m => m.SecurityCode, new { @class = "control-label" })
+					@switch (Model.Type)
+					{
+						case HiveFive.Enums.TwoFactorType.EmailCode:
+							@Html.TextBoxFor(m => m.SecurityCode, new { @class = "form-control", @autofocus = "autofocus", placeholder = Account.VerifyTwoFactorEmailPlaceholder })
+							@Html.ValidationMessageFor(model => model.SecurityCode, "", new { @class = "text-danger" })
+							break;
+						case HiveFive.Enums.TwoFactorType.OtpCode:
+							@Html.TextBoxFor(m => m.SecurityCode, new { @class = "form-control", @autofocus = "autofocus", autocomplete = "off", placeholder = Account.VerifyTwoFactorOtpPlaceholder })
+							@Html.ValidationMessageFor(model => model.SecurityCode, "", new { @class = "text-danger" })
+							break;
+						case HiveFive.Enums.TwoFactorType.PinCode:
+							@Html.PasswordFor(m => m.SecurityCode, new { @class = "form-control", @autofocus = "autofocus", placeholder = Account.VerifyTwoFactorPinPlaceholder })
+							@Html.ValidationMessageFor(model => model.SecurityCode, "", new { @class = "text-danger" })
+							break;
+						default:
+							break;
+					}
+				</div>
+				<div class="form-group">
+					<input id="submit" type="submit" value="@Account.VerifyTwoFactorSubmitButton" class="btn btn-info btn-block" />
+				</div>
+			}
+		</section>
+	</div>
+</div>
+@section Scripts {
+	<script src="~/Content/Bundle/validation_bundle.js"></script>
+}
+
+

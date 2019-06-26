@@ -1,0 +1,123 @@
+﻿@model HiveFive.Core.Common.TwoFactor.CreateTwoFactorModel
+@{
+	ViewBag.Title = TwoFactor.CreatePageTitle;
+}
+
+<h2>@ViewBag.Title.</h2>
+<div class="row">
+	<div class="col-md-6">
+		<section>
+
+			@using (Html.BeginForm("Create", "TwoFactor", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+			{
+				@Html.AntiForgeryToken()
+				@Html.HiddenFor(m => m.OtpData)
+				<h4>@TwoFactor.CreateTitle</h4>
+				<hr />
+				<div id="message" class="alert alert-success text-center" style="display:none">
+					<p></p>
+				</div>
+				@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+				@*None*@
+				<div class="form-group data-input-none">
+					<div class="">
+						<div class="alert alert-warning text-center">
+							<h5>@TwoFactor.ErrorMessageTitleNoTwoFactor</h5>
+							<p>@TwoFactor.ErrorMessageTextNoTwoFactor</p>
+						</div>
+					</div>
+				</div>
+
+				@*Type*@
+				<div class="form-group">
+					<small>@TwoFactor.CreateFieldLabelType</small>
+					<div class="">
+						@Html.EnumDropDownListFor(m => m.Type, new { @class = "form-control" })
+						<p class="data-input-pincode">@TwoFactor.CreateLabelDescriptionPin</p>
+						<p class="data-input-email">@TwoFactor.CreateLabelDescriptionEmail</p>
+						<p class="data-input-otp">@TwoFactor.CreateLabelDescriptionOtp</p>
+					</div>
+				</div>
+
+				<div class="form-group data-input-otp text-center">
+					<div class="">
+						<div>
+							<small>@TwoFactor.CreateLabelOtpQrcode</small>
+						</div>
+						<div id="qr-code" data-code="@string.Format("otpauth://totp/{0}?secret={1}&issuer=HiveFive", User.Identity.Name, Model.OtpData)"></div>
+					</div>
+					<div class="">
+						@Model.OtpData
+					</div>
+				</div>
+				<hr class="data-input-otp" />
+				<div class="form-group data-input-otp">
+					<div class="">
+						<p>@TwoFactor.CreateFieldLabelOtp</p>
+						<div class="input-group  input-group-sm">
+							<span class="input-group-btn">
+								<button id="verify-otp" class="btn btn-sm btn-outline-dark" style="width: 100px" type="button" data-key="@Model.OtpData" data-action="@Url.Action("VerifyOtpCode")" data-success="@TwoFactor.SuccessMessageVerifyOtpCode" data-error="@TwoFactor.ErrorMessageVerifyOtpCode">@TwoFactor.CreateButtonVerifyCode</button>
+							</span>
+							@Html.TextBox("OtpCode", "", new { id = "code-otp", @class = "form-control data-input", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessageVerifyRequired })
+						</div>
+						@Html.ValidationMessage("OtpCode", new { @class = "text-danger" })
+					</div>
+				</div>
+				<hr class="data-input-otp" />
+
+				@*Pincode*@
+				<div class="form-group data-input-pincode form-group-sm">
+					<div class="">
+						<p>@TwoFactor.CreateFieldLabelPin</p>
+						@Html.TextBoxFor(m => m.DataPin, new { @class = "form-control data-input", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessagePinValidation })
+						@Html.ValidationMessageFor(m => m.DataPin, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				@*Email*@
+				<div class="form-group data-input-email form-group-sm">
+					<div class="">
+						<p>@TwoFactor.RemoveFieldEmailCode</p>
+						<div class="input-group input-group-sm">
+							<span class="input-group-btn input-group-sm">
+								<a id="send-email" class="btn btn-sm btn-outline-dark" style="width: 120px" data-action="@Url.Action("SendEmailCode")" data-success="@TwoFactor.SuccessMessageSendEmailCode" data-error="@TwoFactor.ErrorMessageSendEmailCode">@TwoFactor.CreateButtonSendCode</a>
+							</span>
+							@Html.TextBoxFor(m => m.DataEmail, new { @class = "form-control data-input", type = "email", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessageEmailRequired, data_rule_email = true })
+						</div>
+						@Html.ValidationMessageFor(m => m.DataEmail, "", new { @class = "text-danger" })
+					</div>
+				</div>
+				<hr class="data-input-email" />
+				<div class="form-group data-input-email">
+					<div class="">
+						<p>@TwoFactor.CreateFieldLabelVerifyEmail</p>
+						<div class="input-group input-group-sm">
+							<span class="input-group-btn">
+								<a id="verify-email" class="btn btn-sm btn-outline-dark" style="width: 120px" data-action="@Url.Action("VerifyEmailCode")" data-success="@TwoFactor.SuccessMessageVerifyEmailCode" data-error="@TwoFactor.ErrorMessageVerifyEmailCode">@TwoFactor.CreateButtonVerifyCode</a>
+							</span>
+							@Html.TextBox("EmailCode", "", new { @class = "form-control data-input", id = "code-email", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessageVerifyRequired })
+						</div>
+						@Html.ValidationMessage("EmailCode", new { @class = "text-danger" })
+					</div>
+				</div>
+				<hr class="data-input-email" />
+
+				<div class="d-flex">
+					<div class="pr-1">
+						<a class="btn btn-outline-secondary btn-block" href="@Url.Action("Index", "AccountSettings")">@TwoFactor.CreateButtonCancel</a>
+					</div>
+					<div class="pl-1">
+						<button class="btn btn-outline-primary btn-block" type="submit">@TwoFactor.CreateButtonSubmit</button>
+					</div>
+				</div>
+			}
+		</section>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="~/Content/Scripts/jquery.qrcode.js"></script>
+	<script src="~/Content/Bundle/validation_bundle.js"></script>
+	<script src="~/Content/Scripts/Project/TwoFactor/create.js"></script>
+}

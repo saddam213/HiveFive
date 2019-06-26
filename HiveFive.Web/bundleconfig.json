@@ -1,0 +1,35 @@
+[
+	{
+		"outputFileName": "Content/Bundle/site_header_bundle.js",
+		"inputFiles": [
+			"Content/Scripts/jquery-3.4.1.js",
+			"Content/Scripts/Project/site_header.js"
+		]
+	},
+	{
+		"outputFileName": "Content/Bundle/site_bundle.js",
+		"inputFiles": [
+			"Content/Scripts/popper.js",
+			"Content/Scripts/bootstrap.js",
+			"Content/Scripts/jquery.signalR-2.4.1.js",
+			"Content/Scripts/jquery.unobtrusive-ajax.js",
+			"Content/Scripts/moment.js",
+			"Content/Scripts/mustache.js",
+			"Content/Scripts/Project/site.js"
+		]
+	},
+	{
+		"outputFileName": "Content/Bundle/validation_bundle.js",
+		"inputFiles": [
+			"Scripts/jquery.validate.js",
+			"Scripts/jquery.validate.unobtrusive.js"
+		]
+	},
+	{
+		"outputFileName": "Content/Bundle/site_bundle.css",
+		"inputFiles": [
+			"Content/Css/bootstrap.css",
+			"Content/Css/site.css"
+		]
+	}
+]

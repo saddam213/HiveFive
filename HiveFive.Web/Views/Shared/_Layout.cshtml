@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title</title>
+	<link href="~/Content/Bundle/site_bundle.css" rel="stylesheet" />
+	<script src="~/Content/Bundle/site_header_bundle.js"></script>
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="container">
+			<a class="navbar-brand" href="#">@General.SiteName</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
+				<ul class="navbar-nav">
+					<li class="nav-item active">
+						<a class="nav-link" href="#">@General.NavHome <span class="sr-only">(current)</span></a>
+					</li>
+				</ul>
+				<div class="d-flex">
+					@if (Request.IsAuthenticated)
+					{
+						using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+						{
+							@Html.AntiForgeryToken()
+							<ul class="navbar-nav">
+								<li class="nav-item">
+									<a class="nav-link" href="/AccountSettings">@General.NavAccount</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">@General.NavLogOut</a>
+								</li>
+							</ul>
+						}
+					}
+					else
+					{
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link" href="/Account/Register">@General.NavRegister</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/Account/Login">@General.NavLogin</a>
+							</li>
+						</ul>
+					}
+					<ul class="navbar-nav">
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								@Html.CurrentThreadCultureName()
+							</a>
+							<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+								@foreach (var lang in ResourceConfig.EnabledLanguages)
+								{
+									<a class="dropdown-item" href="@Url.Action("SetLanguage", "Home", new { lang = lang.Key })">@lang.Value</a>
+								}
+							</div>
+						</li>
+					</ul>
+				</div>
+
+
+
+
+
+
+
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="container body-content">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year - @General.SiteName</p>
+		</footer>
+	</div>
+
+	<script src="~/Content/Bundle/site_bundle.js"></script>
+	@Scripts.Render("~/signalr/hubs")
+	@RenderSection("scripts", required: false)
+</body>
+</html>

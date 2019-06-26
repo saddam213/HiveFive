@@ -1,0 +1,67 @@
+﻿@model HiveFive.Core.Common.TwoFactor.RemoveTwoFactorModel
+@{
+	ViewBag.Title = TwoFactor.RemovePageTitle;
+}
+
+<h2>@ViewBag.Title.</h2>
+<div class="row">
+	<div class="col-md-6">
+		<section>
+			@using (Html.BeginForm("Remove", "TwoFactor", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+			{
+				@Html.AntiForgeryToken()
+				@Html.HiddenFor(m => m.Type)
+				<h4>@TwoFactor.RemoveTitle</h4>
+				<hr />
+				<div class="">
+					<p>@Html.FormatResource(TwoFactor.RemoveDescription, Model.Type)</p>
+				</div>
+
+				if (Model.Type == TwoFactorType.EmailCode)
+				{
+					<div class="alert alert-success text-center">
+						<p>@TwoFactor.RemoveLabelEmailSent</p>
+					</div>
+					<div class="form-group">
+						<small>@TwoFactor.RemoveFieldEmailCode</small>
+						<div class="">
+							@Html.PasswordFor(m => m.Data, new { @class = "form-control", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessagePinRequired })
+							@Html.ValidationMessageFor(m => m.Data, "", new { @class = "text-danger" })
+						</div>
+					</div>
+				}
+
+				if (Model.Type == TwoFactorType.OtpCode)
+				{
+					<div class="form-group">
+						<small>@TwoFactor.RemoveFieldOtpCode</small>
+						<div class="">
+							@Html.TextBoxFor(m => m.Data, new { @class = "form-control", data_rule_required = "true", autocomplete = "off", data_msg_required = TwoFactor.ErrorMessageOtpRequired })
+							@Html.ValidationMessageFor(m => m.Data, "", new { @class = "text-danger" })
+						</div>
+					</div>
+				}
+
+				if (Model.Type == TwoFactorType.PinCode)
+				{
+					<div class="form-group">
+						<small>@TwoFactor.RemoveFieldPinCode</small>
+						<div>
+							@Html.PasswordFor(m => m.Data, new { @class = "form-control", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessagePinRequired })
+							@Html.ValidationMessageFor(m => m.Data, "", new { @class = "text-danger" })
+						</div>
+					</div>
+				}
+
+				<div class="mt-4">
+					<input type="submit" value="@TwoFactor.RemoveButtonSubmit" class="btn btn-outline-primary btn-block" />
+				</div>
+			}
+		</section>
+	</div>
+</div>
+
+
+@section Scripts {
+	<script src="~/Content/Bundle/validation_bundle.js"></script>
+}

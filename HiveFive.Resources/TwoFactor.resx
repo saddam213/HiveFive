@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CreateButtonCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CreateButtonSendCode" xml:space="preserve">
+    <value>Send Code</value>
+  </data>
+  <data name="CreateButtonSubmit" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="CreateButtonVerifyCode" xml:space="preserve">
+    <value>Verify Code</value>
+  </data>
+  <data name="CreateFieldLabelEmail" xml:space="preserve">
+    <value>Please enter the email address to use then click 'Send Code'.
+_x0009__x0009__x0009__x0009__x0009__x0009__x0009__x0009_This email address must be different from your registered email address.</value>
+  </data>
+  <data name="CreateFieldLabelOtp" xml:space="preserve">
+    <value>Please enter the code found on your device below to verify.</value>
+  </data>
+  <data name="CreateFieldLabelPin" xml:space="preserve">
+    <value>Please enter a 4 to 8 digit pin number.</value>
+  </data>
+  <data name="CreateFieldLabelType" xml:space="preserve">
+    <value>Two Factor Type</value>
+  </data>
+  <data name="CreateFieldLabelVerifyEmail" xml:space="preserve">
+    <value>Please enter the code found in the sent email below to verify.
+Once verified you can continue to save your two factor security settings.</value>
+  </data>
+  <data name="CreateLabelDescriptionEmail" xml:space="preserve">
+    <value>Email two factor uses a second email address for security, when a two factor action is required a unique code is sent to this email address.</value>
+  </data>
+  <data name="CreateLabelDescriptionOtp" xml:space="preserve">
+    <value>Authenticator two factor uses ther OTP protocol to create one-time use unique codes.
+There are many popular App solutions for OTP including Google Authenticator &amp; Authy.</value>
+  </data>
+  <data name="CreateLabelDescriptionPin" xml:space="preserve">
+    <value>Pin two factor uses a fixed 4-8 digit code for security, when a two factor action is required you will need to enter this code.</value>
+  </data>
+  <data name="CreateLabelOtpQrcode" xml:space="preserve">
+    <value>Please scan or enter your Authentication code below.</value>
+  </data>
+  <data name="CreatePageTitle" xml:space="preserve">
+    <value>Two Factor Security</value>
+  </data>
+  <data name="CreateTitle" xml:space="preserve">
+    <value>Setup two Factor</value>
+  </data>
+  <data name="ErrorMessageEmailNotAllowed" xml:space="preserve">
+    <value>Email cannot be your registered email address.</value>
+  </data>
+  <data name="ErrorMessageEmailRequired" xml:space="preserve">
+    <value>Email address is required</value>
+  </data>
+  <data name="ErrorMessageInvalidEmail" xml:space="preserve">
+    <value>'{0}' is an invalid email address.</value>
+    <comment>{0} = email address</comment>
+  </data>
+  <data name="ErrorMessageOtpRequired" xml:space="preserve">
+    <value>Authenticator code is required</value>
+  </data>
+  <data name="ErrorMessageOtpUnknown" xml:space="preserve">
+    <value>Unknown error occured in OTP validation</value>
+  </data>
+  <data name="ErrorMessagePinRequired" xml:space="preserve">
+    <value>Pin Code is required</value>
+  </data>
+  <data name="ErrorMessagePinValidation" xml:space="preserve">
+    <value>PinCode must be between 4 and 8 digits</value>
+  </data>
+  <data name="ErrorMessageSendEmailCode" xml:space="preserve">
+    <value>Failed to send two factor email code to the email address provided.</value>
+  </data>
+  <data name="ErrorMessageTextNoTwoFactor" xml:space="preserve">
+    <value>It is highly reccommended that you use two factor authentication.</value>
+  </data>
+  <data name="ErrorMessageTextSendEmail" xml:space="preserve">
+    <value>An error occured sending twofactor code email, If problems persists please contact &lt;a href='/Support'&gt;Support&lt;/a&gt;</value>
+  </data>
+  <data name="ErrorMessageTitleNoTwoFactor" xml:space="preserve">
+    <value>You currently have no two factor setup</value>
+  </data>
+  <data name="ErrorMessageTitleSendEmail" xml:space="preserve">
+    <value>Email Send Failed</value>
+  </data>
+  <data name="ErrorMessageVerifyEmailCode" xml:space="preserve">
+    <value>Failed to validate your email two factor code.</value>
+  </data>
+  <data name="ErrorMessageVerifyOtpCode" xml:space="preserve">
+    <value>Failed to verifiy your Authenticator code.</value>
+  </data>
+  <data name="ErrorMessageVerifyRequired" xml:space="preserve">
+    <value>Verification code is required</value>
+  </data>
+  <data name="InvalidTwoFactorText" xml:space="preserve">
+    <value>Two Factor code entered is incorrecct or has expired, please try again.</value>
+  </data>
+  <data name="RemoveButtonSubmit" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="RemoveDescription" xml:space="preserve">
+    <value>To setup a new two factor method you must first remove the existing {0} two factor.
+If you have lost or can no longer access your current {0} please contact &lt;a href='/Support'&gt;Support&lt;/a&gt; for assistance.</value>
+    <comment>{0} = current TFA type</comment>
+  </data>
+  <data name="RemoveFieldEmailCode" xml:space="preserve">
+    <value>Email Code</value>
+  </data>
+  <data name="RemoveFieldOtpCode" xml:space="preserve">
+    <value>Authenticator Code</value>
+  </data>
+  <data name="RemoveFieldPinCode" xml:space="preserve">
+    <value>Pin Code</value>
+  </data>
+  <data name="RemoveLabelEmailSent" xml:space="preserve">
+    <value>Your unlock code has been sent to your registered two factor email address</value>
+  </data>
+  <data name="RemovePageTitle" xml:space="preserve">
+    <value>Two Factor Security</value>
+  </data>
+  <data name="RemoveTitle" xml:space="preserve">
+    <value>Remove Two Factor</value>
+  </data>
+  <data name="SuccessMessageSendEmailCode" xml:space="preserve">
+    <value>Your verification code has been sent to the provided email address</value>
+  </data>
+  <data name="SuccessMessageVerifyEmailCode" xml:space="preserve">
+    <value>Successfully verified your email two factor code.</value>
+  </data>
+  <data name="SuccessMessageVerifyOtpCode" xml:space="preserve">
+    <value>Successfully verified your Authenticator code.</value>
+  </data>
+  <data name="ValidationErrorMessageInvalidPinCode" xml:space="preserve">
+    <value>PinCode must be between 4 and 8 digits</value>
+  </data>
+</root>
