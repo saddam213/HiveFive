@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
+using HiveFive.Web.Extensions;
 using HiveFive.Web.Identity;
 using Microsoft.AspNet.SignalR;
 
@@ -13,9 +15,9 @@ namespace HiveFive.Web.Hubs
 		{
 			if (request.User != null && request.User.Identity.IsAuthenticated)
 			{
-				return request.User.Identity.GetId().ToString();
+				return request.User.Identity.Name;
 			}
-			return "0";
+			return request.GetHttpContext().Request.GetIPAddressUser();
 		}
 	}
 }

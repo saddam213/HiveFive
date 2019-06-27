@@ -65,7 +65,7 @@
 </script>
 
 <script id="subscribedHiveTemplate" type="text/html">
-	<li>{{Hive}}</li>
+	<li id="myhive-{{Hive}}">#{{Hive}}</li>
 </script>
 
 <script id="messageTemplate" type="text/html">
@@ -90,17 +90,15 @@
 				const hiveName = hive.Hive.replace("#", "");
 				const existing = $("#hive-" + hiveName);
 				if (existing.length > 0) {
-					existing.text(hive.Hive + ": " + hive.Count);
+					if (hive.Count > 0) {
+						existing.text(hive.Hive + ": " + hive.Count);
+					}
+					else {
+						existing.remove();
+					}
 					return;
 				}
 				$("#popular-hives").prepend(Mustache.render(popularHiveTemplate, { Hive: hiveName, Count: hive.Count }));
-			}
-
-			const updateMyHives = (hives) => {
-				$("#myhives-hives").empty();
-				for (let hive of hives) {
-					$("#myhives-hives").prepend(Mustache.render(subscribedHiveTemplate, { Hive: hive }));
-				}
 			}
 
 			const addHiveTab = (hive) => {
@@ -111,6 +109,7 @@
 					$("#hive-content .active").removeClass("in active");
 					$("#hive-tabs").prepend(Mustache.render(hiveTabTemplate, { Hive: hiveName }));
 					$("#hive-content").prepend(Mustache.render(hiveTabContentTemplate, { Hive: hiveName }));
+					$("#myhives-hives").prepend(Mustache.render(subscribedHiveTemplate, { Hive: hiveName }));
 				}
 			}
 
@@ -118,21 +117,31 @@
 				const hiveName = hive.replace("#", "");
 				const tab = $("#hivetab-tab-" + hiveName);
 				const content = $("#hivetab-content-" + hiveName);
+				const myHive = $("#myhive-" + hiveName);
 				const updateCurrent = tab.hasClass("active");
 				tab.remove();
 				content.remove();
+				myHive.remove();
 				if (updateCurrent) {
 					$("#hive-tabs li:first-child").addClass("active");
 					$("#hive-content .tab-pane:first-child").addClass("in active");
 				}
 			}
 
-			const joinDefault = async () => {
-				var hiveName = "#global";
-				const hives = await hiveHub.server.joinHive(hiveName);
-				addHiveTab(hiveName);
-				updateMyHives(hives);
+			const joinHive = async (hiveName) => {
+				const result = await hiveHub.server.joinHive(hiveName);
+				if (result == true) {
+					addHiveTab(hiveName);
+				}
 			}
+
+			const leaveHive = async (hiveName) => {
+				const result = await hiveHub.server.leaveHive(hiveName);
+				if (result == true) {
+					removeHiveTab(hiveName);
+				}
+			}
+
 
 			const hiveHub = $.connection.hiveHub;
 			hiveHub.client.OnError = function (data) {
@@ -160,7 +169,7 @@
 			};
 
 			await $.connection.hub.start({ transport: ['webSockets'] });
-			await joinDefault();
+			await joinHive("#global");
 
 
 			$(".container").on("click", ".hive-message-btn", async function () {
@@ -174,21 +183,13 @@
 			});
 
 			$("#joinhive-btn").on("click", async function () {
-				var hiveName = $("#hive-input").val();
-				const hives = await hiveHub.server.joinHive(hiveName);
-				updateMyHives(hives);
-				console.log(hives);
-				if (hives.includes(hiveName)) {
-					addHiveTab(hiveName)
-				}
+				const hiveName = $("#hive-input").val();
+				await joinHive(hiveName);
 			});
 
 			$("#leavehive-btn").on("click", async function () {
 				const hiveName = $("#hive-input").val();
-				const hives = await hiveHub.server.leaveHive(hiveName);
-				updateMyHives(hives);
-				console.log(hives);
-				removeHiveTab(hiveName);
+				await leaveHive(hiveName);
 			});
 		})(jQuery);
 	</script>

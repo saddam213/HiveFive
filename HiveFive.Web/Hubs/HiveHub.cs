@@ -19,7 +19,6 @@ namespace HiveFive.Web.Hubs
 			var handle = GetUserHandle();
 			await ConnectionStore.LinkHandle(handle, Context.ConnectionId);
 
-			await Subscribe($"@{handle}");
 			await base.OnConnected();
 			await SendPopularHives();
 		}
@@ -29,7 +28,6 @@ namespace HiveFive.Web.Hubs
 			var handle = GetUserHandle();
 			await ConnectionStore.LinkHandle(handle, Context.ConnectionId);
 
-			await Subscribe($"@{handle}");
 			await base.OnReconnected();
 			await SendPopularHives();
 		}
@@ -39,12 +37,11 @@ namespace HiveFive.Web.Hubs
 			var handle = await ConnectionStore.GetHandle(Context.ConnectionId);
 			await ConnectionStore.UnlinkHandle(handle, Context.ConnectionId);
 
-			await Unsubscribe($"@{handle}");
 			await UnsubscribeAll();
 			await base.OnDisconnected(stopCalled);
 		}
 
-		public async Task<List<string>> SendMessage(string message)
+		public async Task<bool> SendMessage(string message)
 		{
 			var sender = GetUserHandle();
 			var mentions = GetMentions(message);
@@ -52,22 +49,24 @@ namespace HiveFive.Web.Hubs
 			{
 				foreach (var mention in mentions)
 				{
-					if (!sender.Equals(mention))
+					var receiver = mention.TrimStart('@');
+					if (!sender.Equals(receiver))
 					{
 						await Clients.Caller.OnMention(new
 						{
 							Sender = sender,
+							Receiver = receiver,
 							Message = message,
 						});
 					}
-					await Clients.Group(mention).OnMention(new
+					await Clients.User(receiver).OnMention(new
 					{
 						Sender = sender,
+						Receiver = receiver,
 						Message = message,
 					});
-
 				}
-				return await GetHives();
+				return true;
 			}
 
 			var hives = GetHives(message);
@@ -83,45 +82,38 @@ namespace HiveFive.Web.Hubs
 					});
 				}
 			}
-			return await GetHives();
+			return true;
 		}
 
-		public async Task<List<string>> JoinHive(string hive)
+		public async Task<bool> JoinHive(string hive)
 		{
 			var hiveName = hive.Trim().ToLower();
 			if (!ValidateHiveName(hiveName))
 			{
 				await Clients.Caller.OnError("Invalid Hive name");
+				return false;
 			}
-			else
-			{
-				await Subscribe(hiveName);
-			}
-			return await GetHives();
+			await Subscribe(hiveName);
+			return true;
 		}
 
-		public async Task<List<string>> LeaveHive(string hive)
+		public async Task<bool> LeaveHive(string hive)
 		{
 			var hiveName = hive.Trim().ToLower();
 			if (!ValidateHiveName(hiveName))
 			{
 				await Clients.Caller.OnError("Invalid Hive name");
+				return false;
 			}
-			else
-			{
-				await Unsubscribe(hiveName);
-			}
-			return await GetHives();
+			await Unsubscribe(hiveName);
+			return true;
 		}
 
 
 
-		private async Task<List<string>> GetHives()
+		private Task<IEnumerable<string>> GetHives()
 		{
-			var hives = await ConnectionStore.GetHives(Context.ConnectionId);
-			return hives
-				.Where(x => x.StartsWith("#"))
-				.ToList();
+			return ConnectionStore.GetHives(Context.ConnectionId);
 		}
 
 
@@ -147,9 +139,6 @@ namespace HiveFive.Web.Hubs
 
 		private async Task SendHiveUpdate(string hive)
 		{
-			if (!hive.StartsWith("#"))
-				return;
-
 			await Clients.All.OnHiveUpdate(new
 			{
 				Hive = hive,
@@ -207,11 +196,7 @@ namespace HiveFive.Web.Hubs
 			{
 				return Context.Request.GetHttpContext().User.Identity.Name;
 			}
-			//return Context.ConnectionId;
-			var ip = Context.Request.GetHttpContext().Request.GetIPAddress();
-			var ipString = IPAddress.Parse(ip).ToUncompressedString();
-			return string.Format("{0}", Math.Abs(ipString.GetHashCode()));
-			//return string.Format("{0}", Math.Abs(Context.ConnectionId.GetHashCode()));
+			return Context.Request.GetHttpContext().Request.GetIPAddressUser();
 		}
 	}
 }

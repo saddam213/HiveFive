@@ -65,7 +65,6 @@ namespace HiveFive.Web.Hubs
 		{
 			return Task.FromResult<IEnumerable<object>>(ConnectionToHiveMap
 				.SelectMany(x => x.Value.Keys)
-				.Where(x => x.StartsWith("#"))
 				.GroupBy(x => x)
 				.OrderByDescending(x => x.Count())
 				.Take(count)

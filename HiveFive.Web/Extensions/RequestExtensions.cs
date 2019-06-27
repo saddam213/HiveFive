@@ -48,6 +48,12 @@ namespace HiveFive.Web.Extensions
 			return request.UserHostAddress;
 		}
 
+		public static string GetIPAddressUser(this HttpRequestBase request)
+		{
+			var ip = request.GetIPAddress();
+			var ipString = IPAddress.Parse(ip).ToUncompressedString();
+			return string.Format("{0}", Math.Abs(ipString.GetHashCode()));
+		}
 
 		public static string GetIPAddressFromHeader(IHeaderDictionary headers)
 		{

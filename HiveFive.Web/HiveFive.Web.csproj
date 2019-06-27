@@ -36,6 +36,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ExcludeFilesFromDeployment>Web.config</ExcludeFilesFromDeployment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +46,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ExcludeFilesFromDeployment>Web.config</ExcludeFilesFromDeployment>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Base32, Version=1.0.0.26, Culture=neutral, PublicKeyToken=3427d4dc8cee30c6, processorArchitecture=MSIL">
@@ -293,6 +295,7 @@
     <Content Include="Views\TwoFactor\Create.cshtml" />
     <Content Include="Views\TwoFactor\Remove.cshtml" />
     <Content Include="Views\AccountSettings\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\Production.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
