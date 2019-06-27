@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
-using HiveFive.Framework.Objects;
 using HiveFive.Web.Extensions;
 using Microsoft.AspNet.SignalR;
 
@@ -14,14 +12,12 @@ namespace HiveFive.Web.Hubs
 {
 	public class HiveHub : Hub
 	{
-		private static readonly ConcurrentDictionary<string, ConcurrentList<string>> HandleToConnectionMap = new ConcurrentDictionary<string, ConcurrentList<string>>();
-		private static readonly ConcurrentDictionary<string, ConcurrentList<string>> ConnectionToHiveMap = new ConcurrentDictionary<string, ConcurrentList<string>>();
-
+		public IHiveConnectionStore ConnectionStore { get; set; }
 
 		public override async Task OnConnected()
 		{
 			var handle = GetUserHandle();
-			LinkToHandle(handle, Context.ConnectionId);
+			ConnectionStore.LinkHandle(handle, Context.ConnectionId);
 
 			await Subscribe($"@{handle}");
 			await base.OnConnected();
@@ -31,7 +27,7 @@ namespace HiveFive.Web.Hubs
 		public override async Task OnReconnected()
 		{
 			var handle = GetUserHandle();
-			LinkToHandle(handle, Context.ConnectionId);
+			ConnectionStore.LinkHandle(handle, Context.ConnectionId);
 
 			await Subscribe($"@{handle}");
 			await base.OnReconnected();
@@ -40,8 +36,8 @@ namespace HiveFive.Web.Hubs
 
 		public override async Task OnDisconnected(bool stopCalled)
 		{
-			var handle = GetLinkedHandle(Context.ConnectionId);
-			UnlinkFromHandle(handle, Context.ConnectionId);
+			var handle = ConnectionStore.GetHandle(Context.ConnectionId);
+			ConnectionStore.UnlinkHandle(handle, Context.ConnectionId);
 
 			await Unsubscribe($"@{handle}");
 			await UnsubscribeAll();
@@ -122,7 +118,7 @@ namespace HiveFive.Web.Hubs
 
 		private List<string> GetHives()
 		{
-			return GetSubscribedHives(Context.ConnectionId).Keys
+			return ConnectionStore.GetHives(Context.ConnectionId).Keys
 					.Where(x => x.StartsWith("#"))
 					.ToList();
 		}
@@ -130,23 +126,20 @@ namespace HiveFive.Web.Hubs
 
 		private async Task Subscribe(string hive)
 		{
-			SubscribeToHive(Context.ConnectionId, hive);
-			await Groups.Add(Context.ConnectionId, hive);
+			await ConnectionStore.LinkHive(Groups, Context.ConnectionId, hive);
 			await SendHiveUpdate(hive);
 		}
 
 		private async Task Unsubscribe(string hive)
 		{
-			UnsubscribeFromHive(Context.ConnectionId, hive);
-			await Groups.Remove(Context.ConnectionId, hive);
+			await ConnectionStore.UnlinkHive(Groups, Context.ConnectionId, hive);
 			await SendHiveUpdate(hive);
 		}
 
 		private async Task UnsubscribeAll()
 		{
-			foreach (var hive in UnsubscribeFromAllHives(Context.ConnectionId))
+			foreach (var hive in await ConnectionStore.UnlinkAllHives(Groups, Context.ConnectionId))
 			{
-				await Groups.Remove(Context.ConnectionId, hive);
 				await SendHiveUpdate(hive);
 			}
 		}
@@ -159,29 +152,17 @@ namespace HiveFive.Web.Hubs
 			await Clients.All.OnHiveUpdate(new
 			{
 				Hive = hive,
-				Count = ConnectionToHiveMap.SelectMany(x => x.Value.Keys).Where(x => x == hive).Count(),
-				Total = ConnectionToHiveMap.Count
+				Count = ConnectionStore.GetHiveConnectionCount(hive),
+				Total = ConnectionStore.GetConnectionCount()
 			});
 		}
 
 		private async Task SendPopularHives()
 		{
-			var hives = ConnectionToHiveMap
-				.SelectMany(x => x.Value.Keys)
-				.Where(x => x.StartsWith("#"))
-				.GroupBy(x => x)
-				.OrderByDescending(x => x.Count())
-				.Take(25)
-				.Select(hive => new
-				{
-					Hive = hive.Key,
-					Count = hive.Count(),
-				});
-
 			await Clients.Caller.OnPopularHives(new
 			{
-				Hives = hives,
-				Total = ConnectionToHiveMap.Count
+				Hives = ConnectionStore.GetPopularHives(25),
+				Total = ConnectionStore.GetConnectionCount()
 			});
 		}
 
@@ -230,58 +211,6 @@ namespace HiveFive.Web.Hubs
 			var ipString = IPAddress.Parse(ip).ToUncompressedString();
 			return string.Format("{0}", Math.Abs(ipString.GetHashCode()));
 			//return string.Format("{0}", Math.Abs(Context.ConnectionId.GetHashCode()));
-		}
-
-		private static bool SubscribeToHive(string connectionId, string hiveName)
-		{
-			return ConnectionToHiveMap.GetOrAdd(connectionId, new ConcurrentList<string>(hiveName)).Add(hiveName);
-		}
-
-		private static bool UnsubscribeFromHive(string connectionId, string hiveName)
-		{
-			if (ConnectionToHiveMap.TryGetValue(connectionId, out var result))
-			{
-				result.Remove(hiveName);
-			}
-			return true;
-		}
-
-		private static ConcurrentList<string> UnsubscribeFromAllHives(string connectionId)
-		{
-			return ConnectionToHiveMap.TryRemove(connectionId, out var hives) ? hives : new ConcurrentList<string>();
-		}
-
-		private static ConcurrentList<string> GetSubscribedHives(string connectionId)
-		{
-			return ConnectionToHiveMap.TryGetValue(connectionId, out var result) ? result : new ConcurrentList<string>();
-		}
-
-
-
-
-
-		private static string GetLinkedHandle(string connectionId)
-		{
-			foreach (var item in HandleToConnectionMap)
-			{
-				if (item.Value.ContainsKey(connectionId))
-					return item.Key;
-			}
-			return string.Empty;
-		}
-
-		private static bool LinkToHandle(string handle, string connectionId)
-		{
-			return HandleToConnectionMap.GetOrAdd(handle, new ConcurrentList<string>(connectionId)).Add(connectionId);
-		}
-
-		private static bool UnlinkFromHandle(string handle, string connectionId)
-		{
-			if (HandleToConnectionMap.TryGetValue(handle, out var result))
-			{
-				result.Remove(connectionId);
-			}
-			return true;
 		}
 	}
 }

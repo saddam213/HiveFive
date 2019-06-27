@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using HiveFive.Web.DI;
+using HiveFive.Web.Hubs;
 
 namespace HiveFive.Web
 {
@@ -21,6 +22,8 @@ namespace HiveFive.Web
 			ViewEngines.Engines.Add(new RazorViewEngine());
 
 			DependencyRegistrar.Register();
+			DependencyRegistrar.RegisterSingletonComponent<IHiveConnectionStore>(() => new HiveConnectionStore());
+
 			ModelMetadataProviders.Current = new CachedDataAnnotationsModelMetadataProvider();
 			FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 			RouteConfig.RegisterRoutes(RouteTable.Routes);
