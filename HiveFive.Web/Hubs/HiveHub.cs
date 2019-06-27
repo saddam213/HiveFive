@@ -49,21 +49,22 @@ namespace HiveFive.Web.Hubs
 			{
 				foreach (var mention in mentions)
 				{
-					var receiver = mention.TrimStart('@');
-					if (!sender.Equals(receiver))
+					if (!sender.Equals(mention))
 					{
 						await Clients.Caller.OnMention(new
 						{
 							Sender = sender,
-							Receiver = receiver,
+							Receiver = mention,
 							Message = message,
+							Timestamp = DateTime.UtcNow
 						});
 					}
-					await Clients.User(receiver).OnMention(new
+					await Clients.User(mention).OnMention(new
 					{
 						Sender = sender,
-						Receiver = receiver,
+						Receiver = mention,
 						Message = message,
+						Timestamp = DateTime.UtcNow
 					});
 				}
 				return true;
@@ -78,7 +79,8 @@ namespace HiveFive.Web.Hubs
 					{
 						Sender = sender,
 						Message = message,
-						Hive = hive
+						Hive = hive,
+						Timestamp = DateTime.UtcNow
 					});
 				}
 			}
@@ -87,7 +89,7 @@ namespace HiveFive.Web.Hubs
 
 		public async Task<bool> JoinHive(string hive)
 		{
-			var hiveName = hive.Trim().ToLower();
+			var hiveName = GetHiveName(hive);
 			if (!ValidateHiveName(hiveName))
 			{
 				await Clients.Caller.OnError("Invalid Hive name");
@@ -99,7 +101,7 @@ namespace HiveFive.Web.Hubs
 
 		public async Task<bool> LeaveHive(string hive)
 		{
-			var hiveName = hive.Trim().ToLower();
+			var hiveName = GetHiveName(hive);
 			if (!ValidateHiveName(hiveName))
 			{
 				await Clients.Caller.OnError("Invalid Hive name");
@@ -157,6 +159,14 @@ namespace HiveFive.Web.Hubs
 		}
 
 
+		private static string GetHiveName(string hive)
+		{
+			if (string.IsNullOrEmpty(hive))
+				return string.Empty;
+
+			return hive.TrimStart('#').Trim().ToLower();
+		}
+
 
 
 		private static bool ValidateHiveName(string hiveName)
@@ -165,17 +175,19 @@ namespace HiveFive.Web.Hubs
 				return false;
 			if (hiveName.Length > 50)
 				return false;
-			if (!hiveName.StartsWith("#"))
-				return false;
-			return Regex.IsMatch(hiveName, @"^#\w+$");
+			return Regex.IsMatch(hiveName, @"^\w+$");
 		}
 
 		private static HashSet<string> GetHives(string message)
 		{
-			var hives = new HashSet<string> { "#global" };
+			var hives = new HashSet<string> { "global" };
 			foreach (Match item in Regex.Matches(message, @"(?<!\w)#\w+"))
 			{
-				hives.Add(item.Value.Trim().ToLower());
+				var hiveName = GetHiveName(item.Value);
+				if (string.IsNullOrEmpty(hiveName))
+					continue;
+
+				hives.Add(hiveName);
 			}
 			return hives;
 		}
@@ -185,7 +197,7 @@ namespace HiveFive.Web.Hubs
 			var mentions = new HashSet<string>();
 			foreach (Match item in Regex.Matches(message, @"(?<!\w)@\w+"))
 			{
-				mentions.Add(item.Value);
+				mentions.Add(item.Value.TrimStart('@'));
 			}
 			return mentions;
 		}

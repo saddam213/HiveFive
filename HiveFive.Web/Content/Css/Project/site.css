@@ -1,24 +1,215 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿/* The switch - the box around the slider */
+.switch-checkbox {
+	position: relative;
+	display: inline-block;
+	width: 56px;
+	height: 28px;
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+	/* Hide default HTML checkbox */
+	.switch-checkbox input[type=checkbox] {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+
+	/* The slider */
+	.switch-checkbox .slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #6c757d !important;
+		-webkit-transition: .4s;
+		transition: .4s;
+	}
+
+		.switch-checkbox .slider:before {
+			position: absolute;
+			content: "";
+			height: 20px;
+			width: 20px;
+			left: 4px;
+			bottom: 4px;
+			background-color: #ddd;
+			-webkit-transition: .4s;
+			transition: .4s;
+		}
+
+	.switch-checkbox input[type=checkbox]:checked ~ .slider {
+		background-color: #17a2b8 !important;
+	}
+
+	.switch-checkbox input[type=checkbox]:focus ~ .slider {
+		box-shadow: 0 0 1px #17a2b8;
+	}
+
+	.switch-checkbox input[type=checkbox]:checked ~ .slider:before {
+		-webkit-transform: translateX(26px);
+		-ms-transform: translateX(26px);
+		transform: translateX(26px);
+	}
+
+.switchbox.disabled {
+	opacity: 0.4;
+	pointer-events: none;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
+/* Rounded sliders */
+.switch-checkbox .slider.round {
+	border-radius: 34px;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+	.switch-checkbox .slider.round:before {
+		border-radius: 50%;
+	}
+
+
+.switchbox-description {
+	display: flex;
+	margin-bottom: 6px;
+}
+
+	.switchbox-description > .switch-checkbox {
+		margin-top: 1px;
+		min-width: 56px;
+	}
+
+	.switchbox-description > .switch-label-container {
+		display: flex;
+		flex-direction: column;
+		padding-left: 5px;
+	}
+
+		.switchbox-description > .switch-label-container > .switch-label {
+			line-height: 1;
+		}
+
+		.switchbox-description > .switch-label-container > .switch-description {
+			font-size: 11px;
+			line-height: 1;
+			opacity: 0.6;
+		}
+
+
+
+
+.switchbox {
+	display: flex;
+	margin-bottom: 5px;
+}
+
+	.switchbox > .switch-checkbox {
+		margin-bottom: 0px;
+	}
+
+	.switchbox > .switch-label-container {
+		padding-left: 5px;
+	}
+
+		.switchbox > .switch-label-container > .switch-label {
+		}
+
+
+
+
+.switchbox-md {
+	align-items: center;
+}
+
+	.switchbox-md .switch-checkbox {
+		width: 42px;
+		height: 21px;
+	}
+
+		.switchbox-md .switch-checkbox input[type=checkbox]:checked ~ .slider:before {
+			-webkit-transform: translateX(19px);
+			-ms-transform: translateX(19px);
+			transform: translateX(19px);
+		}
+
+		.switchbox-md .switch-checkbox .slider:before {
+			height: 15px;
+			width: 15px;
+			left: 3px;
+			bottom: 3px;
+		}
+
+	.switchbox-md > .switch-label-container {
+		padding-left: 3px;
+	}
+
+	.switchbox-md .switch-label {
+		font-size: 14px;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.switchbox-sm {
+	align-items: center;
+}
+
+	.switchbox-sm .switch-checkbox {
+		width: 28px;
+		height: 14px;
+	}
+
+		.switchbox-sm .switch-checkbox input[type=checkbox]:checked ~ .slider:before {
+			-webkit-transform: translateX(13px);
+			-ms-transform: translateX(13px);
+			transform: translateX(13px);
+		}
+
+		.switchbox-sm .switch-checkbox .slider:before {
+			height: 10px;
+			width: 10px;
+			left: 2px;
+			bottom: 2px;
+		}
+
+	.switchbox-sm > .switch-label-container {
+		padding-left: 3px;
+	}
+
+	.switchbox-sm .switch-label {
+		font-size: 12px;
+	}
+
+
+
+
+.switch-checkbox input[type=checkbox]:checked ~ .slider.warning {
+	background-color: #fe9901 !important;
+}
+
+.switch-checkbox input[type=checkbox]:focus ~ .slider.warning {
+	box-shadow: 0 0 1px #fe9901;
+}
+
+.switch-checkbox input[type=checkbox]:checked ~ .slider.danger {
+	background-color: #fe4141 !important;
+}
+
+.switch-checkbox input[type=checkbox]:focus ~ .slider.danger {
+	box-shadow: 0 0 1px #fe4141;
+}
+
+.switch-checkbox input[type=checkbox]:checked ~ .slider.info {
+	background-color: #00b4ef !important;
+}
+
+.switch-checkbox input[type=checkbox]:focus ~ .slider.info {
+	box-shadow: 0 0 1px #00b4ef;
 }

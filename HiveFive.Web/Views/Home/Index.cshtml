@@ -1,75 +1,169 @@
 ﻿@{
 	ViewBag.Title = "Home Page";
 }
-<div class="row">
+
+<style>
+	.hive-message-content {
+		resize: none;
+		height: 38px !important;
+		transition: height 0.35s ease;
+	}
+
+	.hive-message-content-expanded {
+		height: 160px !important;
+	}
+
+	.hive-message-footer {
+		display: none;
+	}
+
+	.hive-list {
+		list-style: none;
+		padding-inline-start: 5px;
+	}
+</style>
+
+<div class="row mt-2">
 	<div class="col-md-3">
-		<div>
-			<h4>My Hives</h4>
-			<ul id="myhives-hives"></ul>
+		<div class="bg-light p-2">
+			<h5>My Hives</h5>
+			<hr style="margin-top:3px" />
+			<ul id="myhives-hives" class="hive-list"></ul>
 			<input id="hive-input" class="form-control" />
 			<div style="display:flex">
 				<button id="joinhive-btn" type="button" class="btn btn-info" style="height:100%;width:100%">Join Hive</button>
-				<button id="leavehive-btn" type="button" class="btn btn-info" style="height:100%;width:100%">Leave Hive</button>
 			</div>
 
 		</div>
 
 	</div>
 	<div class="col-md-6">
-		<div>
-			<spn>Total Hivers: <b id="hive-totalcount"></b></spn>
-		</div>
-		<ul id="hive-tabs" class="nav nav-tabs">
-			<li>
-				<a data-toggle="tab" href="#mentions">@@Mentions</a>
-			</li>
-		</ul>
-		<div id="hive-content" class="tab-content">
-			<div id="mentions" class="tab-pane fade">
-				<div>
-					<textarea class="form-control hive-message-content" rows="5" style="max-width:100%"></textarea>
-					<button type="button" class="btn btn-info hive-message-btn">Send Message</button>
+		@*<div>
+				<spn>Total Hivers: <b id="hive-totalcount"></b></spn>
+			</div>*@
+		<div class="bg-light p-2">
+			<ul id="hive-tabs" class="nav nav-tabs">
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" role="tab" href="#mentions">@@Mentions</a>
+				</li>
+			</ul>
+			<div id="hive-content" class="tab-content">
+				<div id="mentions" class="tab-pane fade" role="tabpanel">
+					<div>
+						<textarea class="form-control hive-message-content" style="max-width:100%" placeholder="Whats on your mind?"></textarea>
+						<div class="hive-message-footer">
+							<button type="button" class="btn btn-info hive-message-btn">Send Message</button>
+						</div>
+					</div>
+					<ul id="messages-mention" class="list-group"></ul>
 				</div>
-				<h3>Mentions</h3>
-				<ul id="messages-mention"></ul>
 			</div>
 		</div>
 
 	</div>
 	<div class="col-md-3">
-		<h4>Popular Hives</h4>
-		<ul id="popular-hives"></ul>
+		<div class="bg-light p-2">
+			<h5>Trending Hives</h5>
+			<hr style="margin-top:3px" />
+			<ul id="popular-hives" class="hive-list"></ul>
+		</div>
 	</div>
 </div>
 
 <script id="hiveTabTemplate" type="text/html">
-	<li id="hivetab-tab-{{Hive}}" class="user-hive active">
-		<a data-toggle="tab" href="#hivetab-content-{{Hive}}">#{{Hive}}</a>
+	<li id="hivetab-tab-{{Hive}}" class="user-hive nav-item">
+		<a class="nav-link active" data-toggle="tab" role="tab" href="#hivetab-content-{{Hive}}">#{{Hive}}</a>
 	</li>
 </script>
 
 
 <script id="hiveTabContentTemplate" type="text/html">
-	<div id="hivetab-content-{{Hive}}" class="user-hive tab-pane fade in active">
+	<div id="hivetab-content-{{Hive}}" class="user-hive tab-pane fade show active" role="tabpanel">
 		<div>
-			<textarea data-hive="{{Hive}}" class="form-control hive-message-content" rows="5" style="max-width:100%"></textarea>
-			<button data-hive="{{Hive}}" type="button" class="btn btn-info hive-message-btn">Send Message</button>
+			<textarea id="hivetab-message-{{Hive}}" data-hive="{{Hive}}" class="form-control hive-message-content" style="max-width:100%" placeholder="Whats on your mind?" maxlength="240"></textarea>
+			<div class="hive-message-footer">
+				<div class="d-flex justify-content-between pt-1">
+					<div class="switchbox switchbox-md disabled" >
+						<label class="switch-checkbox">
+							<input id="hivetab-sendall-{{Hive}}" type="checkbox" />
+							<span class="slider round" style="background-color:#343a40"></span>
+						</label>
+						<div class="switch-label-container">
+							<span class="switch-label">Send to all my hives</span>
+						</div>
+					</div>
+					<button data-target="#hivetab-message-{{Hive}}" data-hive="{{Hive}}" type="button" class="btn btn-info hive-message-btn">Send Message</button>
+				</div>
+			</div>
 		</div>
-		<h3>#{{Hive}} Messages</h3>
-		<ul id="hivetab-messages-{{Hive}}"></ul>
+		<hr />
+		<ul id="hivetab-messages-{{Hive}}" class="list-group"></ul>
 	</div>
 </script>
 
 <script id="popularHiveTemplate" type="text/html">
-	<li id="hive-{{Hive}}">#{{Hive}}: {{Count}}</li>
+	<li id="hive-{{Hive}}" data-order="{{Count}}">
+		<div class="d-flex justify-content-between">
+			<div class="d-flex justify-content-between align-items-center w-100">
+				<span class="popularhive-text">#{{Hive}}</span>
+				<small>
+					(<span class="popularhive-count">{{Count}}</span>)
+				</small>
+			</div>
+			<div class="btn-group">
+				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:center;">
+					<i class="fas fa-ellipsis-v"></i>
+				</span>
+				<div class="dropdown-menu dropdown-menu-right">
+					<button data-hive="{{Hive}}" class="dropdown-item popularhive-join" type="button">Join Hive</button>
+					<button data-hive="{{Hive}}" class="dropdown-item" type="button">Mute Hive</button>
+				</div>
+			</div>
+		</div>
+
+	</li>
 </script>
 
 <script id="subscribedHiveTemplate" type="text/html">
-	<li id="myhive-{{Hive}}">#{{Hive}}</li>
+	<li id="myhive-{{Hive}}" style="list-style:none">
+		<div class="d-flex justify-content-between">
+			<span>#{{Hive}}</span>
+			<div class="btn-group">
+				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:center;">
+					<i class="fas fa-ellipsis-v"></i>
+				</span>
+				<div class="dropdown-menu dropdown-menu-right">
+					<button data-hive="{{Hive}}" class="dropdown-item myhive-leave" type="button">Leave Hive</button>
+				</div>
+			</div>
+		</div>
+	</li>
 </script>
 
 <script id="messageTemplate" type="text/html">
-	<li>{{Sender}}: {{Message}}</li>
+	<li class="list-group-item">
+		<div class="d-flex flex-column">
+			<div class="d-flex justify-content-sm-between">
+				<small class="text-primary">{{Sender}}</small>
+				<div class="d-flex">
+					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
+					<div class="btn-group">
+						<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:right;">
+							<i class="fas fa-ellipsis-v"></i>
+						</span>
+						<div class="dropdown-menu dropdown-menu-right">
+							<button data-user="{{Sender}}" class="dropdown-item" type="button">Follow User</button>
+							<button data-user="{{Sender}}" class="dropdown-item" type="button">Mute User</button>
+							<button class="dropdown-item" type="button">Mute Message</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<p style="word-break:break-word">
+				{{Message}}
+			</p>
+		</div>
+	</li>
 </script>
 
 <script id="mentionTemplate" type="text/html">
@@ -87,58 +181,63 @@
 			const subscribedHiveTemplate = $("#subscribedHiveTemplate").html();
 
 			const updateHiveCount = (hive) => {
-				const hiveName = hive.Hive.replace("#", "");
-				const existing = $("#hive-" + hiveName);
+				const existing = $("#hive-" + hive.Hive);
 				if (existing.length > 0) {
 					if (hive.Count > 0) {
-						existing.text(hive.Hive + ": " + hive.Count);
+						existing.attr("data-order", hive.Count);
+						existing.find(".popularhive-count").text(hive.Count);
 					}
 					else {
 						existing.remove();
 					}
-					return;
 				}
-				$("#popular-hives").prepend(Mustache.render(popularHiveTemplate, { Hive: hiveName, Count: hive.Count }));
+				else {
+					$("#popular-hives").prepend(Mustache.render(popularHiveTemplate, hive));
+				}
+			}
+
+			const updateHiveCountOrder = () => {
+				$('#popular-hives li').sort(function (a, b) {
+					return a.dataset.order < b.dataset.order ? 1 : -1;
+				}).appendTo('#popular-hives');
 			}
 
 			const addHiveTab = (hive) => {
-				const hiveName = hive.replace("#", "");
-				const existingTab = $("#hivetab-tab-" + hiveName);
+				const existingTab = $("#hivetab-tab-" + hive);
 				if (existingTab.length == 0) {
-					$("#hive-tabs li").removeClass("active");
-					$("#hive-content .active").removeClass("in active");
-					$("#hive-tabs").prepend(Mustache.render(hiveTabTemplate, { Hive: hiveName }));
-					$("#hive-content").prepend(Mustache.render(hiveTabContentTemplate, { Hive: hiveName }));
-					$("#myhives-hives").prepend(Mustache.render(subscribedHiveTemplate, { Hive: hiveName }));
+					$("#hive-tabs .nav-link").removeClass("active");
+					$("#hive-content .active").removeClass("show active");
+					$("#hive-tabs").prepend(Mustache.render(hiveTabTemplate, { Hive: hive }));
+					$("#hive-content").prepend(Mustache.render(hiveTabContentTemplate, { Hive: hive }));
+					$("#myhives-hives").prepend(Mustache.render(subscribedHiveTemplate, { Hive: hive }));
 				}
 			}
 
 			const removeHiveTab = (hive) => {
-				const hiveName = hive.replace("#", "");
-				const tab = $("#hivetab-tab-" + hiveName);
-				const content = $("#hivetab-content-" + hiveName);
-				const myHive = $("#myhive-" + hiveName);
-				const updateCurrent = tab.hasClass("active");
+				const tab = $("#hivetab-tab-" + hive);
+				const content = $("#hivetab-content-" + hive);
+				const myHive = $("#myhive-" + hive);
+				const updateCurrent = tab.find(".nav-link").hasClass("active");
 				tab.remove();
 				content.remove();
 				myHive.remove();
 				if (updateCurrent) {
-					$("#hive-tabs li:first-child").addClass("active");
-					$("#hive-content .tab-pane:first-child").addClass("in active");
+					$("#hive-tabs li:first-child > a").addClass("active");
+					$("#hive-content .tab-pane:first-child").addClass("show active");
 				}
 			}
 
 			const joinHive = async (hiveName) => {
 				const result = await hiveHub.server.joinHive(hiveName);
 				if (result == true) {
-					addHiveTab(hiveName);
+					addHiveTab(hiveName.replace("#", ""));
 				}
 			}
 
 			const leaveHive = async (hiveName) => {
 				const result = await hiveHub.server.leaveHive(hiveName);
 				if (result == true) {
-					removeHiveTab(hiveName);
+					removeHiveTab(hiveName.replace("#", ""));
 				}
 			}
 
@@ -148,16 +247,20 @@
 				alert(data);
 				console.log(data);
 			};
+
 			hiveHub.client.OnMessage = function (data) {
-				const hiveName = data.Hive.replace("#", "");
-				$("#hivetab-messages-" + hiveName).prepend(Mustache.render(messageTemplate, data));
+				data.TimeElapsed = moment.utc(data.Timestamp).fromNow();
+				$("#hivetab-messages-" + data.Hive).prepend(Mustache.render(messageTemplate, data));
 			};
+
 			hiveHub.client.OnMention = function (data) {
 				$("#messages-mention").prepend(Mustache.render(mentionTemplate, data));
 			};
+
 			hiveHub.client.OnHiveUpdate = function (data) {
 				$("#hive-totalcount").text(data.Total);
 				updateHiveCount(data)
+				updateHiveCountOrder();
 			};
 
 			hiveHub.client.OnPopularHives = function (data) {
@@ -166,6 +269,7 @@
 				for (let hive of data.Hives) {
 					updateHiveCount(hive);
 				}
+				updateHiveCountOrder();
 			};
 
 			await $.connection.hub.start({ transport: ['webSockets'] });
@@ -175,12 +279,24 @@
 			$(".container").on("click", ".hive-message-btn", async function () {
 				const button = $(this);
 				let hive = button.data("hive");
-				const message = button.prev("textarea");
+				const message = $(button.data("target"));
 				if (hive) {
 					hive = " #" + hive;
 				}
 				await hiveHub.server.sendMessage(message.val() + hive);
+				message.val(null).trigger("focusout");
 			});
+
+			$("#popular-hives").on("click", ".popularhive-join", async function () {
+				const hiveName = $(this).data("hive");
+				await joinHive(hiveName);
+			});
+
+			$("#myhives-hives").on("click", ".myhive-leave", async function () {
+				const hiveName = $(this).data("hive");
+				await leaveHive(hiveName);
+			});
+
 
 			$("#joinhive-btn").on("click", async function () {
 				const hiveName = $("#hive-input").val();
@@ -191,6 +307,45 @@
 				const hiveName = $("#hive-input").val();
 				await leaveHive(hiveName);
 			});
+
+
+			$("#hive-content").on("focusin", ".hive-message-content", function () {
+				const _this = $(this);
+				_this.addClass("hive-message-content-expanded").removeAttr("placeholder");
+				_this.next(".hive-message-footer").show();
+			});
+
+			$("#hive-content").on("focusout", ".hive-message-content", function () {
+				const _this = $(this);
+				const message = _this.val();
+				if (!message || message.length <= 0) {
+					_this.removeClass("hive-message-content-expanded").attr("placeholder", "Whats on your mind?");
+					const footer = _this.next(".hive-message-footer");
+					footer.find(".switchbox").addClass("disabled");
+					footer.hide();
+				}
+			});
+
+			$("#hive-content").on("input", ".hive-message-content", function () {
+				const _this = $(this);
+				const message = _this.val();
+				const sendAll = _this.next(".hive-message-footer").find(".switchbox");
+				if (message.length > 0) {
+					sendAll.removeClass("disabled");
+				}
+				else {
+					sendAll.addClass("disabled");
+				}
+			});
+
+
+			setInterval(function () {
+				$(".time-elapsed").each(function () {
+					const _this = $(this);
+					_this.text(moment.utc(_this.data("time")).fromNow());
+				})
+			}, 10000);
+
 		})(jQuery);
 	</script>
 }
