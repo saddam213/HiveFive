@@ -28,7 +28,7 @@ namespace HiveFive.Web.Hubs
 			return groups.Remove(connectionId, hiveName);
 		}
 
-		public async Task<List<string>> UnlinkAllHives(IGroupManager groups, string connectionId)
+		public async Task<IEnumerable<string>> UnlinkAllHives(IGroupManager groups, string connectionId)
 		{
 			if(ConnectionToHiveMap.TryRemove(connectionId, out var hives))
 			{
@@ -36,32 +36,34 @@ namespace HiveFive.Web.Hubs
 				{
 					await groups.Remove(connectionId, hive);
 				}
-				return new List<string>(hives.Keys);
+				return hives.CloneKeys();
 			}
-			return new List<string>();
+			return Enumerable.Empty<string>();
 		}
 
-		public ConcurrentList<string> GetHives(string connectionId)
+		public Task<IEnumerable<string>> GetHives(string connectionId)
 		{
-			return ConnectionToHiveMap.TryGetValue(connectionId, out var result) ? result : new ConcurrentList<string>();
+			if (ConnectionToHiveMap.TryGetValue(connectionId, out var result))
+				return Task.FromResult(result.CloneKeys());
+			return Task.FromResult(Enumerable.Empty<string>());
 		}
 
-		public int GetConnectionCount()
+		public Task<int> GetConnectionCount()
 		{
-			return ConnectionToHiveMap.Count;
+			return Task.FromResult(ConnectionToHiveMap.Count);
 		}
 
-		public int GetHiveConnectionCount(string hiveName)
+		public Task<int> GetHiveConnectionCount(string hiveName)
 		{
-			return ConnectionToHiveMap
+			return Task.FromResult(ConnectionToHiveMap
 				.SelectMany(x => x.Value.Keys)
 				.Where(x => x == hiveName)
-				.Count();
+				.Count());
 		}
 
-		public IEnumerable<object> GetPopularHives(int count)
+		public Task<IEnumerable<object>> GetPopularHives(int count)
 		{
-			return ConnectionToHiveMap
+			return Task.FromResult<IEnumerable<object>>(ConnectionToHiveMap
 				.SelectMany(x => x.Value.Keys)
 				.Where(x => x.StartsWith("#"))
 				.GroupBy(x => x)
@@ -71,42 +73,45 @@ namespace HiveFive.Web.Hubs
 				{
 					Hive = hive.Key,
 					Count = hive.Count(),
-				});
+				}));
 		}
 
 
-		public string GetHandle(string connectionId)
+		public Task<string> GetHandle(string connectionId)
 		{
 			foreach (var item in HandleToConnectionMap)
 			{
 				if (item.Value.ContainsKey(connectionId))
-					return item.Key;
+					return Task.FromResult(item.Key);
 			}
-			return string.Empty;
+			return Task.FromResult(string.Empty);
 		}
 
-		public ConcurrentList<string> GetConnections(string handle)
+		public Task<IEnumerable<string>> GetConnections(string handle)
 		{
-			return HandleToConnectionMap.TryGetValue(handle, out var result) ? result : new ConcurrentList<string>();
+			if (HandleToConnectionMap.TryGetValue(handle, out var result))
+				return Task.FromResult(result.CloneKeys());
+			return Task.FromResult(Enumerable.Empty<string>());
 		}
 
-		public bool LinkHandle(string handle, string connectionId)
+		public Task LinkHandle(string handle, string connectionId)
 		{
-			return HandleToConnectionMap.GetOrAdd(handle, new ConcurrentList<string>(connectionId)).Add(connectionId);
+			HandleToConnectionMap.GetOrAdd(handle, new ConcurrentList<string>(connectionId)).Add(connectionId);
+			return Task.FromResult(0);
 		}
 
-		public bool UnlinkHandle(string handle, string connectionId)
+		public Task UnlinkHandle(string handle, string connectionId)
 		{
 			if (HandleToConnectionMap.TryGetValue(handle, out var result))
 			{
 				result.Remove(connectionId);
 			}
-			return true;
+			return Task.FromResult(0);
 		}
 
-		public int GetHandleCount()
+		public Task<int> GetHandleCount()
 		{
-			return HandleToConnectionMap.Count;
+			return Task.FromResult(HandleToConnectionMap.Count);
 		}
 	}
 }

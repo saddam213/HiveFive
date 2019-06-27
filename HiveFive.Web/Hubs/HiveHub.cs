@@ -17,7 +17,7 @@ namespace HiveFive.Web.Hubs
 		public override async Task OnConnected()
 		{
 			var handle = GetUserHandle();
-			ConnectionStore.LinkHandle(handle, Context.ConnectionId);
+			await ConnectionStore.LinkHandle(handle, Context.ConnectionId);
 
 			await Subscribe($"@{handle}");
 			await base.OnConnected();
@@ -27,7 +27,7 @@ namespace HiveFive.Web.Hubs
 		public override async Task OnReconnected()
 		{
 			var handle = GetUserHandle();
-			ConnectionStore.LinkHandle(handle, Context.ConnectionId);
+			await ConnectionStore.LinkHandle(handle, Context.ConnectionId);
 
 			await Subscribe($"@{handle}");
 			await base.OnReconnected();
@@ -36,8 +36,8 @@ namespace HiveFive.Web.Hubs
 
 		public override async Task OnDisconnected(bool stopCalled)
 		{
-			var handle = ConnectionStore.GetHandle(Context.ConnectionId);
-			ConnectionStore.UnlinkHandle(handle, Context.ConnectionId);
+			var handle = await ConnectionStore.GetHandle(Context.ConnectionId);
+			await ConnectionStore.UnlinkHandle(handle, Context.ConnectionId);
 
 			await Unsubscribe($"@{handle}");
 			await UnsubscribeAll();
@@ -67,7 +67,7 @@ namespace HiveFive.Web.Hubs
 					});
 
 				}
-				return GetHives();
+				return await GetHives();
 			}
 
 			var hives = GetHives(message);
@@ -83,7 +83,7 @@ namespace HiveFive.Web.Hubs
 					});
 				}
 			}
-			return GetHives();
+			return await GetHives();
 		}
 
 		public async Task<List<string>> JoinHive(string hive)
@@ -97,7 +97,7 @@ namespace HiveFive.Web.Hubs
 			{
 				await Subscribe(hiveName);
 			}
-			return GetHives();
+			return await GetHives();
 		}
 
 		public async Task<List<string>> LeaveHive(string hive)
@@ -111,16 +111,17 @@ namespace HiveFive.Web.Hubs
 			{
 				await Unsubscribe(hiveName);
 			}
-			return GetHives();
+			return await GetHives();
 		}
 
 
 
-		private List<string> GetHives()
+		private async Task<List<string>> GetHives()
 		{
-			return ConnectionStore.GetHives(Context.ConnectionId).Keys
-					.Where(x => x.StartsWith("#"))
-					.ToList();
+			var hives = await ConnectionStore.GetHives(Context.ConnectionId);
+			return hives
+				.Where(x => x.StartsWith("#"))
+				.ToList();
 		}
 
 
@@ -152,8 +153,8 @@ namespace HiveFive.Web.Hubs
 			await Clients.All.OnHiveUpdate(new
 			{
 				Hive = hive,
-				Count = ConnectionStore.GetHiveConnectionCount(hive),
-				Total = ConnectionStore.GetConnectionCount()
+				Count = await ConnectionStore.GetHiveConnectionCount(hive),
+				Total = await ConnectionStore.GetConnectionCount()
 			});
 		}
 
@@ -161,8 +162,8 @@ namespace HiveFive.Web.Hubs
 		{
 			await Clients.Caller.OnPopularHives(new
 			{
-				Hives = ConnectionStore.GetPopularHives(25),
-				Total = ConnectionStore.GetConnectionCount()
+				Hives = await ConnectionStore.GetPopularHives(25),
+				Total = await ConnectionStore.GetConnectionCount()
 			});
 		}
 

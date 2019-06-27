@@ -37,11 +37,11 @@ namespace HiveFive.Framework.Objects
 			return TryAdd(item, Default);
 		}
 
-		public List<T> CloneKeys()
+		public IEnumerable<T> CloneKeys()
 		{
 			var keys = new T[Count];
 			Keys.CopyTo(keys, 0);
-			return keys.ToList();
+			return keys;
 		}
 
 		public bool Remove(T item)
