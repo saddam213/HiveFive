@@ -322,7 +322,7 @@ namespace HiveFive.Web.Controllers
 			if (result.Succeeded)
 			{
 				var code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-				var callbackUrl = Url.Action(nameof(RegisterConfirmEmail), "Login", new { userId = user.Id, code }, protocol: Request.Url?.Scheme);
+				var callbackUrl = Url.Action(nameof(RegisterConfirmEmail), "Account", new { userId = user.Id, code }, protocol: Request.Url?.Scheme);
 				if (await SendEmailAsync(EmailTemplateType.Registration, user.Email, user.Id, Request.GetIPAddress(), user.UserName, callbackUrl))
 				{
 					return View("RegisterSuccess");
@@ -340,12 +340,11 @@ namespace HiveFive.Web.Controllers
 		[AllowAnonymous]
 		public async Task<ActionResult> RegisterConfirmEmail(int userId, string code)
 		{
-			if (userId > 0 || code == null)
-			{
+			if (userId == 0 || code == null)
 				return View("Error");
-			}
+
 			var result = await UserManager.ConfirmEmailAsync(userId, code);
-			return View(result.Succeeded ? "ConfirmEmail" : "Error");
+			return View(result.Succeeded ? "RegisterConfirmEmail" : "Error");
 		}
 
 		[HttpGet]
@@ -378,7 +377,7 @@ namespace HiveFive.Web.Controllers
 				return RedirectToAction(nameof(ForgotPasswordConfirmation));
 			}
 
-			var resetPasswordToken = Url.Action(nameof(ResetPassword), "Login", new { code = await UserManager.GeneratePasswordResetTokenAsync(user.Id) }, protocol: Request.Url?.Scheme);
+			var resetPasswordToken = Url.Action(nameof(ResetPassword), "Account", new { code = await UserManager.GeneratePasswordResetTokenAsync(user.Id) }, protocol: Request.Url?.Scheme);
 			await SendEmailAsync(EmailTemplateType.PasswordReset, user.Email, user.Id, Request.GetIPAddress(), user.UserName, resetPasswordToken);
 			return RedirectToAction(nameof(ForgotPasswordConfirmation));
 		}

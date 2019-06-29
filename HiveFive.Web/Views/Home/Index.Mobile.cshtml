@@ -1,0 +1,185 @@
+﻿@{
+	ViewBag.Title = "HiveFive";
+}
+
+<style>
+	.hive-message-content {
+		resize: none;
+		height: 38px !important;
+		transition: height 0.35s ease;
+	}
+
+	.hive-message-content-expanded {
+		height: 160px !important;
+	}
+
+	.hive-message-footer {
+		display: none;
+	}
+
+	.hive-list {
+		list-style: none;
+		padding-inline-start: 5px;
+	}
+</style>
+
+<div id="toast-container" style="position: absolute; top: 50px; right: 20px;width:300px">
+</div>
+
+
+
+
+
+<div class="row">
+
+
+	<ul class="nav nav-tabs w-100 justify-content-between" id="myTab" role="tablist">
+		<li class="nav-item w-25">
+			<a class="nav-link text-center active" id="section-thehive" data-toggle="tab" href="#section-content-hive" role="tab">
+				<i class="fa fa-hand-paper"></i>
+			</a>
+		</li>
+		<li class="nav-item w-25">
+			<a class="nav-link text-center" id="section-header-myhive" data-toggle="tab" href="#section-content-myhive" role="tab">
+				<i class="fa fa-bookmark"></i>
+			</a>
+		</li>
+		<li class="nav-item w-25">
+			<a class="nav-link text-center" id="section-header-trending" data-toggle="tab" href="#section-content-trending" role="tab">
+				<i class="fa fa-heart"></i>
+			</a>
+		</li>
+		<li class="nav-item w-25">
+			<a class="nav-link text-center section-option" id="section-header-settings" data-toggle="tab" href="#section-content-settings" role="tab">
+				<i class="fa fa-cog"></i>
+			</a>
+		</li>
+	</ul>
+	<div class="tab-content w-100">
+
+		<div class="tab-pane fade show active" id="section-content-hive" role="tabpanel" aria-labelledby="home-tab">
+			<div class="bg-light p-2">
+				<ul id="hive-tabs" class="nav nav-tabs">
+					<li class="nav-item">
+						<a id="hive-tabs-mention-nav" class="nav-link" data-toggle="tab" role="tab" href="#mentions">
+							<span>@@Mentions</span>
+							<span id="hivetab-tab-mention-unread" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
+						</a>
+					</li>
+				</ul>
+				<div id="hive-content" class="tab-content">
+					<div id="mentions" class="tab-pane fade" role="tabpanel">
+						<ul id="messages-mention" class="list-group hive-messages">
+							<li id="hivetab-placeholder-mention" class="list-group-item">
+								<small><i style="opacity:0.6">There are no new mentions</i></small>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+
+
+
+
+
+
+
+		<div class="tab-pane fade" id="section-content-myhive" role="tabpanel">
+
+			<div class="bg-light p-2">
+				<div class="d-flex justify-content-between align-items-center">
+					<h5>My Hives <i id="connection-status" class="fa fa-wifi text-danger"></i></h5>
+					@*<i class="fa fa-cog section-option"></i>*@
+				</div>
+				<hr style="margin-top:3px" />
+				<ul id="myhive-hives" class="hive-list"></ul>
+				<input id="hive-input" class="form-control" maxlength="15" />
+				<div style="display:flex">
+					<button id="joinhive-btn" type="button" class="btn btn-info" style="height:100%;width:100%">Create/Join Hive</button>
+				</div>
+			</div>
+
+		</div>
+
+
+
+		<div class="tab-pane fade" id="section-content-trending" role="tabpanel">
+			<div class="bg-light p-2">
+				<h5>Trending Hives</h5>
+				<hr style="margin-top:3px" />
+				<ul id="trending-hives" class="hive-list"></ul>
+			</div>
+		</div>
+
+
+
+		<div class="tab-pane fade" id="section-content-settings" role="tabpanel">
+			<div id="section-settings" class="bg-light p-2">
+				<div class="d-flex justify-content-between align-items-center">
+					<h5>Settings</h5>
+					@*<i class="fa fa-arrow-left section-option"></i>*@
+				</div>
+
+				<hr style="margin-top:3px" />
+				<div class="d-flex">
+					<button id="settings-messagestore-clear" class="btn btn-sm btn-block btn-outline-info">Clear Local Settings</button>
+				</div>
+
+				<small><b>Local Storage</b></small>
+				<hr style="margin:0" />
+				<div class="switchbox switchbox-md mt-1">
+					<label class="switch-checkbox">
+						<input id="settings-messagestore-enabled" type="checkbox">
+						<span class="slider round"></span>
+					</label>
+					<div class="switch-label-container">
+						<span class="switch-label">Store hive messages</span>
+					</div>
+				</div>
+				<div class="switchbox switchbox-md mt-1">
+					<label class="switch-checkbox">
+						<input id="settings-messagestore-global-enabled" type="checkbox">
+						<span class="slider round"></span>
+					</label>
+					<div class="switch-label-container">
+						<span class="switch-label">Store #global messages</span>
+					</div>
+				</div>
+				<div class="d-flex">
+					<input id="settings-messagestore-max" type="number" style="width:42px;height:24px;margin-right:3px;font-size:14px" />
+					<span style="font-size:14px">Max messages to store</span>
+				</div>
+				<div class="d-flex">
+					<button id="settings-messagestore-save" class="btn btn-sm btn-block btn-outline-info mt-1">Save Settings</button>
+				</div>
+				<hr style="margin-top:3px" />
+				<small><b>Muted Users</b></small>
+				<hr style="margin:0" />
+				<ul id="settings-mutedusers" class="hive-list"></ul>
+				<small><b>Muted Hives</b></small>
+				<hr style="margin:0" />
+				<ul id="settings-mutedhives" class="hive-list"></ul>
+			</div>
+		</div>
+
+
+
+	</div>
+
+
+
+
+
+
+</div>
+
+@{ Html.RenderPartial("_Templates");}
+
+@section Scripts {
+	<script src="~/Content/Scripts/Project/Home/index.js?v=@DateTime.UtcNow.Millisecond"></script>
+}
+

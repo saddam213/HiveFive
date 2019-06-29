@@ -228,6 +228,7 @@
     <Content Include="Content\Scripts\mustache.js" />
     <Content Include="Content\Scripts\moment.js" />
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Content\Scripts\Project\Home\index.js" />
     <Content Include="Content\Scripts\Project\site.js" />
     <Content Include="Content\Scripts\Project\site_header.js" />
     <Content Include="Content\Scripts\Project\TwoFactor\create.js" />
@@ -312,6 +313,8 @@
     <Content Include="Views\TwoFactor\Remove.cshtml" />
     <Content Include="Views\AccountSettings\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
+    <Content Include="Views\Home\_Templates.cshtml" />
+    <Content Include="Views\Home\Index.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
