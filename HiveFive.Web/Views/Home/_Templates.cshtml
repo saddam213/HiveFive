@@ -1,4 +1,4 @@
-﻿<script id="hiveTabTemplate" type="text/html">
+﻿@*<script id="hiveTabTemplate" type="text/html">
 	<li id="hivetab-tab-{{Hive}}" class="user-hive nav-item">
 		<a class="nav-link active d-flex align-items-center" data-toggle="tab" role="tab" href="#hivetab-content-{{Hive}}">
 			<span>#{{Hive}}</span>
@@ -34,7 +34,7 @@
 			</li>
 		</ul>
 	</div>
-</script>
+</script>*@
 
 <script id="trendingHiveTemplate" type="text/html">
 	<li id="hive-{{Hive}}" data-order="{{Count}}" data-hive="{{Hive}}">
@@ -87,6 +87,8 @@
 							<i class="fas fa-ellipsis-v"></i>
 						</span>
 						<div class="dropdown-menu dropdown-menu-right">
+							<button data-user="{{Sender}}" class="dropdown-item message-followuser" type="button">Follow User</button>
+							<button data-user="{{Sender}}" class="dropdown-item message-unfollowuser" type="button">Unfollow User</button>
 							<button data-user="{{Sender}}" class="dropdown-item message-muteuser" type="button">Mute User</button>
 							<button class="dropdown-item message-mute" type="button">Mute Message</button>
 						</div>
@@ -115,6 +117,8 @@
 							<i class="fas fa-ellipsis-v"></i>
 						</span>
 						<div class="dropdown-menu dropdown-menu-right">
+							<button data-user="{{Sender}}" class="dropdown-item message-followuser" type="button">Follow User</button>
+							<button data-user="{{Sender}}" class="dropdown-item message-unfollowuser" type="button">Unfollow User</button>
 							<button data-user="{{Sender}}" class="dropdown-item message-muteuser" type="button">Mute User</button>
 							<button class="dropdown-item message-mute" type="button">Mute Message</button>
 						</div>
@@ -131,6 +135,35 @@
 	</li>
 </script>
 
+<script id="friendsTemplate" type="text/html">
+	<li class="list-group-item message-sender-{{Sender}} message-id-{{Id}}" data-messageid="{{Id}}">
+		<div class="d-flex flex-column">
+			<div class="d-flex justify-content-between">
+				<small class="text-primary">{{Sender}}</small>
+				<div class="d-flex">
+					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
+					<div class="btn-group">
+						<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:right;">
+							<i class="fas fa-ellipsis-v"></i>
+						</span>
+						<div class="dropdown-menu dropdown-menu-right">
+							<button data-user="{{Sender}}" class="dropdown-item message-followuser" type="button">Follow User</button>
+							<button data-user="{{Sender}}" class="dropdown-item message-unfollowuser" type="button">Unfollow User</button>
+							<button data-user="{{Sender}}" class="dropdown-item message-muteuser" type="button">Mute User</button>
+							<button class="dropdown-item message-mute" type="button">Mute Message</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<p style="word-break:break-word;white-space:pre-line">{{Message}}</p>
+			<div class="d-flex flex-wrap">
+				{{#Hives}}
+				<span class="message-hivetag" style="font-size:11px;margin-right:8px;cursor:pointer">#{{.}}</span>
+				{{/Hives}}
+			</div>
+		</div>
+	</li>
+</script>
 
 <script id="toastTemplate" type="text/html">
 	<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
@@ -163,4 +196,40 @@
 			<i class="fa fa-times settings-remove-hive" data-hive="{{.}}"></i>
 		</div>
 	</li>
+</script>
+
+<script id="followerTemplate" type="text/html">
+	<li class="follower-{{.}}">
+		<div class="d-flex justify-content-between">
+			<span>{{.}}</span>
+			<div class="btn-group">
+				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:right;">
+					<i class="fas fa-ellipsis-v"></i>
+				</span>
+				<div class="dropdown-menu dropdown-menu-right">
+					<button data-user="{{.}}" class="dropdown-item message-followuser" type="button">Follow User</button>
+				</div>
+			</div>
+		</div>
+	</li>
+</script>
+
+<script id="followingTemplate" type="text/html">
+	<li class="following-{{.}}">
+		<div class="d-flex justify-content-between">
+			<span>{{.}}</span>
+			<div class="btn-group">
+				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:right;">
+					<i class="fas fa-ellipsis-v"></i>
+				</span>
+				<div class="dropdown-menu dropdown-menu-right">
+					<button data-user="{{.}}" class="dropdown-item message-unfollowuser" type="button">Unfollow User</button>
+				</div>
+			</div>
+		</div>
+	</li>
+</script>
+
+<script id="emptyListTemplate" type="text/html">
+	<li class="empty-list-template"><small><i>{{.}}</i></small></li>
 </script>

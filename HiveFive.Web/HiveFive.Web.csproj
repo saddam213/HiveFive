@@ -186,6 +186,7 @@
     <Compile Include="Hubs\HiveConnectionStore.cs" />
     <Compile Include="Hubs\HiveHub.cs" />
     <Compile Include="Hubs\HubIdentityProvider.cs" />
+    <Compile Include="Hubs\IFollowerStore.cs" />
     <Compile Include="Hubs\IHiveConnectionStore.cs" />
     <Compile Include="Identity\Entity\IdentityRole.cs" />
     <Compile Include="Identity\Entity\IdentityUser.cs" />

@@ -120,16 +120,21 @@ MessageCache.Clear = () => {
 
 MessageCache.AddMessage = (message) => {
 	if (!message) {
-		return;
+		return false;
 	}
 
 	if (message.Hive == "global" && MessageCache.EnabledGlobal == false) {
-		return;
+		return false;
+	}
+
+	if (MessageCache.Messages.hasOwnProperty(message.Id)) {
+		return false;
 	}
 
 	MessageCache.Messages[message.Id] = message;
 	MessageCache.Trim();
 	MessageCache.Update();
+	return true;
 }
 
 MessageCache.RemoveMessage = (messageId) => {
@@ -162,4 +167,65 @@ MessageCache.Trim = () => {
 if (MessageCache.EnabledGlobal == undefined) {
 	MessageCache.EnabledGlobal = true;
 	MessageCache.Update();
+}
+
+
+
+
+
+
+
+
+
+
+
+const FollowCacheDefaults = {
+	Followers: {
+		//"test1": "test1",
+		//"test2": "test2",
+		//"test3": "test3",
+	}
+}
+
+
+const FollowCache = store.get("FollowCache") || FollowCacheDefaults;
+FollowCache.Update = () => {
+	store.set("FollowCache", FollowCache);
+};
+
+FollowCache.Clear = () => {
+	$.extend(FollowCache, FollowCacheDefaults);
+	FollowCache.Update();
+};
+
+FollowCache.AddFollower = (userHandle) => {
+	if (!userHandle) {
+		return;
+	}
+
+	FollowCache.Followers[userHandle] = userHandle;
+	FollowCache.Update();
+}
+
+FollowCache.RemoveFollower = (userHandle) => {
+	if (!userHandle) {
+		return;
+	}
+
+	delete FollowCache.Followers[userHandle]
+	FollowCache.Update();
+}
+
+FollowCache.GetFollowers = () => {
+	return Object.keys(FollowCache.Followers)
+		.sort((a, b) => { return a.localeCompare(b) })
+		.map(key => FollowCache.Followers[key]);
+}
+
+FollowCache.IsFollower = (userHandle) => {
+	return FollowCache.Followers.hasOwnProperty(userHandle);
+}
+
+FollowCache.HasFollowers = () => {
+	return Object.keys(FollowCache.Followers).length > 0;
 }

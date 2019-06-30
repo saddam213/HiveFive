@@ -23,6 +23,7 @@ namespace HiveFive.Web
 
 			DependencyRegistrar.Register();
 			DependencyRegistrar.RegisterSingletonComponent<IHiveConnectionStore>(() => new HiveConnectionStore());
+			DependencyRegistrar.RegisterSingletonComponent<IFollowerStore>(() => new FollowerStore());
 
 			ModelMetadataProviders.Current = new CachedDataAnnotationsModelMetadataProvider();
 			FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
