@@ -316,6 +316,12 @@
     <None Include="Properties\PublishProfiles\Production.pubxml" />
     <Content Include="Views\Home\_Templates.cshtml" />
     <Content Include="Views\Home\Index.Mobile.cshtml" />
+    <Content Include="Views\Home\_MyHives.cshtml" />
+    <Content Include="Views\Home\_Following.cshtml" />
+    <Content Include="Views\Home\_Followers.cshtml" />
+    <Content Include="Views\Home\_MainFeed.cshtml" />
+    <Content Include="Views\Home\_Settings.cshtml" />
+    <Content Include="Views\Home\_Trending.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

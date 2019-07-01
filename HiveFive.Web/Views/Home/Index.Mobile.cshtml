@@ -2,37 +2,7 @@
 	ViewBag.Title = "HiveFive";
 }
 
-<style>
-	.feed-message-content {
-		resize: none;
-		height: 38px !important;
-		transition: height 0.35s ease;
-	}
-
-	.feed-message-content-expanded {
-		height: 160px !important;
-	}
-
-	.feed-message-footer {
-		display: none;
-	}
-
-	.hive-list {
-		list-style: none;
-		padding-inline-start: 5px;
-	}
-</style>
-
-<div id="toast-container" style="position: absolute; top: 50px; right: 20px;width:300px">
-</div>
-
-
-
-
-
-<div id="main-container" class="row">
-
-
+<div id="main-container" class="main-container-mobile row">
 	<ul class="nav nav-tabs w-100 justify-content-between" id="myTab" role="tablist">
 		<li class="nav-item flex-fill">
 			<a class="nav-link text-center active" id="section-thehive" data-toggle="tab" href="#section-content-hive" role="tab">
@@ -55,216 +25,29 @@
 			</a>
 		</li>
 		<li class="nav-item  flex-fill">
-			<a class="nav-link text-center section-option" id="section-header-settings" data-toggle="tab" href="#section-content-settings" role="tab">
+			<a class="nav-link text-center" id="section-header-settings" data-toggle="tab" href="#section-content-settings" role="tab">
 				<i class="fa fa-cog"></i>
 			</a>
 		</li>
 	</ul>
 	<div class="tab-content w-100">
-
-		<div class="tab-pane fade show active" id="section-content-hive" role="tabpanel" aria-labelledby="home-tab">
-			<div class="bg-light p-2">
-				<ul id="feed-tabs" class="nav nav-tabs">
-					<li class="nav-item flex-fill">
-						<a id="feed-tabs-myhives-nav" class="nav-link active" data-toggle="tab" role="tab" href="#feed-myhives">
-							<span>#My Hives</span>
-							<span id="feed-tab-unread-myhives" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
-						</a>
-					</li>
-					<li class="nav-item flex-fill">
-						<a id="feed-tabs-friends-nav" class="nav-link" data-toggle="tab" role="tab" href="#feed-friends">
-							<span>@@Follow</span>
-							<span id="feed-tab-unread-friends" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
-						</a>
-					</li>
-					<li class="nav-item flex-fill">
-						<a id="feed-tabs-mention-nav" class="nav-link" data-toggle="tab" role="tab" href="#feed-mentions">
-							<span>@@Mentions</span>
-							<span id="feed-tab-unread-mention" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
-						</a>
-					</li>
-				</ul>
-				<div id="feed-content" class="tab-content">
-
-					<div id="feed-myhives" class="tab-pane fade show active" role="tabpanel">
-						<div class="feed-container">
-							<textarea id="feed-message-myhives" class="form-control feed-message-content" style="max-width:100%" placeholder="Whats on your mind?" maxlength="240"></textarea>
-							<div class="feed-message-footer">
-								<div class="d-flex justify-content-between pt-1">
-
-									<select id="feed-message-option-hives" class="form-control w-50">
-										<option value="">My Hives</option>
-									</select>
-
-									<div class="btn-group" role="group">
-										<button type="button" class="btn btn-outline-secondary feed-message-cancel">
-											<i class="fa fa-times"></i>
-										</button>
-										<button type="button" class="btn btn-info feed-message-btn">Send Message</button>
-									</div>
-								</div>
-							</div>
-						</div>
-						<hr />
-						<ul id="feed-messages-myhives" class="list-group feed-messages">
-							<li id="feed-placeholder-myhives" class="list-group-item">
-								<small><i style="opacity:0.6">There are no new messages</i></small>
-							</li>
-						</ul>
-					</div>
-
-
-
-
-					<div id="feed-friends" class="tab-pane fade" role="tabpanel">
-						<ul id="feed-messages-friends" class="list-group hive-messages">
-							<li id="feed-placeholder-friends" class="list-group-item">
-								<small><i style="opacity:0.6">There are no new messages</i></small>
-							</li>
-						</ul>
-					</div>
-
-					<div id="feed-mentions" class="tab-pane fade" role="tabpanel">
-						<ul id="feed-messages-mention" class="list-group hive-messages">
-							<li id="feed-placeholder-mention" class="list-group-item">
-								<small><i style="opacity:0.6">There are no new mentions</i></small>
-							</li>
-						</ul>
-					</div>
-
-				</div>
-			</div>
-
+		<div class="tab-pane fade show active" id="section-content-hive" role="tabpanel">
+			@{ Html.RenderPartial("_MainFeed");}
 		</div>
-
-
-
-
-
-
-
-
-
 		<div class="tab-pane fade" id="section-content-myhive" role="tabpanel">
-
-			<div class="bg-light p-2">
-				<div class="d-flex justify-content-between align-items-center">
-					<h5>My Hives <i id="connection-status" class="fa fa-wifi text-danger"></i></h5>
-					@*<i class="fa fa-cog section-option"></i>*@
-				</div>
-				<hr style="margin-top:3px" />
-				<ul id="myhive-hives" class="hive-list"></ul>
-				<input id="hive-input" class="form-control" maxlength="15" />
-				<div style="display:flex">
-					<button id="joinhive-btn" type="button" class="btn btn-info" style="height:100%;width:100%">Create/Join Hive</button>
-				</div>
-			</div>
-
+			@{ Html.RenderPartial("_MyHives");}
 		</div>
-
 		<div class="tab-pane fade" id="section-content-friends" role="tabpanel">
-			<div class="bg-light p-2 mt-2">
-				<h5>Following</h5>
-				<hr style="margin-top:3px" />
-				<ul id="following-list" class="hive-list"></ul>
-			</div>
-			<div class="bg-light p-2 mt-2">
-				<h5>Followers</h5>
-				<hr style="margin-top:3px" />
-				<ul id="follower-list" class="hive-list"></ul>
-			</div>
+			@{ Html.RenderPartial("_Following");}
+			@{ Html.RenderPartial("_Followers");}
 		</div>
-
 		<div class="tab-pane fade" id="section-content-trending" role="tabpanel">
-			<div class="bg-light p-2">
-				<h5>Trending Hives</h5>
-				<hr style="margin-top:3px" />
-				<ul id="trending-hives" class="hive-list"></ul>
-			</div>
+			@{ Html.RenderPartial("_Trending");}
 		</div>
-
-
-
 		<div class="tab-pane fade" id="section-content-settings" role="tabpanel">
-			<div id="section-settings" class="bg-light p-2">
-				<div class="d-flex justify-content-between align-items-center">
-					<h5>Settings</h5>
-					@*<i class="fa fa-arrow-left section-option"></i>*@
-				</div>
-
-				<hr style="margin-top:3px" />
-				<div class="d-flex">
-					<button id="settings-messagestore-clear" class="btn btn-sm btn-block btn-outline-info">Clear Local Settings</button>
-				</div>
-
-				<small><b>Local Storage</b></small>
-				<hr style="margin:0" />
-				<div class="switchbox switchbox-md mt-1">
-					<label class="switch-checkbox">
-						<input id="settings-messagestore-enabled" type="checkbox">
-						<span class="slider round"></span>
-					</label>
-					<div class="switch-label-container">
-						<span class="switch-label">Store hive messages</span>
-					</div>
-				</div>
-				<div class="switchbox switchbox-md mt-1">
-					<label class="switch-checkbox">
-						<input id="settings-messagestore-global-enabled" type="checkbox">
-						<span class="slider round"></span>
-					</label>
-					<div class="switch-label-container">
-						<span class="switch-label">Store #global messages</span>
-					</div>
-				</div>
-				<div class="d-flex">
-					<input id="settings-messagestore-max" type="number" style="width:42px;height:24px;margin-right:3px;font-size:14px" />
-					<span style="font-size:14px">Max messages to store</span>
-				</div>
-				<small><b>Render Settings</b></small>
-				<hr style="margin:0" />
-
-
-				<div class="switchbox switchbox-md mt-1">
-					<label class="switch-checkbox">
-						<input id="settings-render-link" type="checkbox">
-						<span class="slider round"></span>
-					</label>
-					<div class="switch-label-container">
-						<span class="switch-label">Render Links <small>(at own risk)</small></span>
-					</div>
-				</div>
-				<div class="switchbox switchbox-md mt-1">
-					<label class="switch-checkbox">
-						<input id="settings-render-followlink" type="checkbox">
-						<span class="slider round"></span>
-					</label>
-					<div class="switch-label-container">
-						<span class="switch-label">Render Links Follow Only</span>
-					</div>
-				</div>
-				<div class="d-flex">
-					<button id="settings-messagestore-save" class="btn btn-sm btn-block btn-outline-info mt-1">Save Settings</button>
-				</div>
-				<hr style="margin-top:3px" />
-				<small><b>Muted Users</b></small>
-				<hr style="margin:0" />
-				<ul id="settings-mutedusers" class="hive-list"></ul>
-				<small><b>Muted Hives</b></small>
-				<hr style="margin:0" />
-				<ul id="settings-mutedhives" class="hive-list"></ul>
-			</div>
+			@{ Html.RenderPartial("_Settings");}
 		</div>
-
-
-
 	</div>
-
-
-
-
-
-
 </div>
 
 @{ Html.RenderPartial("_Templates");}

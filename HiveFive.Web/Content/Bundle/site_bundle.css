@@ -14910,6 +14910,35 @@ readers do not read off random characters that represent icons */
 	font-weight: 900;
 }
 
+.feed-message-content {
+	resize: none;
+	height: 38px !important;
+	transition: height 0.35s ease;
+}
+
+.feed-message-content-expanded {
+	height: 160px !important;
+}
+
+.feed-message-footer {
+	display: none;
+}
+
+.hive-list {
+	list-style: none;
+	padding-inline-start: 5px;
+}
+
+
+
+.main-container-desktop #section-settings {
+	display: none;
+}
+
+.main-container-mobile .section-option {
+	display: none;
+}
+
 /* The switch - the box around the slider */
 .switch-checkbox {
 	position: relative;

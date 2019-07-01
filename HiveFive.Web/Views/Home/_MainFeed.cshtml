@@ -1,0 +1,71 @@
+﻿<div class="bg-light p-2">
+	<ul id="feed-tabs" class="nav nav-tabs">
+		<li class="nav-item flex-fill">
+			<a id="feed-tabs-myhives-nav" class="nav-link text-center active" data-toggle="tab" role="tab" href="#feed-myhives">
+				<span>#My Hives</span>
+				<span id="feed-tab-unread-myhives" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
+			</a>
+		</li>
+		<li class="nav-item flex-fill">
+			<a id="feed-tabs-friends-nav" class="nav-link text-center" data-toggle="tab" role="tab" href="#feed-friends">
+				<span>@@Follow</span>
+				<span id="feed-tab-unread-friends" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
+			</a>
+		</li>
+		<li class="nav-item flex-fill">
+			<a id="feed-tabs-mention-nav" class="nav-link text-center" data-toggle="tab" role="tab" href="#feed-mentions">
+				<span>@@Mentions</span>
+				<span id="feed-tab-unread-mention" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
+			</a>
+		</li>
+	</ul>
+	<div id="feed-content" class="tab-content">
+
+		<div id="feed-myhives" class="tab-pane fade show active" role="tabpanel">
+			<div class="feed-container">
+				<textarea id="feed-message-myhives" class="form-control feed-message-content" style="max-width:100%" placeholder="Whats on your mind?" maxlength="240"></textarea>
+				<div class="feed-message-footer">
+					<div class="d-flex justify-content-between pt-1">
+
+						<select id="feed-message-option-hives" class="form-control w-50">
+							<option value="">My Hives</option>
+						</select>
+
+						<div class="btn-group" role="group">
+							<button type="button" class="btn btn-outline-secondary feed-message-cancel">
+								<i class="fa fa-times"></i>
+							</button>
+							<button type="button" class="btn btn-info feed-message-btn">Send Message</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<ul id="feed-messages-myhives" class="list-group feed-messages">
+				<li id="feed-placeholder-myhives" class="list-group-item">
+					<small><i style="opacity:0.6">There are no new messages</i></small>
+				</li>
+			</ul>
+		</div>
+
+
+
+
+		<div id="feed-friends" class="tab-pane fade" role="tabpanel">
+			<ul id="feed-messages-friends" class="list-group hive-messages">
+				<li id="feed-placeholder-friends" class="list-group-item">
+					<small><i style="opacity:0.6">There are no new messages</i></small>
+				</li>
+			</ul>
+		</div>
+
+		<div id="feed-mentions" class="tab-pane fade" role="tabpanel">
+			<ul id="feed-messages-mention" class="list-group hive-messages">
+				<li id="feed-placeholder-mention" class="list-group-item">
+					<small><i style="opacity:0.6">There are no new mentions</i></small>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+</div>

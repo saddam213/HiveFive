@@ -392,7 +392,7 @@
 
 		const message = messageBox.val();
 		if (message.length > 0) {
-			await hiveHub.server.sendMessage(message, selectedHive);
+			await hiveHub.server.sendMessage(message, hiveTargets);
 			closeMessageContainer();
 			if (selectedHive != Settings.LastSelectedHive) {
 				Settings.LastSelectedHive = selectedHive;
@@ -409,17 +409,6 @@
 	$("#feed-content").on("click", ".feed-message-cancel", function () {
 		closeMessageContainer();
 	});
-
-	//$("#feed-content").on("focusout", ".feed-message-content, #feed-message-option-hives", function () {
-	//	const _this = $(this);
-	//	const message = _this.val();
-	//	if (!message || message.length <= 0) {
-	//		_this.removeClass("feed-message-content-expanded").attr("placeholder", "Whats on your mind?");
-	//		const footer = _this.next(".feed-message-footer");
-	//		footer.find(".switchbox").addClass("disabled");
-	//		footer.hide();
-	//	}
-	//});
 
 	$("#feed-content").on("input", ".feed-message-content", function () {
 		const _this = $(this);
@@ -485,8 +474,8 @@
 		}
 	}
 
-	$(".section-option").on("click", function () {
-		$(".section-left").toggle();
+	$(".section-option, #section-header-settings").on("click", function () {
+		$(".main-container-desktop .section-left").toggle();
 		rebuildSettings();
 	})
 
