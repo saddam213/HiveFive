@@ -78,6 +78,18 @@
 		}
 	}
 
+
+	const subscribeHives = async () => {
+		const result = await hiveHub.server.subscribeHives(Settings.MyHives);
+		for (let hive of result) {
+			const existingHive = $("#myhive-" + hive);
+			if (existingHive.length == 0) {
+				$("#myhive-hives").prepend(Mustache.render(myHiveTemplate, { Hive: hive }));
+				$("#feed-message-option-hives").append("<option id='hive-option-" + hive + "' value='" + hive + "'>" + hive + "</option>");
+			}
+		}
+	}
+
 	const getHiveName = (hive) => {
 		return hive.replace("#", "").trim().toLowerCase();
 	}
@@ -194,11 +206,6 @@
 	}
 
 
-	const subscribeHives = async () => {
-		for (let hive of Settings.MyHives) {
-			await joinHive(hive);
-		}
-	}
 
 	const renderMessageCache = () => {
 		if (MessageCache.Enabled == true) {

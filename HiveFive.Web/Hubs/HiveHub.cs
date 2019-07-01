@@ -201,6 +201,25 @@ namespace HiveFive.Web.Hubs
 		//	return true;
 		//}
 
+		public async Task<List<string>> SubscribeHives(List<string> hives)
+		{
+			var results = new List<string>();
+			if (hives.IsNullOrEmpty())
+				return results;
+
+			foreach (var hive in hives)
+			{
+				var hiveName = GetHiveName(hive, true);
+				if (string.IsNullOrEmpty(hiveName))
+					continue;
+
+				await Subscribe(hiveName);
+				results.Add(hiveName);
+			}
+			return results;
+		}
+
+
 
 		public async Task<bool> JoinHive(string hive)
 		{
