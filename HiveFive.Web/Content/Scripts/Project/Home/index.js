@@ -162,10 +162,10 @@
 	}
 
 
-	const createTrending = (data) => {
+	const getTrendingHives = async () => {
 		$("#trending-hives").empty();
-		$("#hive-totalcount").text(data.Total);
-		for (let hive of data.Hives) {
+		const result = await hiveHub.server.getTrending();
+		for (let hive of result) {
 			if (!Settings.MuteHives.includes(hive)) {
 				updateTrendingCount(hive);
 			}
@@ -291,10 +291,15 @@
 		}
 	}
 
+	
+
+
 	const hiveHub = $.connection.hiveHub;
 	$.connection.hub.reconnected(async function () {
 		updateConnectionState(true);
 		console.log("reconnected")
+		await getTrendingHives();
+		await subscribeFollowers();
 		await subscribeHives();
 	});
 	$.connection.hub.reconnecting(async function () {
@@ -323,17 +328,14 @@
 	hiveHub.client.OnHiveUpdate = function (data) {
 		updateTrending(data);
 	};
-	hiveHub.client.OnTrending = function (data) {
-		createTrending(data);
-	};
 	hiveHub.client.OnFollowUpdate = function (data) {
-
 		updateFollowers(data);
 	};
 
 	//Startup
 	await $.connection.hub.start({ transport: ['webSockets'] });
 	updateConnectionState(true);
+	await getTrendingHives();
 	await subscribeFollowers();
 	await subscribeHives();
 	await renderMessageCache();

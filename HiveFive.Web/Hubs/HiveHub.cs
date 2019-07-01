@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using HiveFive.Framework.Extensions;
@@ -15,47 +14,39 @@ namespace HiveFive.Web.Hubs
 {
 	public class HiveHub : Hub
 	{
-		public IHiveConnectionStore ConnectionStore { get; set; }
 		public IFollowerStore FollowerStore { get; set; }
+		public IHiveConnectionStore ConnectionStore { get; set; }
 
 		public override async Task OnConnected()
 		{
 			var handle = GetUserHandle();
 			await ConnectionStore.LinkHandle(handle, Context.ConnectionId);
-
 			await base.OnConnected();
-			await SendTrendingList();
-			//await SendConnectionEvent(handle, true);
 		}
 
 		public override async Task OnReconnected()
 		{
 			var handle = GetUserHandle();
 			await ConnectionStore.LinkHandle(handle, Context.ConnectionId);
-
 			await base.OnReconnected();
-			await SendTrendingList();
-			//await SendConnectionEvent(handle, true);
 		}
 
 		public override async Task OnDisconnected(bool stopCalled)
 		{
 			var handle = await ConnectionStore.GetHandle(Context.ConnectionId);
 			await ConnectionStore.UnlinkHandle(handle, Context.ConnectionId);
-
 			await UnsubscribeAll();
 			await base.OnDisconnected(stopCalled);
-			//await SendConnectionEvent(handle, false);
 		}
 
 		public async Task<bool> SendMessage(string message, string hiveTargets)
 		{
 			var sender = GetUserHandle();
-			var mentions = GetMentions(message);
-			var hives = GetHives(message, hiveTargets);
+			var mentions = HiveValidation.GetMentions(message);
+			var hives = HiveValidation.GetHives(message, hiveTargets);
 			var followers = await GetFollowers(sender);
 			var timestamp = DateTime.UtcNow.ToJavaTime();
-			var messageId = GetMessageId(sender, message, timestamp);
+			var messageId = HiveValidation.GetMessageId(sender, message, timestamp);
 			foreach (var hive in hives)
 			{
 				await Clients.Group(hive).OnMessage(new
@@ -112,7 +103,7 @@ namespace HiveFive.Web.Hubs
 			var result = new List<string>();
 			foreach (var follower in followers.Select(x => x.Trim()).Distinct())
 			{
-				if (!ValidateUserHandle(follower))
+				if (!HiveValidation.ValidateUserHandle(follower))
 					continue;
 
 				await FollowerStore.FollowHandle(handle, follower);
@@ -137,7 +128,7 @@ namespace HiveFive.Web.Hubs
 
 		public async Task<bool> FollowUser(string userToFollow)
 		{
-			if (!ValidateUserHandle(userToFollow))
+			if (!HiveValidation.ValidateUserHandle(userToFollow))
 			{
 				await Clients.Caller.OnError("Invalid name");
 				return false;
@@ -155,7 +146,7 @@ namespace HiveFive.Web.Hubs
 
 		public async Task<bool> UnfollowUser(string userToUnfollow)
 		{
-			if (!ValidateUserHandle(userToUnfollow))
+			if (!HiveValidation.ValidateUserHandle(userToUnfollow))
 			{
 				await Clients.Caller.OnError("Invalid name");
 				return false;
@@ -171,36 +162,6 @@ namespace HiveFive.Web.Hubs
 			return true;
 		}
 
-		private Task<IEnumerable<string>> GetFollowers(string userHandle)
-		{
-			return FollowerStore.GetFollowers(userHandle);
-		}
-
-
-		//public async Task<bool> SendPrivateMessage(string message, string userTargets)
-		//{
-		//	var sender = GetUserHandle();
-		//	var mentions = GetMentions(sender, userTargets);
-		//	if (!mentions.Any())
-		//	{
-		//		await Clients.Caller.OnError("No user specified");
-		//		return false;
-		//	}
-
-
-		//	foreach (var mention in mentions)
-		//	{
-		//		await Clients.User(mention).OnMention(new
-		//		{
-		//			Sender = sender,
-		//			Receiver = mention,
-		//			Message = message,
-		//			Timestamp = DateTime.UtcNow
-		//		});
-		//	}
-		//	return true;
-		//}
-
 		public async Task<List<string>> SubscribeHives(List<string> hives)
 		{
 			var results = new List<string>();
@@ -209,7 +170,7 @@ namespace HiveFive.Web.Hubs
 
 			foreach (var hive in hives)
 			{
-				var hiveName = GetHiveName(hive, true);
+				var hiveName = HiveValidation.GetHiveName(hive, true);
 				if (string.IsNullOrEmpty(hiveName))
 					continue;
 
@@ -219,11 +180,9 @@ namespace HiveFive.Web.Hubs
 			return results;
 		}
 
-
-
 		public async Task<bool> JoinHive(string hive)
 		{
-			var hiveName = GetHiveName(hive, true);
+			var hiveName = HiveValidation.GetHiveName(hive, true);
 			if (string.IsNullOrEmpty(hiveName))
 			{
 				await Clients.Caller.OnError("Invalid Hive name");
@@ -235,7 +194,7 @@ namespace HiveFive.Web.Hubs
 
 		public async Task<bool> LeaveHive(string hive)
 		{
-			var hiveName = GetHiveName(hive, true);
+			var hiveName = HiveValidation.GetHiveName(hive, true);
 			if (string.IsNullOrEmpty(hiveName))
 			{
 				await Clients.Caller.OnError("Invalid Hive name");
@@ -244,6 +203,15 @@ namespace HiveFive.Web.Hubs
 			await Unsubscribe(hiveName);
 			return true;
 		}
+
+		public Task<IEnumerable<object>> GetTrending()
+		{
+			return ConnectionStore.GetPopularHives(15);
+		}
+
+
+
+
 
 		private async Task Subscribe(string hive)
 		{
@@ -275,88 +243,9 @@ namespace HiveFive.Web.Hubs
 			});
 		}
 
-		private async Task SendTrendingList()
+		private Task<IEnumerable<string>> GetFollowers(string userHandle)
 		{
-			await Clients.Caller.OnTrending(new
-			{
-				User = GetUserHandle(),
-				Hives = await ConnectionStore.GetPopularHives(15),
-				Total = await ConnectionStore.GetConnectionCount()
-			});
-		}
-
-		//private async Task SendConnectionEvent(string userHandle, bool connected)
-		//{
-		//	await Clients.Others.OnConnection(new
-		//	{
-		//		UserHandle = userHandle,
-		//		Connected = connected,
-		//	});
-		//}
-
-		private static string GetHiveName(string hive, bool regex)
-		{
-			if (!ValidateHiveName(hive, regex))
-				return string.Empty;
-
-			return hive.TrimStart('#').Trim().ToLower();
-		}
-
-
-
-		private static bool ValidateHiveName(string hiveName, bool regex)
-		{
-			if (string.IsNullOrEmpty(hiveName))
-				return false;
-			if (hiveName.Length > 15)
-				return false;
-			if (!regex)
-				return true;
-
-			return Regex.IsMatch(hiveName, @"^\w+$");
-		}
-
-		private static IEnumerable<string> GetHives(string message, string hiveTargets)
-		{
-			var hives = new HashSet<string> { "global" };
-
-			if (!string.IsNullOrEmpty(hiveTargets))
-			{
-				foreach (var item in hiveTargets.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-				{
-					var hiveName = GetHiveName(item, true);
-					if (string.IsNullOrEmpty(hiveName))
-						continue;
-					hives.Add(hiveName);
-				}
-			}
-
-
-			if (message.Contains("#"))
-			{
-				foreach (Match item in Regex.Matches(message, @"(?<!\w)#\w+"))
-				{
-					var hiveName = GetHiveName(item.Value, false);
-					if (string.IsNullOrEmpty(hiveName))
-						continue;
-					hives.Add(hiveName);
-				}
-			}
-
-			return hives.Take(15);
-		}
-
-		private static IEnumerable<string> GetMentions(string message)
-		{
-			var mentions = new HashSet<string> { };
-			if (!string.IsNullOrEmpty(message))
-			{
-				foreach (Match item in Regex.Matches(message, @"(?<!\w)@\w+"))
-				{
-					mentions.Add(item.Value.TrimStart('@'));
-				}
-			}
-			return mentions.Take(15);
+			return FollowerStore.GetFollowers(userHandle);
 		}
 
 		private string GetUserHandle()
@@ -366,22 +255,6 @@ namespace HiveFive.Web.Hubs
 				return Context.Request.GetHttpContext().User.Identity.Name;
 			}
 			return Context.Request.GetHttpContext().Request.GetIPAddressUser();
-		}
-
-		private static string GetMessageId(string username, string message, long timestamp)
-		{
-			return Math.Abs($"{username}|{timestamp}|{message}".GetHashCode()).ToString();
-		}
-
-		private static bool ValidateUserHandle(string handle)
-		{
-			if (string.IsNullOrEmpty(handle))
-				return false;
-
-			if (handle.IsDigits())
-				return true;
-
-			return Regex.IsMatch(handle, @"^\w+$");
 		}
 	}
 }
