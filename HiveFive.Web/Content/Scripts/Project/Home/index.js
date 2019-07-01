@@ -14,6 +14,43 @@
 	const followingTemplate = $("#followingTemplate").html();
 	const emptyListTemplate = $("#emptyListTemplate").html();
 
+	const linkifyImgurLink = $("#linkifyImgurLink").html();
+	const linkifyImgurRegexp = /https?:\/\/(?:www\.)?(?:i\.)?imgur\.com\/(a|gallery)?\/?([\w+]+).?(?:[\w+]+)?/;
+
+	const linkifyYoutubeLink = $("#linkifyYoutubeLink").html();
+	const linkifyYoutubeRegexp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+
+	const linkify = (text) => {
+		
+		if (text.match(linkifyImgurRegexp)) {
+			const match = linkifyImgurRegexp.exec(text);
+			const embedCode = match[1] === undefined
+				? match[2]
+				: "a/" + match[2];
+			return Mustache.render(linkifyImgurLink, embedCode);
+		}
+
+		if (text.match(linkifyYoutubeRegexp)) {
+			const match = linkifyYoutubeRegexp.exec(text);
+			return Mustache.render(linkifyYoutubeLink, match[1]);
+		}
+		return;
+	}
+
+
+	const renderEmbeddedTags = (data) => {
+		if (!Settings.RenderLinks) {
+			return data;
+		}
+
+		if (data.Sender != currentUserHandle) {
+			if (Settings.RenderLinksFollowOnly == true && !FollowCache.IsFollower(data.Sender)) {
+				return data;
+			}
+		}
+		return { ...data, EmbeddedTags: linkify(data.Message) };
+	}
+
 
 	const joinHive = async (hive) => {
 		const hiveName = getHiveName(hive);
@@ -45,13 +82,16 @@
 		return hive.replace("#", "").trim().toLowerCase();
 	}
 
+
 	const addNewMessage = (data, updateUnread) => {
 		if (!Settings.MuteUsers.includes(data.Sender)) {
 			data.TimeElapsed = moment.utc(data.Timestamp).fromNow();
 			const feedList = $("#feed-messages-myhives");
 			if (feedList.find(".message-id-" + data.Id).length == 0) {
 				$("#feed-placeholder-myhives").remove();
-				feedList.prepend(Mustache.render(messageTemplate, data));
+
+				const renderedMessage = renderEmbeddedTags(data);
+				feedList.prepend(Mustache.render(messageTemplate, renderedMessage));
 				if (updateUnread) {
 					if (data.Sender != currentUserHandle) {
 						const isActive = $("#feed-tabs-myhives-nav").hasClass("active");
@@ -71,7 +111,9 @@
 			const feedList = $("#feed-messages-mention");
 			if (feedList.find(".message-id-" + data.Id).length == 0) {
 				$("#feed-placeholder-mention").remove();
-				feedList.prepend(Mustache.render(mentionTemplate, data));
+
+				const renderedMessage = renderEmbeddedTags(data);
+				feedList.prepend(Mustache.render(mentionTemplate, renderedMessage));
 				if (data.Sender != currentUserHandle) {
 					const isActive = $("#feed-tabs-mention-nav").hasClass("active");
 					if (isActive == false) {
@@ -89,6 +131,8 @@
 			const feedList = $("#feed-messages-friends");
 			if (feedList.find(".message-id-" + data.Id).length == 0) {
 				$("#feed-placeholder-friends").remove();
+
+				const renderedMessage = renderEmbeddedTags(renderedMessage);
 				feedList.prepend(Mustache.render(friendsTemplate, data));
 				if (data.Sender != currentUserHandle) {
 					const isActive = $("#feed-tabs-friends-nav").hasClass("active");
@@ -333,19 +377,27 @@
 			.hide();
 	};
 
+	$("#feed-message-option-hives").val(Settings.LastSelectedHive);
+
 	$("#feed-content").on("click", ".feed-message-btn", async function () {
 		const button = $(this);
 		const messageBox = $("#feed-message-myhives");
 
-		let selectedHive = $("#feed-message-option-hives").val();
-		if (selectedHive.length == 0) {
-			selectedHive = Settings.MyHives.join();
+
+		const selectedHive = $("#feed-message-option-hives").val();
+		let hiveTargets = selectedHive;
+		if (hiveTargets.length == 0) {
+			hiveTargets = Settings.MyHives.join();
 		}
 
 		const message = messageBox.val();
 		if (message.length > 0) {
 			await hiveHub.server.sendMessage(message, selectedHive);
 			closeMessageContainer();
+			if (selectedHive != Settings.LastSelectedHive) {
+				Settings.LastSelectedHive = selectedHive;
+				Settings.Save();
+			}
 		}
 	});
 
@@ -410,6 +462,9 @@
 		$("#settings-messagestore-enabled").prop('checked', MessageCache.Enabled);
 		$("#settings-messagestore-global-enabled").prop('checked', MessageCache.EnabledGlobal);
 
+		$("#settings-render-link").prop("checked", Settings.RenderLinks);
+		$("#settings-render-followlink").prop("checked", Settings.RenderLinksFollowOnly);
+
 		$("#settings-mutedusers, #settings-mutedhives").empty();
 		if (Settings.MuteUsers.length == 0) {
 			$("#settings-mutedusers").prepend(Mustache.render(emptyListTemplate, "No muted users"));
@@ -451,6 +506,10 @@
 		MessageCache.EnabledGlobal = $("#settings-messagestore-global-enabled").is(":checked");
 		MessageCache.MaxCount = Math.max(0, Number($("#settings-messagestore-max").val()));
 		MessageCache.Update();
+
+		Settings.RenderLinks = $("#settings-render-link").is(":checked");
+		Settings.RenderLinksFollowOnly = $("#settings-render-followlink").is(":checked");
+		Settings.Save();
 	});
 
 	$("#settings-messagestore-clear").on("click", function () {

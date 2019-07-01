@@ -1,40 +1,40 @@
 ﻿@*<script id="hiveTabTemplate" type="text/html">
-	<li id="hivetab-tab-{{Hive}}" class="user-hive nav-item">
-		<a class="nav-link active d-flex align-items-center" data-toggle="tab" role="tab" href="#hivetab-content-{{Hive}}">
-			<span>#{{Hive}}</span>
-			<span id="hivetab-tab-unread-{{Hive}}" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
-		</a>
-	</li>
-</script>
+		<li id="hivetab-tab-{{Hive}}" class="user-hive nav-item">
+			<a class="nav-link active d-flex align-items-center" data-toggle="tab" role="tab" href="#hivetab-content-{{Hive}}">
+				<span>#{{Hive}}</span>
+				<span id="hivetab-tab-unread-{{Hive}}" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
+			</a>
+		</li>
+	</script>
 
 
-<script id="hiveTabContentTemplate" type="text/html">
-	<div id="hivetab-content-{{Hive}}" class="user-hive tab-pane fade show active" role="tabpanel">
-		<div>
-			<textarea id="hivetab-message-{{Hive}}" data-hive="{{Hive}}" class="form-control hive-message-content" style="max-width:100%" placeholder="Whats on your mind?" maxlength="240"></textarea>
-			<div class="hive-message-footer">
-				<div class="d-flex justify-content-between pt-1">
-					<div class="switchbox switchbox-md disabled">
-						<label class="switch-checkbox">
-							<input id="hivetab-sendall-{{Hive}}" type="checkbox" />
-							<span class="slider round" style="background-color:#343a40"></span>
-						</label>
-						<div class="switch-label-container">
-							<span class="switch-label">Send to all my hives</span>
+	<script id="hiveTabContentTemplate" type="text/html">
+		<div id="hivetab-content-{{Hive}}" class="user-hive tab-pane fade show active" role="tabpanel">
+			<div>
+				<textarea id="hivetab-message-{{Hive}}" data-hive="{{Hive}}" class="form-control hive-message-content" style="max-width:100%" placeholder="Whats on your mind?" maxlength="240"></textarea>
+				<div class="hive-message-footer">
+					<div class="d-flex justify-content-between pt-1">
+						<div class="switchbox switchbox-md disabled">
+							<label class="switch-checkbox">
+								<input id="hivetab-sendall-{{Hive}}" type="checkbox" />
+								<span class="slider round" style="background-color:#343a40"></span>
+							</label>
+							<div class="switch-label-container">
+								<span class="switch-label">Send to all my hives</span>
+							</div>
 						</div>
+						<button data-target="#hivetab-message-{{Hive}}" data-hive="{{Hive}}" type="button" class="btn btn-info hive-message-btn">Send Message</button>
 					</div>
-					<button data-target="#hivetab-message-{{Hive}}" data-hive="{{Hive}}" type="button" class="btn btn-info hive-message-btn">Send Message</button>
 				</div>
 			</div>
+			<hr />
+			<ul id="hivetab-messages-{{Hive}}" class="list-group hive-messages">
+				<li id="hivetab-placeholder-{{Hive}}" class="list-group-item">
+					<small><i style="opacity:0.6">There are no new messages for this hive</i></small>
+				</li>
+			</ul>
 		</div>
-		<hr />
-		<ul id="hivetab-messages-{{Hive}}" class="list-group hive-messages">
-			<li id="hivetab-placeholder-{{Hive}}" class="list-group-item">
-				<small><i style="opacity:0.6">There are no new messages for this hive</i></small>
-			</li>
-		</ul>
-	</div>
-</script>*@
+	</script>*@
 
 <script id="trendingHiveTemplate" type="text/html">
 	<li id="hive-{{Hive}}" data-order="{{Count}}" data-hive="{{Hive}}">
@@ -101,6 +101,9 @@
 				<span class="message-hivetag" style="font-size:11px;margin-right:8px;cursor:pointer">#{{.}}</span>
 				{{/Hives}}
 			</div>
+			<div>
+				{{{EmbeddedTags}}}
+			</div>
 		</div>
 	</li>
 </script>
@@ -131,6 +134,9 @@
 				<span class="message-hivetag" style="font-size:11px;margin-right:8px;cursor:pointer">#{{.}}</span>
 				{{/Hives}}
 			</div>
+			<div>
+				{{{EmbeddedTags}}}
+			</div>
 		</div>
 	</li>
 </script>
@@ -160,6 +166,9 @@
 				{{#Hives}}
 				<span class="message-hivetag" style="font-size:11px;margin-right:8px;cursor:pointer">#{{.}}</span>
 				{{/Hives}}
+			</div>
+			<div>
+				{{{EmbeddedTags}}}
 			</div>
 		</div>
 	</li>
@@ -232,4 +241,16 @@
 
 <script id="emptyListTemplate" type="text/html">
 	<li class="empty-list-template"><small><i>{{.}}</i></small></li>
+</script>
+
+<script id="linkifyImgurLink" type="text/html">
+	<div  style="margin-left:-21px;margin-right:-21px;margin-bottom:-30px">
+		<blockquote class="imgur-embed-pub" lang="en" data-id="{{.}}"></blockquote>
+		<script async src="https://s.imgur.com/min/embed.js" charset="utf-8"></script>
+	</div>
+</script>
+
+
+<script id="linkifyYoutubeLink" type="text/html">
+	<iframe style="width:100%;height:300px;margin-top:10px" src="https://www.youtube-nocookie.com/embed/{{.}}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </script>

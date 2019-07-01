@@ -25,7 +25,10 @@
 
 <div id="toast-container" style="position: absolute; top: 50px; right: 20px;width:300px">
 </div>
-
+<div id="test">
+</div>
+<div id="test2">
+</div>
 <div id="main-container" class="row mt-2">
 	<div class="col-md-3">
 		<div class="bg-light p-2 section-left">
@@ -76,6 +79,31 @@
 				<input id="settings-messagestore-max" type="number" style="width:42px;height:24px;margin-right:3px;font-size:14px" />
 				<span style="font-size:14px">Max messages to store</span>
 			</div>
+			<small><b>Render Settings</b></small>
+			<hr style="margin:0" />
+
+
+			<div class="switchbox switchbox-md mt-1">
+				<label class="switch-checkbox">
+					<input id="settings-render-link" type="checkbox">
+					<span class="slider round"></span>
+				</label>
+				<div class="switch-label-container">
+					<span class="switch-label">Render Links <small>(at own risk)</small></span>
+				</div>
+			</div>
+			<div class="switchbox switchbox-md mt-1">
+				<label class="switch-checkbox">
+					<input id="settings-render-followlink" type="checkbox">
+					<span class="slider round"></span>
+				</label>
+				<div class="switch-label-container">
+					<span class="switch-label">Render Links Follow Only</span>
+				</div>
+			</div>
+
+
+
 			<div class="d-flex">
 				<button id="settings-messagestore-save" class="btn btn-sm btn-block btn-outline-info mt-1">Save Settings</button>
 			</div>
@@ -93,19 +121,19 @@
 	<div class="col-md-6">
 		<div class="bg-light p-2">
 			<ul id="feed-tabs" class="nav nav-tabs">
-				<li class="nav-item">
+				<li class="nav-item flex-fill">
 					<a id="feed-tabs-myhives-nav" class="nav-link active" data-toggle="tab" role="tab" href="#feed-myhives">
 						<span>#My Hives</span>
 						<span id="feed-tab-unread-myhives" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
 					</a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item flex-fill">
 					<a id="feed-tabs-friends-nav" class="nav-link" data-toggle="tab" role="tab" href="#feed-friends">
 						<span>@@Follow</span>
 						<span id="feed-tab-unread-friends" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
 					</a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item flex-fill">
 					<a id="feed-tabs-mention-nav" class="nav-link" data-toggle="tab" role="tab" href="#feed-mentions">
 						<span>@@Mentions</span>
 						<span id="feed-tab-unread-mention" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
