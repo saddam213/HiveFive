@@ -174,7 +174,7 @@
 	}
 
 	const updateTrending = (data) => {
-		$("#hive-totalcount").text(data.Total);
+		$(".hive-totalcount").text(data.Total);
 		if (!Settings.MuteHives.includes(data.Hive)) {
 			updateTrendingCount(data)
 			updateTrendingOrder();
