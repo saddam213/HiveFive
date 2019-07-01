@@ -28,7 +28,6 @@
 	{
 		"outputFileName": "Content/Bundle/site_bundle.css",
 		"inputFiles": [
-			"Content/Css/bootstrap.css",
 			"Content/Css/fontAwesome.css",
 			"Content/Css/Project/site.css"
 		]

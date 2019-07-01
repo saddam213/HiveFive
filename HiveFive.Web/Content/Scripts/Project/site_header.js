@@ -20,7 +20,8 @@ function Storage() {
 const SettingsDefaults = {
 	MyHives: ["global"],
 	MuteUsers: [],
-	MuteHives: []
+	MuteHives: [],
+	Theme: "light"
 };
 
 const MessageCacheDefaults = {
@@ -104,6 +105,25 @@ Settings.UnmuteHive = (hiveName) => {
 		Settings.Save();
 	}
 }
+
+
+Settings.UpdateTheme = (theme) => {
+	if (theme != "light" && theme != "dark") {
+		theme = "light";
+	}
+	if (Settings.Theme != theme) {
+		Settings.Theme = theme;
+		Settings.Save();
+	}
+	$("#theme-css").attr("href", "/Content/Css/bootstrap-" + theme + ".css");
+};
+
+if (Settings.Theme != "light") {
+	Settings.UpdateTheme(Settings.Theme);
+}
+
+
+
 
 
 

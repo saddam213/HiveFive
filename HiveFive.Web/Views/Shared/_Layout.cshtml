@@ -9,14 +9,15 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>@ViewBag.Title</title>
-	<link href="~/Content/Bundle/site_bundle.css?v=2" rel="stylesheet" />
+	<link id="theme-css" href="~/Content/Css/bootstrap-light.css" rel="stylesheet" />
 	<script src="~/Content/Bundle/site_header_bundle.js?v=@DateTime.UtcNow.Millisecond"></script>
+	<link href="~/Content/Bundle/site_bundle.css?v=2" rel="stylesheet" />
 </head>
 <body class="d-flex flex-column h-100">
 	<header>
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<nav class="navbar navbar-expand-lg bg-secondary">
 			<div class="container">
-				<a class="navbar-brand" href="/"><i id="connection-status" class="fa fa-wifi text-danger"></i> @General.SiteName</a>
+				<a class="navbar-brand" href="/"><i id="connection-status" class="fa fa-wifi text-danger"></i> <b>@General.SiteName</b></a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
@@ -27,6 +28,15 @@
 							</li>*@
 					</ul>
 					<div class="d-flex">
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									<i data-theme="light" class="fa fa-sun bootstrap-theme-select bootstrap-theme-select-sun"></i>
+									<i data-theme="dark" class="fa fa-moon bootstrap-theme-select bootstrap-theme-select-moon"></i>
+								</a>
+							</li>
+						</ul>
+
 						@if (Request.IsAuthenticated)
 						{
 							using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
@@ -92,6 +102,10 @@
 
 	<script>
 		const currentUserHandle = '@currentUser';
+		$(".bootstrap-theme-select").on("click", function () {
+			let theme = $(this).data("theme");
+			Settings.UpdateTheme(theme);
+		});
 	</script>
 	<script src="~/Content/Bundle/site_bundle.js?v=@DateTime.UtcNow.Millisecond"></script>
 	@Scripts.Render("~/signalr/hubs")
