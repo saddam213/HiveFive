@@ -14939,6 +14939,12 @@ readers do not read off random characters that represent icons */
 	display: none;
 }
 
+.imgur-embed-iframe-pub {
+	box-shadow: none !important;
+	border: none !important;
+	/* border-radius: 2px; */
+}
+
 /* The switch - the box around the slider */
 .switch-checkbox {
 	position: relative;
