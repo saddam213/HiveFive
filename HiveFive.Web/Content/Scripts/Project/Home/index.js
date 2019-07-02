@@ -240,6 +240,7 @@
 	const renderMessageCache = () => {
 		if (MessageCache.Enabled == true) {
 			for (const message of MessageCache.GetMessages()) {
+				message.Message = message.Message.substring(0, 240);
 				renderMessage(message, false);
 			}
 		}
@@ -428,7 +429,7 @@
 		}
 
 		const selectedHives = $("#feed-message-option-hives").val() || [];
-		await hiveHub.server.sendMessage(message, selectedHives.join());
+		await hiveHub.server.sendMessage(message.substring(0, 240), selectedHives.join());
 		closeMessageContainer();
 		Settings.LastSelectedHives = selectedHives;
 		Settings.Save();

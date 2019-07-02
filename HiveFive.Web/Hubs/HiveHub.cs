@@ -36,8 +36,9 @@ namespace HiveFive.Web.Hubs
 		}
 
 
-		public async Task<bool> SendMessage(string message, string hiveTargets)
+		public async Task<bool> SendMessage(string messageInput, string hiveTargets)
 		{
+			var message = messageInput.Truncate(240);
 			var sender = GetUserHandle();
 			var timestamp = DateTime.UtcNow.ToJavaTime();
 			var hives = HiveValidation.GetHives(message, hiveTargets);
