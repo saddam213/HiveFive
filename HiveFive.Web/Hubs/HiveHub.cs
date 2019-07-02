@@ -281,8 +281,8 @@ namespace HiveFive.Web.Hubs
 			await Clients.All.OnHiveUpdate(new
 			{
 				Hive = hive,
-				Count = await ConnectionStore.GetHiveHandleCount(hive),
-				Total = await ConnectionStore.GetHandleCount()
+				Count = await ConnectionStore.GetCount(hive),
+				Total = await ConnectionStore.GetCount()
 			});
 		}
 
