@@ -30,7 +30,7 @@ namespace HiveFive.Web.Hubs
 
 		public static IEnumerable<string> GetHives(string message, string hiveTargets)
 		{
-			var hives = new HashSet<string> { "global" };
+			var hives = new HashSet<string> { "hive" };
 
 			if (!string.IsNullOrEmpty(hiveTargets))
 			{

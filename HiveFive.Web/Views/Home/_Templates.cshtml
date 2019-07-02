@@ -21,7 +21,7 @@
 </script>
 
 <script id="myHiveTemplate" type="text/html">
-	<li id="myhive-{{Hive}}">
+	<li id="myhive-{{Hive}}" data-sort="{{Hive}}">
 		<div class="d-flex justify-content-between">
 			<span>#{{Hive}}</span>
 			<div class="btn-group">
@@ -40,7 +40,7 @@
 	<li class="list-group-item message-sender-{{Sender}} message-id-{{Id}}" data-messageid="{{Id}}">
 		<div class="d-flex flex-column">
 			<div class="d-flex justify-content-between">
-				<small class="text-primary action-userhandle" data-user="{{Sender}}">@@{{Sender}}</small>
+				<span class="action-userhandle message-userhandle" data-user="{{Sender}}">@@{{Sender}}</span>
 				<div class="d-flex">
 					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
 					<div class="btn-group">
@@ -73,7 +73,7 @@
 	<li class="list-group-item message-sender-{{Sender}} message-id-{{Id}}" data-messageid="{{Id}}">
 		<div class="d-flex flex-column">
 			<div class="d-flex justify-content-between">
-				<small class="text-primary action-userhandle" data-user="{{Sender}}">@@{{Sender}}</small>
+				<span class="action-userhandle message-userhandle" data-user="{{Sender}}">@@{{Sender}}</span>
 				<div class="d-flex">
 					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
 					<div class="btn-group">
@@ -106,7 +106,7 @@
 	<li class="list-group-item message-sender-{{Sender}} message-id-{{Id}}" data-messageid="{{Id}}">
 		<div class="d-flex flex-column">
 			<div class="d-flex justify-content-between">
-				<small class="text-primary action-userhandle" data-user="{{Sender}}">@@{{Sender}}</small>
+				<span class="action-userhandle message-userhandle" data-user="{{Sender}}">@@{{Sender}}</span>
 				<div class="d-flex">
 					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
 					<div class="btn-group">
@@ -151,7 +151,7 @@
 </script>
 
 <script id="settingMuteUserTemplate" type="text/html">
-	<li>
+	<li data-sort="{{.}}">
 		<div class="d-flex justify-content-between align-items-center">
 			<small>{{.}}</small>
 			<i class="fa fa-times settings-remove-user" data-user="{{.}}"></i>
@@ -160,7 +160,7 @@
 </script>
 
 <script id="settingMuteHiveTemplate" type="text/html">
-	<li>
+	<li data-sort="{{.}}">
 		<div class="d-flex justify-content-between align-items-center">
 			<small>{{.}}</small>
 			<i class="fa fa-times settings-remove-hive" data-hive="{{.}}"></i>
@@ -169,7 +169,7 @@
 </script>
 
 <script id="followerTemplate" type="text/html">
-	<li class="follower-{{.}}">
+	<li class="follower-{{.}}" data-sort="{{.}}">
 		<div class="d-flex justify-content-between">
 			<span class="action-userhandle" data-user="{{.}}">@@{{.}}</span>
 			<div class="btn-group">
@@ -185,7 +185,7 @@
 </script>
 
 <script id="followingTemplate" type="text/html">
-	<li class="following-{{.}}">
+	<li class="following-{{.}}" data-sort="{{.}}">
 		<div class="d-flex justify-content-between">
 			<span class="action-userhandle" data-user="{{.}}">@@{{.}}</span>
 			<div class="btn-group">
@@ -203,6 +203,12 @@
 <script id="emptyListTemplate" type="text/html">
 	<li class="empty-list-template"><small><i>{{.}}</i></small></li>
 </script>
+
+<script id="hiveDropDownOptionTemplate" type="text/html">
+	<option id="hive-option-{{.}}" value="{{.}}" data-sort="{{.}}">#{{.}}</option>
+</script>
+
+
 
 <script id="linkifyImgurLink" type="text/html">
 	<div>

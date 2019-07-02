@@ -13,6 +13,7 @@
 	const followerTemplate = $("#followerTemplate").html();
 	const followingTemplate = $("#followingTemplate").html();
 	const emptyListTemplate = $("#emptyListTemplate").html();
+	const hiveDropDownOptionTemplate = $("#hiveDropDownOptionTemplate").html();
 
 	const linkifyImgurLink = $("#linkifyImgurLink").html();
 	const linkifyImgurRegexp = /https?:\/\/(?:www\.)?(?:i\.)?imgur\.com\/(a|gallery)?\/?([\w+]+).?(?:[\w+]+)?/;
@@ -60,8 +61,10 @@
 
 			const existingHive = $("#myhive-" + hive);
 			if (existingHive.length == 0) {
-				$("#myhive-hives").prepend(Mustache.render(myHiveTemplate, { Hive: hive }));
-				$("#feed-message-option-hives").append("<option id='hive-option-" + hive + "' value='" + hive + "'>" + hive + "</option>");
+				$("#myhive-hives").prepend(Mustache.render(myHiveTemplate, { Hive: hiveName }));
+				$("#feed-message-option-hives").append(Mustache.render(hiveDropDownOptionTemplate, hiveName));
+				sortList("#myhive-hives");
+				sortList("#feed-message-option-hives");
 			}
 		}
 	}
@@ -85,9 +88,12 @@
 			const existingHive = $("#myhive-" + hive);
 			if (existingHive.length == 0) {
 				$("#myhive-hives").prepend(Mustache.render(myHiveTemplate, { Hive: hive }));
-				$("#feed-message-option-hives").append("<option id='hive-option-" + hive + "' value='" + hive + "'>" + hive + "</option>");
+				$("#feed-message-option-hives").append(Mustache.render(hiveDropDownOptionTemplate, hive));
+
 			}
 		}
+		sortList("#myhive-hives");
+		sortList("#feed-message-option-hives");
 	}
 
 	const getHiveName = (hive) => {
@@ -221,6 +227,11 @@
 		}).appendTo('#trending-hives');
 	}
 
+	const sortList = (list) => {
+		$(list).find("li, option").sort(function (a, b) {
+			return a.dataset.sort.localeCompare(b.dataset.sort);
+		}).appendTo(list);
+	}
 
 
 	const renderMessageCache = () => {
@@ -248,6 +259,7 @@
 			const followList = $("#following-list");
 			followList.find(".empty-list-template").remove();
 			followList.prepend(Mustache.render(followingTemplate, userHandle));
+			sortList("#following-list");
 		}
 	}
 
@@ -291,6 +303,9 @@
 		if (followingList.find("li").length == 0) {
 			followingList.append(Mustache.render(emptyListTemplate, "You are not following anyone"));
 		}
+
+		sortList("#follower-list");
+		sortList("#following-list");
 	};
 
 	const updateFollowers = (data) => {
@@ -305,6 +320,7 @@
 				followList.append(Mustache.render(emptyListTemplate, "You have no followers online"));
 			}
 		}
+		sortList("#follower-list");
 	}
 
 

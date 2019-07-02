@@ -34,8 +34,8 @@ namespace HiveFive.Web.Hubs
 		public override async Task OnDisconnected(bool stopCalled)
 		{
 			var handle = await ConnectionStore.GetHandle(Context.ConnectionId);
-			await ConnectionStore.UnlinkHandle(handle, Context.ConnectionId);
-			await UnsubscribeAll(handle);
+			var hivesToUnsubscribe = await ConnectionStore.UnlinkHandle(handle, Context.ConnectionId);
+			await UnsubscribeAll(handle, hivesToUnsubscribe);
 			await base.OnDisconnected(stopCalled);
 		}
 
@@ -258,19 +258,19 @@ namespace HiveFive.Web.Hubs
 
 		private async Task Subscribe(string userHandle, string hive)
 		{
-			await ConnectionStore.LinkHive(userHandle, Context.ConnectionId, hive);
+			await ConnectionStore.LinkHive(userHandle, hive);
 			await SendHiveUpdate(hive);
 		}
 
 		private async Task Unsubscribe(string userHandle, string hive)
 		{
-			await ConnectionStore.UnlinkHive(userHandle, Context.ConnectionId, hive);
+			await ConnectionStore.UnlinkHive(userHandle, hive);
 			await SendHiveUpdate(hive);
 		}
 
-		private async Task UnsubscribeAll(string userHandle)
+		private async Task UnsubscribeAll(string userHandle, IEnumerable<string> hives)
 		{
-			foreach (var hive in await ConnectionStore.UnlinkAllHives(userHandle, Context.ConnectionId))
+			foreach (var hive in hives)
 			{
 				await SendHiveUpdate(hive);
 			}

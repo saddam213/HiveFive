@@ -10617,13 +10617,13 @@ function Storage() {
 }
 
 const SettingsDefaults = {
-	MyHives: ["global"],
+	MyHives: ["hive"],
 	MuteUsers: [],
 	MuteHives: [],
 	Theme: "light",
 	RenderLinks: false,
 	RenderLinksFollowOnly: false,
-	LastSelectedHive: "global"
+	LastSelectedHive: "hive"
 };
 
 const MessageCacheDefaults = {
@@ -10751,7 +10751,7 @@ MessageCache.AddMessage = (message) => {
 		return false;
 	}
 
-	if (message.Hive == "global" && MessageCache.EnabledGlobal == false) {
+	if (message.Hive == "hive" && MessageCache.EnabledGlobal == false) {
 		return false;
 	}
 
