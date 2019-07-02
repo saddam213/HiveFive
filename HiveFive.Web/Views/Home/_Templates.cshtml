@@ -1,42 +1,4 @@
-﻿@*<script id="hiveTabTemplate" type="text/html">
-		<li id="hivetab-tab-{{Hive}}" class="user-hive nav-item">
-			<a class="nav-link active d-flex align-items-center" data-toggle="tab" role="tab" href="#hivetab-content-{{Hive}}">
-				<span>#{{Hive}}</span>
-				<span id="hivetab-tab-unread-{{Hive}}" class="badge badge-info ml-2" style="display:none;font-size:11px">0</span>
-			</a>
-		</li>
-	</script>
-
-
-	<script id="hiveTabContentTemplate" type="text/html">
-		<div id="hivetab-content-{{Hive}}" class="user-hive tab-pane fade show active" role="tabpanel">
-			<div>
-				<textarea id="hivetab-message-{{Hive}}" data-hive="{{Hive}}" class="form-control hive-message-content" style="max-width:100%" placeholder="Whats on your mind?" maxlength="240"></textarea>
-				<div class="hive-message-footer">
-					<div class="d-flex justify-content-between pt-1">
-						<div class="switchbox switchbox-md disabled">
-							<label class="switch-checkbox">
-								<input id="hivetab-sendall-{{Hive}}" type="checkbox" />
-								<span class="slider round" style="background-color:#343a40"></span>
-							</label>
-							<div class="switch-label-container">
-								<span class="switch-label">Send to all my hives</span>
-							</div>
-						</div>
-						<button data-target="#hivetab-message-{{Hive}}" data-hive="{{Hive}}" type="button" class="btn btn-info hive-message-btn">Send Message</button>
-					</div>
-				</div>
-			</div>
-			<hr />
-			<ul id="hivetab-messages-{{Hive}}" class="list-group hive-messages">
-				<li id="hivetab-placeholder-{{Hive}}" class="list-group-item">
-					<small><i style="opacity:0.6">There are no new messages for this hive</i></small>
-				</li>
-			</ul>
-		</div>
-	</script>*@
-
-<script id="trendingHiveTemplate" type="text/html">
+﻿<script id="trendingHiveTemplate" type="text/html">
 	<li id="hive-{{Hive}}" data-order="{{Count}}" data-hive="{{Hive}}">
 		<div class="d-flex justify-content-between">
 			<div class="d-flex justify-content-between align-items-center w-100">
@@ -46,7 +8,7 @@
 				</small>
 			</div>
 			<div class="btn-group">
-				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:center;">
+				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-grip">
 					<i class="fas fa-ellipsis-v"></i>
 				</span>
 				<div class="dropdown-menu dropdown-menu-right">
@@ -55,16 +17,15 @@
 				</div>
 			</div>
 		</div>
-
 	</li>
 </script>
 
 <script id="myHiveTemplate" type="text/html">
-	<li id="myhive-{{Hive}}" style="list-style:none">
+	<li id="myhive-{{Hive}}">
 		<div class="d-flex justify-content-between">
 			<span>#{{Hive}}</span>
 			<div class="btn-group">
-				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:center;">
+				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-grip">
 					<i class="fas fa-ellipsis-v"></i>
 				</span>
 				<div class="dropdown-menu dropdown-menu-right">
@@ -79,11 +40,11 @@
 	<li class="list-group-item message-sender-{{Sender}} message-id-{{Id}}" data-messageid="{{Id}}">
 		<div class="d-flex flex-column">
 			<div class="d-flex justify-content-between">
-				<small class="text-primary">{{Sender}}</small>
+				<small class="text-primary action-userhandle" data-user="{{Sender}}">@@{{Sender}}</small>
 				<div class="d-flex">
 					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
 					<div class="btn-group">
-						<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:right;">
+						<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-grip-right">
 							<i class="fas fa-ellipsis-v"></i>
 						</span>
 						<div class="dropdown-menu dropdown-menu-right">
@@ -95,10 +56,10 @@
 					</div>
 				</div>
 			</div>
-			<p style="word-break:break-word;white-space:pre-line">{{Message}}</p>
+			<p class="message-text">{{Message}}</p>
 			<div class="d-flex flex-wrap">
 				{{#Hives}}
-				<span class="message-hivetag" style="font-size:11px;margin-right:8px;cursor:pointer">#{{.}}</span>
+				<span class="message-hivetag">#{{.}}</span>
 				{{/Hives}}
 			</div>
 			<div>
@@ -112,11 +73,11 @@
 	<li class="list-group-item message-sender-{{Sender}} message-id-{{Id}}" data-messageid="{{Id}}">
 		<div class="d-flex flex-column">
 			<div class="d-flex justify-content-between">
-				<small class="text-primary">{{Sender}}</small>
+				<small class="text-primary action-userhandle" data-user="{{Sender}}">@@{{Sender}}</small>
 				<div class="d-flex">
 					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
 					<div class="btn-group">
-						<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:right;">
+						<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-grip-right">
 							<i class="fas fa-ellipsis-v"></i>
 						</span>
 						<div class="dropdown-menu dropdown-menu-right">
@@ -128,10 +89,10 @@
 					</div>
 				</div>
 			</div>
-			<p style="word-break:break-word;white-space:pre-line">{{Message}}</p>
+			<p class="message-text">{{Message}}</p>
 			<div class="d-flex flex-wrap">
 				{{#Hives}}
-				<span class="message-hivetag" style="font-size:11px;margin-right:8px;cursor:pointer">#{{.}}</span>
+				<span class="message-hivetag">#{{.}}</span>
 				{{/Hives}}
 			</div>
 			<div>
@@ -145,11 +106,11 @@
 	<li class="list-group-item message-sender-{{Sender}} message-id-{{Id}}" data-messageid="{{Id}}">
 		<div class="d-flex flex-column">
 			<div class="d-flex justify-content-between">
-				<small class="text-primary">{{Sender}}</small>
+				<small class="text-primary action-userhandle" data-user="{{Sender}}">@@{{Sender}}</small>
 				<div class="d-flex">
 					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
 					<div class="btn-group">
-						<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:right;">
+						<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-grip-right">
 							<i class="fas fa-ellipsis-v"></i>
 						</span>
 						<div class="dropdown-menu dropdown-menu-right">
@@ -161,10 +122,10 @@
 					</div>
 				</div>
 			</div>
-			<p style="word-break:break-word;white-space:pre-line">{{Message}}</p>
+			<p class="message-text">{{Message}}</p>
 			<div class="d-flex flex-wrap">
 				{{#Hives}}
-				<span class="message-hivetag" style="font-size:11px;margin-right:8px;cursor:pointer">#{{.}}</span>
+				<span class="message-hivetag">#{{.}}</span>
 				{{/Hives}}
 			</div>
 			<div>
@@ -210,9 +171,9 @@
 <script id="followerTemplate" type="text/html">
 	<li class="follower-{{.}}">
 		<div class="d-flex justify-content-between">
-			<span>{{.}}</span>
+			<span class="action-userhandle" data-user="{{.}}">@@{{.}}</span>
 			<div class="btn-group">
-				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:right;">
+				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-grip">
 					<i class="fas fa-ellipsis-v"></i>
 				</span>
 				<div class="dropdown-menu dropdown-menu-right">
@@ -226,9 +187,9 @@
 <script id="followingTemplate" type="text/html">
 	<li class="following-{{.}}">
 		<div class="d-flex justify-content-between">
-			<span>{{.}}</span>
+			<span class="action-userhandle" data-user="{{.}}">@@{{.}}</span>
 			<div class="btn-group">
-				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;width:30px;text-align:right;">
+				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-grip">
 					<i class="fas fa-ellipsis-v"></i>
 				</span>
 				<div class="dropdown-menu dropdown-menu-right">
@@ -244,7 +205,7 @@
 </script>
 
 <script id="linkifyImgurLink" type="text/html">
-	<div style="">
+	<div>
 		<blockquote class="imgur-embed-pub" lang="en" data-id="{{.}}"></blockquote>
 		<script src="https://s.imgur.com/min/embed.js" charset="utf-8"></script>
 	</div>

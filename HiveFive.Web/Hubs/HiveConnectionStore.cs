@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HiveFive.Framework.Objects;
-using Microsoft.AspNet.SignalR;
 
 namespace HiveFive.Web.Hubs
 {
@@ -11,41 +10,62 @@ namespace HiveFive.Web.Hubs
 	{
 		private static readonly ConcurrentDictionary<string, ConcurrentList<string>> HandleToConnectionMap = new ConcurrentDictionary<string, ConcurrentList<string>>();
 		private static readonly ConcurrentDictionary<string, ConcurrentList<string>> ConnectionToHiveMap = new ConcurrentDictionary<string, ConcurrentList<string>>();
+		private static readonly ConcurrentDictionary<string, ConcurrentList<string>> HandleToHiveMap = new ConcurrentDictionary<string, ConcurrentList<string>>();
 
-
-		public Task LinkHive(IGroupManager groups, string connectionId, string hiveName)
+		public Task LinkHive(string userHandle, string connectionId, string hiveName)
 		{
+			HandleToHiveMap.GetOrAdd(userHandle, new ConcurrentList<string>(hiveName)).Add(hiveName);
 			ConnectionToHiveMap.GetOrAdd(connectionId, new ConcurrentList<string>(hiveName)).Add(hiveName);
-			return groups.Add(connectionId, hiveName);
+			return Task.FromResult(0);
 		}
 
-		public Task UnlinkHive(IGroupManager groups, string connectionId, string hiveName)
+		public Task UnlinkHive(string userHandle, string connectionId, string hiveName)
 		{
-			if (ConnectionToHiveMap.TryGetValue(connectionId, out var result))
+			if (HandleToHiveMap.TryGetValue(userHandle, out var handleResult))
 			{
-				result.Remove(hiveName);
+				handleResult.Remove(hiveName);
 			}
-			return groups.Remove(connectionId, hiveName);
-		}
-
-		public async Task<IEnumerable<string>> UnlinkAllHives(IGroupManager groups, string connectionId)
-		{
-			if(ConnectionToHiveMap.TryRemove(connectionId, out var hives))
+			if (ConnectionToHiveMap.TryGetValue(connectionId, out var connectionResult))
 			{
-				foreach (var hive in hives)
-				{
-					await groups.Remove(connectionId, hive);
-				}
-				return hives.CloneKeys();
+				connectionResult.Remove(hiveName);
 			}
-			return Enumerable.Empty<string>();
+			return Task.FromResult(0);
 		}
 
-		public Task<IEnumerable<string>> GetHives(string connectionId)
+		public Task<IEnumerable<string>> UnlinkAllHives(string userHandle, string connectionId)
 		{
-			if (ConnectionToHiveMap.TryGetValue(connectionId, out var result))
+			var hives = new List<string>();
+			if (HandleToHiveMap.TryGetValue(userHandle, out var handleResult))
+			{
+				hives.AddRange(handleResult.Keys);
+			}
+			if (ConnectionToHiveMap.TryGetValue(connectionId, out var connectionResult))
+			{
+				hives.AddRange(handleResult.Keys);
+			}
+			return Task.FromResult(hives.Distinct());
+		}
+
+		public Task<IEnumerable<string>> GetHives(string userHandle)
+		{
+			if (HandleToHiveMap.TryGetValue(userHandle, out var result))
 				return Task.FromResult(result.CloneKeys());
 			return Task.FromResult(Enumerable.Empty<string>());
+		}
+
+		public Task<IEnumerable<string>> GetHiveUsers(string hiveName)
+		{
+			return Task.FromResult(HandleToHiveMap.Where(x => x.Value.ContainsKey(hiveName)).Select(x => x.Key).Distinct() ?? Enumerable.Empty<string>());
+		}
+
+		public Task<IEnumerable<string>> GetHiveUsers(IEnumerable<string> hiveNames)
+		{
+			var results = new List<string>();
+			foreach (var hiveName in hiveNames)
+			{
+				results.AddRange(HandleToHiveMap.Where(x => x.Value.ContainsKey(hiveName)).Select(x => x.Key));
+			}
+			return Task.FromResult(results.Distinct());
 		}
 
 		public Task<int> GetConnectionCount()
@@ -86,12 +106,12 @@ namespace HiveFive.Web.Hubs
 			return Task.FromResult(string.Empty);
 		}
 
-		public Task<IEnumerable<string>> GetConnections(string handle)
-		{
-			if (HandleToConnectionMap.TryGetValue(handle, out var result))
-				return Task.FromResult(result.CloneKeys());
-			return Task.FromResult(Enumerable.Empty<string>());
-		}
+		//public Task<IEnumerable<string>> GetConnections(string handle)
+		//{
+		//	if (HandleToConnectionMap.TryGetValue(handle, out var result))
+		//		return Task.FromResult(result.CloneKeys());
+		//	return Task.FromResult(Enumerable.Empty<string>());
+		//}
 
 		public Task LinkHandle(string handle, string connectionId)
 		{
@@ -112,5 +132,14 @@ namespace HiveFive.Web.Hubs
 		{
 			return Task.FromResult(HandleToConnectionMap.Count);
 		}
+
+		public Task<int> GetHiveHandleCount(string hiveName)
+		{
+			return Task.FromResult(HandleToHiveMap
+				.SelectMany(x => x.Value.Keys)
+				.Where(x => x == hiveName)
+				.Count());
+		}
+
 	}
 }

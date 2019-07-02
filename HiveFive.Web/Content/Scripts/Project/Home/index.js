@@ -21,7 +21,7 @@
 	const linkifyYoutubeRegexp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
 
 	const linkify = (text) => {
-		
+
 		if (text.match(linkifyImgurRegexp)) {
 			const match = linkifyImgurRegexp.exec(text);
 			const embedCode = match[1] === undefined
@@ -61,7 +61,7 @@
 			const existingHive = $("#myhive-" + hive);
 			if (existingHive.length == 0) {
 				$("#myhive-hives").prepend(Mustache.render(myHiveTemplate, { Hive: hive }));
-				$("#feed-message-option-hives").append("<option id='hive-option-" + hive+"' value='" + hive + "'>" + hive + "</option>");
+				$("#feed-message-option-hives").append("<option id='hive-option-" + hive + "' value='" + hive + "'>" + hive + "</option>");
 			}
 		}
 	}
@@ -96,36 +96,32 @@
 
 
 	const addNewMessage = (data, updateUnread) => {
-		if (!Settings.MuteUsers.includes(data.Sender)) {
-			data.TimeElapsed = moment.utc(data.Timestamp).fromNow();
-			const feedList = $("#feed-messages-myhives");
-			if (feedList.find(".message-id-" + data.Id).length == 0) {
-				$("#feed-placeholder-myhives").remove();
+		const feedList = $("#feed-messages-myhives");
+		if (feedList.find(".message-id-" + data.Id).length == 0) {
+			$("#feed-placeholder-myhives").remove();
 
-				const renderedMessage = renderEmbeddedTags(data);
-				feedList.prepend(Mustache.render(messageTemplate, renderedMessage));
-				if (updateUnread) {
-					if (data.Sender != currentUserHandle) {
-						const isActive = $("#feed-tabs-myhives-nav").hasClass("active");
-						if (isActive == false) {
-							const unreadLabel = $("#feed-tab-unread-myhives");
-							unreadLabel.text(Number(unreadLabel.text()) + 1).show();
-						}
+			const renderedMessage = renderEmbeddedTags(data);
+			feedList.prepend(Mustache.render(messageTemplate, renderedMessage));
+			if (updateUnread) {
+				if (data.Sender != currentUserHandle) {
+					const isActive = $("#feed-tabs-myhives-nav").hasClass("active");
+					if (isActive == false) {
+						const unreadLabel = $("#feed-tab-unread-myhives");
+						unreadLabel.text(Number(unreadLabel.text()) + 1).show();
 					}
 				}
 			}
 		}
 	}
 
-	const addNewMentionMessage = (data) => {
-		if (!Settings.MuteUsers.includes(data.Sender)) {
-			data.TimeElapsed = moment.utc(data.Timestamp).fromNow();
-			const feedList = $("#feed-messages-mention");
-			if (feedList.find(".message-id-" + data.Id).length == 0) {
-				$("#feed-placeholder-mention").remove();
+	const addNewMentionMessage = (data, updateUnread) => {
+		const feedList = $("#feed-messages-mention");
+		if (feedList.find(".message-id-" + data.Id).length == 0) {
+			$("#feed-placeholder-mention").remove();
 
-				const renderedMessage = renderEmbeddedTags(data);
-				feedList.prepend(Mustache.render(mentionTemplate, renderedMessage));
+			const renderedMessage = renderEmbeddedTags(data);
+			feedList.prepend(Mustache.render(mentionTemplate, renderedMessage));
+			if (updateUnread) {
 				if (data.Sender != currentUserHandle) {
 					const isActive = $("#feed-tabs-mention-nav").hasClass("active");
 					if (isActive == false) {
@@ -137,15 +133,14 @@
 		}
 	};
 
-	const addNewFollowMessage = (data) => {
-		if (!Settings.MuteUsers.includes(data.Sender)) {
-			data.TimeElapsed = moment.utc(data.Timestamp).fromNow();
-			const feedList = $("#feed-messages-friends");
-			if (feedList.find(".message-id-" + data.Id).length == 0) {
-				$("#feed-placeholder-friends").remove();
+	const addNewFollowMessage = (data, updateUnread) => {
+		const feedList = $("#feed-messages-friends");
+		if (feedList.find(".message-id-" + data.Id).length == 0) {
+			$("#feed-placeholder-friends").remove();
 
-				const renderedMessage = renderEmbeddedTags(renderedMessage);
-				feedList.prepend(Mustache.render(friendsTemplate, data));
+			const renderedMessage = renderEmbeddedTags(data);
+			feedList.prepend(Mustache.render(friendsTemplate, renderedMessage));
+			if (updateUnread) {
 				if (data.Sender != currentUserHandle) {
 					const isActive = $("#feed-tabs-friends-nav").hasClass("active");
 					if (isActive == false) {
@@ -153,6 +148,27 @@
 						unreadLabel.text(Number(unreadLabel.text()) + 1).show();
 					}
 				}
+			}
+		}
+	}
+
+	const renderMessage = (data, updateUnread) => {
+		if (!Settings.MuteUsers.includes(data.Sender)) {
+
+			//TODO: upgrade remove later
+			if (data.MessageType == undefined) {
+				data.MessageType = ["Feed"];
+			}
+
+			data.TimeElapsed = moment.utc(data.Timestamp).fromNow();
+			if (data.MessageType.includes("Feed")) {
+				addNewMessage(data, updateUnread);
+			}
+			if (data.MessageType.includes("Follow")) {
+				addNewFollowMessage(data, updateUnread);
+			}
+			if (data.MessageType.includes("Mention")) {
+				addNewMentionMessage(data, updateUnread);
 			}
 		}
 	}
@@ -210,7 +226,7 @@
 	const renderMessageCache = () => {
 		if (MessageCache.Enabled == true) {
 			for (const message of MessageCache.GetMessages()) {
-				addNewMessage(message, false);
+				renderMessage(message, false);
 			}
 		}
 	}
@@ -291,24 +307,21 @@
 		}
 	}
 
-	
+
 
 
 	const hiveHub = $.connection.hiveHub;
 	$.connection.hub.reconnected(async function () {
 		updateConnectionState(true);
-		console.log("reconnected")
 		await getTrendingHives();
 		await subscribeFollowers();
 		await subscribeHives();
 	});
 	$.connection.hub.reconnecting(async function () {
 		updateConnectionState(false);
-		console.log("reconnecting")
 	});
 	$.connection.hub.disconnected(async function () {
 		updateConnectionState(false);
-		console.log("disconnected")
 	});
 
 
@@ -316,15 +329,10 @@
 		displayError(data);
 	};
 	hiveHub.client.OnMessage = function (data) {
-		addNewMessage(data, true);
+		renderMessage(data, true);
 		MessageCache.AddMessage(data);
 	};
-	hiveHub.client.OnMention = function (data) {
-		addNewMentionMessage(data);
-	};
-	hiveHub.client.OnFollow = function (data) {
-		addNewFollowMessage(data);
-	};
+
 	hiveHub.client.OnHiveUpdate = function (data) {
 		updateTrending(data);
 	};
@@ -384,6 +392,11 @@
 			.attr("placeholder", "Whats on your mind?")
 			.next(".feed-message-footer")
 			.hide();
+	};
+
+	const appendToMessage = (text) => {
+		const textarea = $("#feed-message-myhives");
+		textarea.val((textarea.val() || "") + text);
 	};
 
 	$("#feed-message-option-hives").val(Settings.LastSelectedHive);
@@ -542,6 +555,13 @@
 		if (userHandle != currentUserHandle) {
 			await unfollowUser(userHandle);
 		}
+	});
+
+
+	$("#main-container").on("click", ".action-userhandle", function () {
+		const userHandle = $(this).data("user").toString();
+		openMessageContainer();
+		appendToMessage("@" + userHandle);
 	});
 
 })(jQuery);

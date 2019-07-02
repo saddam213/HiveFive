@@ -35,55 +35,95 @@ namespace HiveFive.Web.Hubs
 		{
 			var handle = await ConnectionStore.GetHandle(Context.ConnectionId);
 			await ConnectionStore.UnlinkHandle(handle, Context.ConnectionId);
-			await UnsubscribeAll();
+			await UnsubscribeAll(handle);
 			await base.OnDisconnected(stopCalled);
 		}
+
 
 		public async Task<bool> SendMessage(string message, string hiveTargets)
 		{
 			var sender = GetUserHandle();
-			var mentions = HiveValidation.GetMentions(message);
-			var hives = HiveValidation.GetHives(message, hiveTargets);
-			var followers = await GetFollowers(sender);
 			var timestamp = DateTime.UtcNow.ToJavaTime();
+			var hives = HiveValidation.GetHives(message, hiveTargets);
 			var messageId = HiveValidation.GetMessageId(sender, message, timestamp);
-			foreach (var hive in hives)
+
+			var hivers = await ConnectionStore.GetHiveUsers(hives);
+			var mentions = HiveValidation.GetMentions(message);
+			var followers = await GetFollowers(sender);
+			var messages = new Dictionary<string, HiveMessage>();
+
+			// Messages to users in hives
+			if (!hivers.IsNullOrEmpty())
 			{
-				await Clients.Group(hive).OnMessage(new
+				foreach (var userHandle in hivers)
 				{
-					Id = messageId,
-					Sender = sender,
-					Message = message,
-					Hive = hive,
-					Hives = hives,
-					Timestamp = timestamp
-				});
+					if (messages.ContainsKey(userHandle))
+						continue;
+
+					messages.Add(userHandle, new HiveMessage
+					{
+						Id = messageId,
+						Sender = sender,
+						Receiver = userHandle,
+						Message = message,
+						Timestamp = timestamp,
+						Hives = new HashSet<string>(hives),
+						MessageType = new HashSet<string> { "Feed" }
+					});
+				}
 			}
 
-			foreach (var mention in mentions)
+			// Messages to users mentioned in message
+			if (!mentions.IsNullOrEmpty())
 			{
-				await Clients.User(mention).OnMention(new
+				foreach (var userHandle in mentions)
 				{
-					Id = messageId,
-					Sender = sender,
-					Receiver = mention,
-					Message = message,
-					Hives = hives,
-					Timestamp = timestamp
-				});
+					if (messages.ContainsKey(userHandle))
+					{
+						messages[userHandle].MessageType.Add("Mention");
+						continue;
+					}
+
+					messages.Add(userHandle, new HiveMessage
+					{
+						Id = messageId,
+						Sender = sender,
+						Receiver = userHandle,
+						Message = message,
+						Timestamp = timestamp,
+						Hives = new HashSet<string>(hives),
+						MessageType = new HashSet<string> { "Mention" }
+					});
+				}
 			}
 
-			foreach (var follower in followers)
+			// Messages to anyone following the sender
+			if (!followers.IsNullOrEmpty())
 			{
-				await Clients.User(follower).OnFollow(new
+				foreach (var userHandle in followers)
 				{
-					Id = messageId,
-					Sender = sender,
-					Receiver = follower,
-					Message = message,
-					Hives = hives,
-					Timestamp = timestamp
-				});
+					if (messages.ContainsKey(userHandle))
+					{
+						messages[userHandle].MessageType.Add("Follow");
+						continue;
+					}
+
+					messages.Add(userHandle, new HiveMessage
+					{
+						Id = messageId,
+						Sender = sender,
+						Receiver = userHandle,
+						Message = message,
+						Timestamp = timestamp,
+						Hives = new HashSet<string>(hives),
+						MessageType = new HashSet<string> { "Follow" }
+					});
+				}
+			}
+
+			foreach (var item in messages)
+			{
+				await Clients.User(item.Key).OnMessage(item.Value);
 			}
 			return true;
 		}
@@ -123,7 +163,7 @@ namespace HiveFive.Web.Hubs
 			{
 				Followers = following,
 				Following = result
-			}; 
+			};
 		}
 
 		public async Task<bool> FollowUser(string userToFollow)
@@ -164,6 +204,7 @@ namespace HiveFive.Web.Hubs
 
 		public async Task<List<string>> SubscribeHives(List<string> hives)
 		{
+			var handle = GetUserHandle();
 			var results = new List<string>();
 			if (hives.IsNullOrEmpty())
 				return results;
@@ -174,7 +215,7 @@ namespace HiveFive.Web.Hubs
 				if (string.IsNullOrEmpty(hiveName))
 					continue;
 
-				await Subscribe(hiveName);
+				await Subscribe(handle, hiveName);
 				results.Add(hiveName);
 			}
 			return results;
@@ -182,25 +223,27 @@ namespace HiveFive.Web.Hubs
 
 		public async Task<bool> JoinHive(string hive)
 		{
+			var handle = GetUserHandle();
 			var hiveName = HiveValidation.GetHiveName(hive, true);
 			if (string.IsNullOrEmpty(hiveName))
 			{
 				await Clients.Caller.OnError("Invalid Hive name");
 				return false;
 			}
-			await Subscribe(hiveName);
+			await Subscribe(handle, hiveName);
 			return true;
 		}
 
 		public async Task<bool> LeaveHive(string hive)
 		{
+			var handle = GetUserHandle();
 			var hiveName = HiveValidation.GetHiveName(hive, true);
 			if (string.IsNullOrEmpty(hiveName))
 			{
 				await Clients.Caller.OnError("Invalid Hive name");
 				return false;
 			}
-			await Unsubscribe(hiveName);
+			await Unsubscribe(handle, hiveName);
 			return true;
 		}
 
@@ -213,21 +256,21 @@ namespace HiveFive.Web.Hubs
 
 
 
-		private async Task Subscribe(string hive)
+		private async Task Subscribe(string userHandle, string hive)
 		{
-			await ConnectionStore.LinkHive(Groups, Context.ConnectionId, hive);
+			await ConnectionStore.LinkHive(userHandle, Context.ConnectionId, hive);
 			await SendHiveUpdate(hive);
 		}
 
-		private async Task Unsubscribe(string hive)
+		private async Task Unsubscribe(string userHandle, string hive)
 		{
-			await ConnectionStore.UnlinkHive(Groups, Context.ConnectionId, hive);
+			await ConnectionStore.UnlinkHive(userHandle, Context.ConnectionId, hive);
 			await SendHiveUpdate(hive);
 		}
 
-		private async Task UnsubscribeAll()
+		private async Task UnsubscribeAll(string userHandle)
 		{
-			foreach (var hive in await ConnectionStore.UnlinkAllHives(Groups, Context.ConnectionId))
+			foreach (var hive in await ConnectionStore.UnlinkAllHives(userHandle, Context.ConnectionId))
 			{
 				await SendHiveUpdate(hive);
 			}
@@ -238,8 +281,8 @@ namespace HiveFive.Web.Hubs
 			await Clients.All.OnHiveUpdate(new
 			{
 				Hive = hive,
-				Count = await ConnectionStore.GetHiveConnectionCount(hive),
-				Total = await ConnectionStore.GetConnectionCount()
+				Count = await ConnectionStore.GetHiveHandleCount(hive),
+				Total = await ConnectionStore.GetHandleCount()
 			});
 		}
 
@@ -256,5 +299,16 @@ namespace HiveFive.Web.Hubs
 			}
 			return Context.Request.GetHttpContext().Request.GetIPAddressUser();
 		}
+	}
+
+	internal class HiveMessage
+	{
+		public string Id { get; set; }
+		public string Sender { get; set; }
+		public string Receiver { get; set; }
+		public string Message { get; set; }
+		public long Timestamp { get; set; }
+		public HashSet<string> Hives { get; set; } = new HashSet<string>();
+		public HashSet<string> MessageType { get; set; } = new HashSet<string>();
 	}
 }

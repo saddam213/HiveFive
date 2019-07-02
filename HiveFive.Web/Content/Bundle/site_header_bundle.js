@@ -10620,15 +10620,24 @@ const SettingsDefaults = {
 	MyHives: ["global"],
 	MuteUsers: [],
 	MuteHives: [],
-	Theme: "light"
+	Theme: "light",
+	RenderLinks: false,
+	RenderLinksFollowOnly: false,
+	LastSelectedHive: "global"
 };
 
 const MessageCacheDefaults = {
 	Enabled: true,
 	EnabledGlobal: true,
-	MaxCount: 50,
+	MaxCount: 25,
 	Messages: {}
 };
+
+const FollowCacheDefaults = {
+	Followers: {}
+}
+
+
 
 const Settings = store.get("SiteSettings") || SettingsDefaults;
 Settings.Save = () => {
@@ -10798,13 +10807,7 @@ if (MessageCache.EnabledGlobal == undefined) {
 
 
 
-const FollowCacheDefaults = {
-	Followers: {
-		//"test1": "test1",
-		//"test2": "test2",
-		//"test3": "test3",
-	}
-}
+
 
 
 const FollowCache = store.get("FollowCache") || FollowCacheDefaults;

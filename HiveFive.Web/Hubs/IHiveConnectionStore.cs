@@ -7,18 +7,21 @@ namespace HiveFive.Web.Hubs
 	public interface IHiveConnectionStore
 	{
 		Task<int> GetHandleCount();
+		Task<int> GetHiveHandleCount(string hiveName);
 		Task<string> GetHandle(string connectionId);
-		Task<IEnumerable<string>> GetConnections(string handle);
 		Task LinkHandle(string handle, string connectionId);
 		Task UnlinkHandle(string handle, string connectionId);
 
 		Task<int> GetConnectionCount();
 		Task<int> GetHiveConnectionCount(string hiveName);
-		Task<IEnumerable<string>> GetHives(string connectionId);
+		Task<IEnumerable<string>> GetHives(string userHandle);
+		Task<IEnumerable<string>> GetHiveUsers(string hiveName);
+		Task<IEnumerable<string>> GetHiveUsers(IEnumerable<string> hiveNames);
 		Task<IEnumerable<object>> GetPopularHives(int count);
-		Task LinkHive(IGroupManager groups, string connectionId, string hiveName);
-		Task UnlinkHive(IGroupManager groups, string connectionId, string hiveName);
-		Task<IEnumerable<string>> UnlinkAllHives(IGroupManager groups, string connectionId);
+
+		Task LinkHive(string userHandle, string connectionId, string hiveName);
+		Task UnlinkHive(string userHandle, string connectionId, string hiveName);
+		Task<IEnumerable<string>> UnlinkAllHives(string userHandle, string connectionId);
 		
 
 

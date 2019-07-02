@@ -11,65 +11,41 @@
 
 	<small><b>General</b></small>
 	<hr style="margin:0" />
-	<div class="d-flex align-items-center" style="cursor:pointer">
-		<div class="d-flex" >
-			<i data-theme="light" class="fa fa-sun text-info bootstrap-theme-select bootstrap-theme-select-sun" style="font-size:20px" ></i>
-			<i data-theme="dark" class="fa fa-moon text-primary bootstrap-theme-select bootstrap-theme-select-moon" style="font-size:16px" ></i>
+	<div class="d-flex align-items-center mt-1" style="cursor:pointer">
+		<div class="d-flex">
+			<i data-theme="light" class="fa fa-sun text-info bootstrap-theme-select bootstrap-theme-select-sun" style="font-size:20px"></i>
+			<i data-theme="dark" class="fa fa-moon text-primary bootstrap-theme-select bootstrap-theme-select-moon" style="font-size:16px"></i>
 		</div>
 		<div class="d-flex ml-1">
-			<span data-theme="light" style="font-size:14px" class="bootstrap-theme-select bootstrap-theme-select-sun">Daytime mode</span>
-			<span data-theme="dark"  style="font-size:14px" class="bootstrap-theme-select bootstrap-theme-select-moon">Night mode</span>
+			<span data-theme="light" style="font-size:12px" class="bootstrap-theme-select bootstrap-theme-select-sun">Change to Day mode</span>
+			<span data-theme="dark" style="font-size:12px" class="bootstrap-theme-select bootstrap-theme-select-moon">Change to Night mode</span>
 		</div>
 	</div>
 
 	<small><b>Local Storage</b></small>
 	<hr style="margin:0" />
-	<div class="switchbox switchbox-md mt-1">
-		<label class="switch-checkbox">
-			<input id="settings-messagestore-enabled" type="checkbox">
-			<span class="slider round"></span>
-		</label>
-		<div class="switch-label-container">
-			<span class="switch-label">Store hive messages</span>
-		</div>
+	<div class="custom-control custom-switch">
+		<input type="checkbox" class="custom-control-input" id="settings-messagestore-enabled" checked="">
+		<label class="custom-control-label" for="settings-messagestore-enabled">Store hive messages</label>
 	</div>
-	<div class="switchbox switchbox-md mt-1">
-		<label class="switch-checkbox">
-			<input id="settings-messagestore-global-enabled" type="checkbox">
-			<span class="slider round"></span>
-		</label>
-		<div class="switch-label-container">
-			<span class="switch-label">Store #global messages</span>
-		</div>
+	<div class="custom-control custom-switch">
+		<input type="checkbox" class="custom-control-input" id="settings-messagestore-global-enabled" checked="">
+		<label class="custom-control-label" for="settings-messagestore-global-enabled">Store #global messages</label>
 	</div>
 	<div class="d-flex">
-		<input id="settings-messagestore-max" type="number" style="width:42px;height:24px;margin-right:3px;font-size:14px" />
-		<span style="font-size:14px">Max messages to store</span>
+		<input id="settings-messagestore-max" style="width:30px;height:20px;margin-right:3px;font-size:12px" />
+		<span style="font-size:12px">Max messages to store</span>
 	</div>
 	<small><b>Render Settings</b></small>
 	<hr style="margin:0" />
-
-
-	<div class="switchbox switchbox-md mt-1">
-		<label class="switch-checkbox">
-			<input id="settings-render-link" type="checkbox">
-			<span class="slider round"></span>
-		</label>
-		<div class="switch-label-container">
-			<span class="switch-label">Render Links <small>(at own risk!)</small></span>
-		</div>
+	<div class="custom-control custom-switch">
+		<input type="checkbox" class="custom-control-input" id="settings-render-link" checked="">
+		<label class="custom-control-label" for="settings-render-link">Render Links <small>(at own risk!)</small></label>
 	</div>
-	<div class="switchbox switchbox-md mt-1">
-		<label class="switch-checkbox">
-			<input id="settings-render-followlink" type="checkbox">
-			<span class="slider round"></span>
-		</label>
-		<div class="switch-label-container">
-			<span class="switch-label">Render Links Follow Only</span>
-		</div>
+	<div class="custom-control custom-switch">
+		<input type="checkbox" class="custom-control-input" id="settings-render-followlink" checked="">
+		<label class="custom-control-label" for="settings-render-followlink">Render Links Follow Only</label>
 	</div>
-
-
 
 	<div class="d-flex">
 		<button id="settings-messagestore-save" class="btn btn-sm btn-block btn-outline-info mt-1">Save Settings</button>
