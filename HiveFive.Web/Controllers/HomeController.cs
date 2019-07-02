@@ -11,7 +11,7 @@ using HiveFive.Web.Identity;
 
 namespace HiveFive.Web.Controllers
 {
-	public class HomeController : Controller
+	public class HomeController : BaseController
 	{
 		public IAccountSettingsWriter AccountSettingsWriter { get; set; }
 

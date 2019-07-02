@@ -58,5 +58,25 @@ namespace HiveFive.Web.Controllers
 			ViewEngineResult result = ViewEngines.Engines.FindView(ControllerContext, name, null);
 			return (result.View != null);
 		}
+
+		protected CloseModalResult CloseModal()
+		{
+			return new CloseModalResult();
+		}
+
+		protected CloseModalResult CloseModal(object data)
+		{
+			return new CloseModalResult(data);
+		}
+
+		protected CloseModalResult CloseModalSuccess(string message = null)
+		{
+			return new CloseModalResult(new { Success = true, Message = message });
+		}
+
+		protected CloseModalResult CloseModalError(string message = null)
+		{
+			return new CloseModalResult(new { Success = false, Message = message });
+		}
 	}
 }

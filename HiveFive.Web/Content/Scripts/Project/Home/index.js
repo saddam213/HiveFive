@@ -575,16 +575,9 @@
 		appendToMessage("@" + userHandle);
 	});
 
-	$(document).ready(function () {
-		$('#feed-message-option-hives').select2({
-			maximumSelectionLength: 15,
-			allowClear: true
-		});
+	$('#feed-message-option-hives').select2({
+		maximumSelectionLength: 15,
+		allowClear: true
 	});
-
-	//$(".js-example-tokenizer").select2({
-	//	tags: true,
-	//	tokenSeparators: [',', ' ']
-	//})
-
+	
 })(jQuery);

@@ -16,6 +16,7 @@
 			"Content/Scripts/moment.js",
 			"Content/Scripts/mustache.js",
 			"Content/Scripts/select2.js",
+			"Content/Scripts/Project/modal.js",
 			"Content/Scripts/Project/site.js"
 		]
 	},

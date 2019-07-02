@@ -167,6 +167,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResults\CloseModalResult.cs" />
     <Compile Include="ActionResults\JsonNetResult.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\ResourceConfig.cs" />
@@ -240,6 +241,7 @@
     <Content Include="Content\Scripts\moment.js" />
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Content\Scripts\Project\Home\index.js" />
+    <Content Include="Content\Scripts\Project\modal.js" />
     <Content Include="Content\Scripts\Project\site.js" />
     <Content Include="Content\Scripts\Project\site_header.js" />
     <Content Include="Content\Scripts\Project\TwoFactor\create.js" />
@@ -333,6 +335,9 @@
     <Content Include="Views\Home\_MainFeed.cshtml" />
     <Content Include="Views\Home\_Settings.cshtml" />
     <Content Include="Views\Home\_Trending.cshtml" />
+    <Content Include="Views\Shared\_ModalTemplate.cshtml" />
+    <Content Include="Views\Shared\_Modal.cshtml" />
+    <Content Include="Views\Shared\_SharedTemplates.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

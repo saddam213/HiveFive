@@ -1,0 +1,26 @@
+﻿@{
+	Layout = "~/Views/Shared/_Modal.cshtml";
+}
+
+@using (Ajax.BeginForm("TestModal", "Home", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "simplemodal-data", InsertionMode = InsertionMode.Replace }))
+{
+	@Html.AntiForgeryToken()
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Update Ticket Status</h5>
+				<a class="simplemodal-close" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</a>
+			</div>
+			<div class="modal-body">
+				<h2>content</h2>
+			</div>
+			<div class="modal-footer btn-group">
+				<button type="submit" class="btn btn-success">Update</button>
+				<button type="button" class="simplemodal-close btn btn-secondary">Cancel</button>
+			</div>
+		</div>
+	</div>
+}
+
