@@ -11800,3 +11800,26 @@ label,
 .action-userhandle {
 	cursor: pointer;
 }
+
+.select2-search__field {
+	width: 100% !important;
+}
+
+.select2-selection {
+	border: 1px solid #ccc !important;
+	border-radius: 0 !important;
+	font-size: 12px;
+}
+
+.select2-selection__choice {
+	border-radius: 0 !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+	background-color: #5bc0de !important;
+
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+	color: red !important;
+}

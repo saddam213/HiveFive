@@ -11564,5 +11564,36 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .action-userhandle {
-	cursor:pointer;
+	cursor: pointer;
+}
+
+.select2-search__field {
+	width: 100% !important;
+}
+
+.select2-selection {
+	border: 1px solid #ccc !important;
+	font-size: 12px;
+}
+
+.select2-selection__choice {
+	background-color: #444 !important;
+	color: #ddd;
+}
+
+.select2-container--default .select2-results__option {
+	color: #303030;
+}
+
+	.select2-container--default .select2-results__option[aria-selected=true] {
+		background-color: #999;
+	}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+	background-color: #375a7f !important;
+	color: #ddd;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__clear {
+	color: #222;
 }

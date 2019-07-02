@@ -24,7 +24,7 @@ const SettingsDefaults = {
 	Theme: "light",
 	RenderLinks: false,
 	RenderLinksFollowOnly: false,
-	LastSelectedHive: "hive"
+	LastSelectedHives: ["hive"]
 };
 
 const MessageCacheDefaults = {
@@ -42,6 +42,10 @@ const FollowCacheDefaults = {
 
 const Settings = store.get("SiteSettings") || SettingsDefaults;
 Settings.Save = () => {
+
+	// TODO remove later
+	delete Settings.LastSelectedHive;
+
 	store.set("SiteSettings", Settings);
 };
 Settings.Clear = () => {

@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using HiveFive.Framework.Objects;
 
 namespace HiveFive.Web.Hubs
 {
-	public interface IFollowerStore
-	{
-		Task FollowHandle(string userHandle, string userToFollow);
-		Task UnfollowHandle(string userHandle, string userToUnfollow);
-		Task<IEnumerable<string>> GetFollowers(string userHandle);
-		Task<IEnumerable<string>> GetFollowing(string userHandle);
-	}
-
 	public class FollowerStore : IFollowerStore
 	{
 		private static readonly ConcurrentDictionary<string, ConcurrentList<string>> HandleToFollower = new ConcurrentDictionary<string, ConcurrentList<string>>();

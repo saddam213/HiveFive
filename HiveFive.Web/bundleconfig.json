@@ -15,6 +15,7 @@
 			"Content/Scripts/jquery.unobtrusive-ajax.js",
 			"Content/Scripts/moment.js",
 			"Content/Scripts/mustache.js",
+			"Content/Scripts/select2.js",
 			"Content/Scripts/Project/site.js"
 		]
 	},
@@ -29,6 +30,7 @@
 		"outputFileName": "Content/Bundle/site_bundle.css",
 		"inputFiles": [
 			"Content/Css/fontAwesome.css",
+			"Content/Css/select2.css",
 			"Content/Css/Project/site.css"
 		]
 	}

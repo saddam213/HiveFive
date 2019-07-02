@@ -62,7 +62,9 @@
 			const existingHive = $("#myhive-" + hive);
 			if (existingHive.length == 0) {
 				$("#myhive-hives").prepend(Mustache.render(myHiveTemplate, { Hive: hiveName }));
-				$("#feed-message-option-hives").append(Mustache.render(hiveDropDownOptionTemplate, hiveName));
+				if (hive != "hive") {
+					$("#feed-message-option-hives").append(Mustache.render(hiveDropDownOptionTemplate, hiveName));
+				}
 				sortList("#myhive-hives");
 				sortList("#feed-message-option-hives");
 			}
@@ -88,8 +90,9 @@
 			const existingHive = $("#myhive-" + hive);
 			if (existingHive.length == 0) {
 				$("#myhive-hives").prepend(Mustache.render(myHiveTemplate, { Hive: hive }));
-				$("#feed-message-option-hives").append(Mustache.render(hiveDropDownOptionTemplate, hive));
-
+				if (hive != "hive") {
+					$("#feed-message-option-hives").append(Mustache.render(hiveDropDownOptionTemplate, hive));
+				}
 			}
 		}
 		sortList("#myhive-hives");
@@ -180,7 +183,7 @@
 	}
 
 	const displayError = (data) => {
-		$("#toast-container").prepend($(Mustache.render(toastTemplate, { Header: "Error", Content: data })).toast('show'));
+		$("#toast-container").prepend($(Mustache.render(toastTemplate, data)).toast('show'));
 	}
 
 
@@ -415,28 +418,20 @@
 		textarea.val((textarea.val() || "") + text);
 	};
 
-	$("#feed-message-option-hives").val(Settings.LastSelectedHive);
+	$("#feed-message-option-hives").val(Settings.LastSelectedHives || Settings.MyHives);
 
 	$("#feed-content").on("click", ".feed-message-btn", async function () {
-		const button = $(this);
 		const messageBox = $("#feed-message-myhives");
-
-
-		const selectedHive = $("#feed-message-option-hives").val();
-		let hiveTargets = selectedHive;
-		if (hiveTargets.length == 0) {
-			hiveTargets = Settings.MyHives.join();
-		}
-
 		const message = messageBox.val();
-		if (message.length > 0) {
-			await hiveHub.server.sendMessage(message, hiveTargets);
-			closeMessageContainer();
-			if (selectedHive != Settings.LastSelectedHive) {
-				Settings.LastSelectedHive = selectedHive;
-				Settings.Save();
-			}
+		if (message.length == 0) {
+			return;
 		}
+
+		const selectedHives = $("#feed-message-option-hives").val() || [];
+		await hiveHub.server.sendMessage(message, selectedHives.join());
+		closeMessageContainer();
+		Settings.LastSelectedHives = selectedHives;
+		Settings.Save();
 	});
 
 
@@ -579,5 +574,17 @@
 		openMessageContainer();
 		appendToMessage("@" + userHandle);
 	});
+
+	$(document).ready(function () {
+		$('#feed-message-option-hives').select2({
+			maximumSelectionLength: 15,
+			allowClear: true
+		});
+	});
+
+	//$(".js-example-tokenizer").select2({
+	//	tags: true,
+	//	tokenSeparators: [',', ' ']
+	//})
 
 })(jQuery);

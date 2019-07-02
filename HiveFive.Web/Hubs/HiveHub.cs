@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using HiveFive.Framework.Extensions;
-using HiveFive.Framework.Objects;
 using HiveFive.Web.Extensions;
 using Microsoft.AspNet.SignalR;
 
 namespace HiveFive.Web.Hubs
 {
-	public class HiveHub : Hub
+	public class HiveHub : Hub<IHiveHub>
 	{
 		public IFollowerStore FollowerStore { get; set; }
 		public IHiveConnectionStore ConnectionStore { get; set; }
@@ -147,16 +143,8 @@ namespace HiveFive.Web.Hubs
 					continue;
 
 				await FollowerStore.FollowHandle(handle, follower);
+				await SendFollowUpdate(follower, handle, false);
 				result.Add(follower);
-			}
-
-			if (!result.IsNullOrEmpty())
-			{
-				await Clients.Users(result).OnFollowUpdate(new
-				{
-					Action = "Add",
-					UserHandle = handle
-				});
 			}
 
 			return new
@@ -170,17 +158,13 @@ namespace HiveFive.Web.Hubs
 		{
 			if (!HiveValidation.ValidateUserHandle(userToFollow))
 			{
-				await Clients.Caller.OnError("Invalid name");
+				await SendErrorMessage("Validation Error", "Invalid name format");
 				return false;
 			}
 
 			var handle = GetUserHandle();
 			await FollowerStore.FollowHandle(handle, userToFollow);
-			await Clients.User(userToFollow).OnFollowUpdate(new
-			{
-				Action = "Add",
-				UserHandle = handle
-			});
+			await SendFollowUpdate(userToFollow, handle, false);
 			return true;
 		}
 
@@ -188,17 +172,13 @@ namespace HiveFive.Web.Hubs
 		{
 			if (!HiveValidation.ValidateUserHandle(userToUnfollow))
 			{
-				await Clients.Caller.OnError("Invalid name");
+				await SendErrorMessage("Validation Error", "Invalid name format");
 				return false;
 			}
 
 			var handle = GetUserHandle();
 			await FollowerStore.UnfollowHandle(handle, userToUnfollow);
-			await Clients.User(userToUnfollow).OnFollowUpdate(new
-			{
-				Action = "Remove",
-				UserHandle = handle
-			});
+			await SendFollowUpdate(userToUnfollow, handle, true);
 			return true;
 		}
 
@@ -227,7 +207,7 @@ namespace HiveFive.Web.Hubs
 			var hiveName = HiveValidation.GetHiveName(hive, true);
 			if (string.IsNullOrEmpty(hiveName))
 			{
-				await Clients.Caller.OnError("Invalid Hive name");
+				await SendErrorMessage("Validation Error", "Invalid Hive name");
 				return false;
 			}
 			await Subscribe(handle, hiveName);
@@ -240,7 +220,7 @@ namespace HiveFive.Web.Hubs
 			var hiveName = HiveValidation.GetHiveName(hive, true);
 			if (string.IsNullOrEmpty(hiveName))
 			{
-				await Clients.Caller.OnError("Invalid Hive name");
+				await SendErrorMessage("Validation Error", "Invalid Hive name");
 				return false;
 			}
 			await Unsubscribe(handle, hiveName);
@@ -255,6 +235,25 @@ namespace HiveFive.Web.Hubs
 
 
 
+
+		private Task SendErrorMessage(string header, string error)
+		{
+			return Clients.Caller.OnError(new ErrorMessage
+			{
+				Header = header,
+				Message = error
+			});
+		}
+
+		private Task SendFollowUpdate(string userTarget, string handle, bool isRemove)
+		{
+			return Clients.User(userTarget)
+				.OnFollowUpdate(new FollowMessage
+				{
+					Action = isRemove ? "Remove" : "Add",
+					UserHandle = handle
+				});
+		}
 
 		private async Task Subscribe(string userHandle, string hive)
 		{
@@ -278,7 +277,7 @@ namespace HiveFive.Web.Hubs
 
 		private async Task SendHiveUpdate(string hive)
 		{
-			await Clients.All.OnHiveUpdate(new
+			await Clients.All.OnHiveUpdate(new HiveUpdateMessage
 			{
 				Hive = hive,
 				Count = await ConnectionStore.GetCount(hive),
@@ -299,16 +298,5 @@ namespace HiveFive.Web.Hubs
 			}
 			return Context.Request.GetHttpContext().Request.GetIPAddressUser();
 		}
-	}
-
-	internal class HiveMessage
-	{
-		public string Id { get; set; }
-		public string Sender { get; set; }
-		public string Receiver { get; set; }
-		public string Message { get; set; }
-		public long Timestamp { get; set; }
-		public HashSet<string> Hives { get; set; } = new HashSet<string>();
-		public HashSet<string> MessageType { get; set; } = new HashSet<string>();
 	}
 }

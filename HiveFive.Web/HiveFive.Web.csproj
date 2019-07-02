@@ -183,12 +183,18 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Hubs\HiveConnectionStore.cs" />
+    <Compile Include="Hubs\Messages\ErrorMessage.cs" />
+    <Compile Include="Hubs\Messages\FollowMessage.cs" />
+    <Compile Include="Hubs\Store\FollowerStore.cs" />
+    <Compile Include="Hubs\Store\HiveConnectionStore.cs" />
     <Compile Include="Hubs\HiveHub.cs" />
+    <Compile Include="Hubs\Messages\HiveMessage.cs" />
+    <Compile Include="Hubs\Messages\HiveUpdateMessage.cs" />
     <Compile Include="Hubs\HiveValidation.cs" />
     <Compile Include="Hubs\HubIdentityProvider.cs" />
-    <Compile Include="Hubs\IFollowerStore.cs" />
-    <Compile Include="Hubs\IHiveConnectionStore.cs" />
+    <Compile Include="Hubs\Store\IFollowerStore.cs" />
+    <Compile Include="Hubs\Store\IHiveConnectionStore.cs" />
+    <Compile Include="Hubs\IHiveHub.cs" />
     <Compile Include="Identity\Entity\IdentityRole.cs" />
     <Compile Include="Identity\Entity\IdentityUser.cs" />
     <Compile Include="Identity\Entity\IdentityUserClaim.cs" />
@@ -229,6 +235,7 @@
     <Content Include="Content\Css\fonts\fa-brands-400.svg" />
     <Content Include="Content\Css\fonts\fa-regular-400.svg" />
     <Content Include="Content\Css\fonts\fa-solid-900.svg" />
+    <Content Include="Content\Css\select2.css" />
     <Content Include="Content\Scripts\mustache.js" />
     <Content Include="Content\Scripts\moment.js" />
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.js" />
@@ -236,6 +243,7 @@
     <Content Include="Content\Scripts\Project\site.js" />
     <Content Include="Content\Scripts\Project\site_header.js" />
     <Content Include="Content\Scripts\Project\TwoFactor\create.js" />
+    <Content Include="Content\Scripts\select2.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Css\Project\site.css" />

@@ -24,23 +24,26 @@
 		<div id="feed-myhives" class="tab-pane fade show active" role="tabpanel">
 			<div class="feed-container">
 				<textarea id="feed-message-myhives" class="form-control feed-message-content" style="max-width:100%" placeholder="Whats on your mind?" maxlength="240"></textarea>
+
 				<div class="feed-message-footer">
-					<div class="d-flex justify-content-between pt-1">
+					<div class="d-flex mt-1">
+						<select id="feed-message-option-hives" class="form-control" multiple="multiple" style="font-size:11px;width:100%" data-placeholder="Send message to #hive"></select>
+					</div>
 
-						<select id="feed-message-option-hives" class="form-control w-50">
-							<option data-sort="" value="">#My Hives</option>
-						</select>
-
-						<div class="btn-group" role="group">
-							<button type="button" class="btn btn-warning feed-message-cancel">
+					<div class="d-flex justify-content-end  mt-1">
+						<div class="btn-group w-50" role="group">
+							<button type="button" class="btn btn-warning feed-message-cancel" style="max-width:36px">
 								<i class="fa fa-times"></i>
 							</button>
 							<button type="button" class="btn btn-primary feed-message-btn">Send Message</button>
 						</div>
 					</div>
+
 				</div>
 			</div>
 			<hr />
+
+
 			<ul id="feed-messages-myhives" class="list-group feed-messages">
 				<li id="feed-placeholder-myhives" class="list-group-item">
 					<small><i style="opacity:0.6">There are no new messages</i></small>
