@@ -5532,6 +5532,10 @@ readers do not read off random characters that represent icons */
 	text-align: center;
 }
 
+.myhive-item {
+	cursor: pointer;
+}
+
 .dropdown-grip-right {
 	cursor: pointer;
 	width: 30px;
@@ -5565,7 +5569,33 @@ readers do not read off random characters that represent icons */
 }
 
 
+.select2-container .select2-selection--multiple {
+	min-height: 26px;
+}
 
+.select2-container .select2-search--inline {
+	float: none;
+}
+
+.select2-container .select2-search__field {
+	display: inline-block;
+}
+
+
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+	margin-right: 5px;
+	margin-top: 5px;
+	font-size: 11px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+	padding: 0 5px;
+}
+
+.select2-container--default .select2-results > .select2-results__options {
+	font-size: 11px;
+}
 
 
 

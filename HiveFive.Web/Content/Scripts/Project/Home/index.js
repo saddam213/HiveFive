@@ -63,9 +63,10 @@
 			if (existingHive.length == 0) {
 				$("#myhive-hives").prepend(Mustache.render(myHiveTemplate, { Hive: hiveName }));
 				if (hive != "hive") {
-					$("#feed-message-option-hives").append(Mustache.render(hiveDropDownOptionTemplate, hiveName));
+					$("#feed-message-option-hives, #feed-message-filter").append(Mustache.render(hiveDropDownOptionTemplate, hiveName));
 				}
 				sortList("#myhive-hives");
+				sortList("#feed-message-filter");
 				sortList("#feed-message-option-hives");
 			}
 		}
@@ -78,7 +79,7 @@
 			Settings.RemoveMyHive(hiveName);
 
 			$("#myhive-" + hive).remove();
-			$("#hive-option-" + hive).remove();
+			$(".hive-option-" + hive).remove();
 			// TODO: find all messages in hive and remove from cache and ui
 		}
 	}
@@ -91,11 +92,12 @@
 			if (existingHive.length == 0) {
 				$("#myhive-hives").prepend(Mustache.render(myHiveTemplate, { Hive: hive }));
 				if (hive != "hive") {
-					$("#feed-message-option-hives").append(Mustache.render(hiveDropDownOptionTemplate, hive));
+					$("#feed-message-option-hives, #feed-message-filter").append(Mustache.render(hiveDropDownOptionTemplate, hive));
 				}
 			}
 		}
 		sortList("#myhive-hives");
+		sortList("#feed-message-filter");
 		sortList("#feed-message-option-hives");
 	}
 
@@ -419,6 +421,7 @@
 		textarea.val((textarea.val() || "") + text);
 	};
 
+	$("#feed-message-filter").val(Settings.FeedFilter);
 	$("#feed-message-option-hives").val(Settings.LastSelectedHives || Settings.MyHives);
 
 	$("#feed-content").on("click", ".feed-message-btn", async function () {
@@ -580,5 +583,44 @@
 		maximumSelectionLength: 15,
 		allowClear: true
 	});
-	
+
+	$("#feed-message-filter").select2({
+		maximumSelectionLength: 15,
+		allowClear: true
+	})
+
+
+	$("#feed-message-filter, #feed-message-option-hives")
+		.on('select2:unselecting', function () {
+			$(this).data('unselecting', true);
+		})
+		.on('select2:opening', function (e) {
+			if ($(this).data('unselecting')) {
+				$(this).removeData('unselecting');
+				e.preventDefault();
+			}
+		});
+
+	$('#feed-message-filter').on('change', function (e) {
+		const filterOptions = $(this).val();
+		$("#feed-messages-myhives > li").hide().filter(function (index) {
+			const messageOptions = $(this).data("filter").split(",");
+			return filterOptions.length == 0 || filterOptions.some(x => messageOptions.includes(x));
+		}).show();
+	});
+
+	$("#myhive-hives").on("click", " .myhive-item", function () {
+		const selectedHive = $(this).data("hive").toString();
+		const filterOptions = $("#feed-message-filter").val();
+		const exists = filterOptions.indexOf(selectedHive);
+		if (exists >= 0) {
+			// Element was found, remove it.
+			filterOptions.splice(exists, 1);
+		} else {
+			// Element was not found, add it.
+			filterOptions.push(selectedHive);
+		}
+		$('#feed-message-filter').val(filterOptions).trigger("change");
+	});
+
 })(jQuery);

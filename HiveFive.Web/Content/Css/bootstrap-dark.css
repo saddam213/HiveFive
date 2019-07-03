@@ -11574,11 +11574,17 @@ a.text-dark:hover, a.text-dark:focus {
 .select2-selection {
 	border: 1px solid #ccc !important;
 	font-size: 12px;
+	border-radius: 2px !important;
+	margin:1px;
 }
 
 .select2-selection__choice {
 	background-color: #444 !important;
 	color: #ddd;
+}
+
+.select2-selection select2-selection--multiple {
+	border-radius: 2px !important;
 }
 
 .select2-container--default .select2-results__option {
