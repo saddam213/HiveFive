@@ -2209,10 +2209,10 @@ pre {
 .form-control:focus {
 	color: #444;
 	background-color: #fff;
-	border-color: #739ac2;
+	border-color: #00bc8c;
 	outline: 0;
-	-webkit-box-shadow: 0 0 0 0.2rem rgba(55, 90, 127, 0.25);
-	box-shadow: 0 0 0 0.2rem rgba(55, 90, 127, 0.25);
+	/*-webkit-box-shadow: 0 0 0 0.2rem rgba(55, 90, 127, 0.25);
+	box-shadow: 0 0 0 0.2rem rgba(55, 90, 127, 0.25);*/
 }
 
 .form-control::-webkit-input-placeholder {
@@ -11567,16 +11567,17 @@ a.text-dark:hover, a.text-dark:focus {
 	cursor: pointer;
 }
 
-.select2-search__field {
-	width: 100% !important;
+.custom-select-container {
+	padding: 1px;
 }
 
 .select2-selection {
 	border: 1px solid #ccc !important;
 	font-size: 12px;
 	border-radius: 2px !important;
-	margin:1px;
+	/*margin: 1px;*/
 }
+
 
 .select2-selection__choice {
 	background-color: #444 !important;
@@ -11602,4 +11603,13 @@ a.text-dark:hover, a.text-dark:focus {
 
 .select2-container--default .select2-selection--multiple .select2-selection__clear {
 	color: #222;
+}
+
+.scrollbar-sm ::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.4);
+	/*border: solid 1px rgba(0, 0, 0, 0.4);*/
+}
+
+.simplemodal-overlay {
+	background-color: #000;
 }

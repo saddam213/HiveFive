@@ -224,6 +224,9 @@
       <DependentUpon>site_header_bundle.js</DependentUpon>
     </Content>
     <Content Include="Content\Bundle\validation_bundle.js" />
+    <Content Include="Content\Bundle\validation_bundle.min.js">
+      <DependentUpon>validation_bundle.js</DependentUpon>
+    </Content>
     <Content Include="Content\Css\bootstrap-dark.css" />
     <Content Include="Content\Css\bootstrap-grid.css" />
     <Content Include="Content\Css\bootstrap-grid.min.css" />

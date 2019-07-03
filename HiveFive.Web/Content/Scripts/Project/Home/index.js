@@ -14,6 +14,7 @@
 	const followingTemplate = $("#followingTemplate").html();
 	const emptyListTemplate = $("#emptyListTemplate").html();
 	const hiveDropDownOptionTemplate = $("#hiveDropDownOptionTemplate").html();
+	const createHiveModalTemplate = $("#createHiveModalTemplate").html();
 
 	const linkifyImgurLink = $("#linkifyImgurLink").html();
 	const linkifyImgurRegexp = /https?:\/\/(?:www\.)?(?:i\.)?imgur\.com\/(a|gallery)?\/?([\w+]+).?(?:[\w+]+)?/;
@@ -628,6 +629,13 @@
 			filterOptions.push(selectedHive);
 		}
 		$('#feed-message-filter').val(filterOptions).trigger("change");
+	});
+
+	$("#create-hive-btn").on("click", async function () {
+		const result = await openTemplateModal(createHiveModalTemplate);
+		if (result.Success === true) {
+			await joinHive(result.HiveName);
+		}
 	});
 
 })(jQuery);

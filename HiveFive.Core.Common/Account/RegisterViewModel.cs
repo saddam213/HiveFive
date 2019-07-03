@@ -5,7 +5,7 @@ namespace HiveFive.Core.Common.Account
 	public class RegisterViewModel
 	{
 		[Required(ErrorMessageResourceName = nameof(Resources.Account.ValidationErrorMessageRequiredUserName), ErrorMessageResourceType = typeof(Resources.Account))]
-		[RegularExpression(@"^\w+$", ErrorMessageResourceName = nameof(Resources.Account.ValidationErrorMessageInvalidUserName), ErrorMessageResourceType = typeof(Resources.Account))]
+		[RegularExpression(@"^(?!\d*$)[\w+]{2,15}$", ErrorMessageResourceName = nameof(Resources.Account.ValidationErrorMessageInvalidUserName), ErrorMessageResourceType = typeof(Resources.Account))]
 		public string UserName { get; set; }
 
 		[Required(ErrorMessageResourceName = nameof(Resources.Account.ValidationErrorMessageRequiredEmail), ErrorMessageResourceType = typeof(Resources.Account))]

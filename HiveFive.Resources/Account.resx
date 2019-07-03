@@ -242,7 +242,7 @@
     <value>Invalid Recovery Code</value>
   </data>
   <data name="ValidationErrorMessageInvalidUserName" xml:space="preserve">
-    <value>UserName can only contain letters, digits and underscore</value>
+    <value>UserName must be between 2 and 15 characters, contain only letters, numbers or underscore and not be all numbers</value>
   </data>
   <data name="ValidationErrorMessageRequiredEmail" xml:space="preserve">
     <value>Email Address is required</value>

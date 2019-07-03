@@ -23,8 +23,8 @@
 	{
 		"outputFileName": "Content/Bundle/validation_bundle.js",
 		"inputFiles": [
-			"Scripts/jquery.validate.js",
-			"Scripts/jquery.validate.unobtrusive.js"
+			"Content/Scripts/jquery.validate.js",
+			"Content/Scripts/jquery.validate.unobtrusive.js"
 		]
 	},
 	{

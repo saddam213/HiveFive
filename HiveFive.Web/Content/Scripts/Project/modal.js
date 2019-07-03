@@ -834,3 +834,41 @@ const notifyModal = (header, message, button) => {
 		});
 	});
 }
+
+const openTemplateModal = (template) => {
+	return new Promise((resolve, reject) => {
+		const modalHtml = Mustache.render(template);
+		const renderedModal = $(modalHtml);
+
+		// If the modal is a form, parse from
+		// as JSON and return if its valid
+		if (renderedModal.is("form")) {
+			renderedModal.on("submit", function () {
+				if (renderedModal.valid()) {
+					const formData = renderedModal
+						.serializeArray()
+						.reduce(function (obj, item) {
+							obj[item.name] = item.value;
+							return obj;
+						}, { Success: true });
+					renderedModal.find("input[type=radio],input[type=checkbox]").each(function () {
+						formData[this.name] = this.checked;
+					});
+					$.modal.close(formData);
+				}
+			});
+		}
+
+		renderedModal.modal({
+			onClose: function (dialog, result) {
+				closeAnimation(dialog, function () {
+					$.modal.close();
+					resolve(result);
+				});
+			},
+			onOpen: function (dialog) {
+				openAnimation(dialog);
+			}
+		});
+	});
+}

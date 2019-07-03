@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using HiveFive.Core.Common.AccountSettings;
-using HiveFive.Core.Common.Email;
 using HiveFive.Web.Identity;
 
 namespace HiveFive.Web.Controllers
@@ -19,7 +14,6 @@ namespace HiveFive.Web.Controllers
 		{
 			return View();
 		}
-
 
 		[HttpGet]
 		[AllowAnonymous]

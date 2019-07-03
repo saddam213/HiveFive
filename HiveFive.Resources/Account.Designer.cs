@@ -421,7 +421,7 @@ namespace HiveFive.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UserName can only contain letters, digits and underscore.
+        ///   Looks up a localized string similar to UserName must be between 2 and 15 characters, contain only letters, numbers or underscore and not be all numbers.
         /// </summary>
         public static string ValidationErrorMessageInvalidUserName {
             get {

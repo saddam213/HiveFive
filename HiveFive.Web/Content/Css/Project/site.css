@@ -59,6 +59,10 @@
 	/* border-radius: 2px; */
 }
 
+.custom-select-container {
+	display: flex;
+	margin-bottom: 5px;
+}
 
 .select2-container .select2-selection--multiple {
 	min-height: 26px;
@@ -72,6 +76,12 @@
 	display: inline-block;
 }
 
+.select2-container .select2-selection__clear {
+	font-size: 20px;
+	height: 16px;
+	margin-right: 5px !important;
+	margin-top: 0px !important;
+}
 
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
@@ -87,6 +97,83 @@
 .select2-container--default .select2-results > .select2-results__options {
 	font-size: 11px;
 }
+
+
+.scrollbar-sm ::-webkit-scrollbar {
+	width: 4px;
+	height: 4px;
+}
+
+.scrollbar-sm ::-webkit-scrollbar-button {
+	background-position-x: 2px;
+	background-position-y: 2px;
+	background-repeat: no-repeat;
+	height: 0;
+	/*border: solid 1px rgba(0, 0, 0, 0.4);*/
+}
+
+.scrollbar-sm ::-webkit-scrollbar-track {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.scrollbar-sm ::-webkit-scrollbar-track-piece {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.scrollbar-sm ::-webkit-scrollbar-thumb {
+	height: 10px;
+	/*background-color: rgba(0, 0, 0, 0.1);*/
+	/*border: solid 1px rgba(0, 0, 0, 0.4);*/
+}
+
+.scrollbar-sm ::-webkit-scrollbar-corner {
+	/*background-color: #646464;*/
+}
+
+
+.scrollbar-sm ::-webkit-resizer {
+	/*background-color: #353a41;*/
+}
+
+.scrollbar-sm ::-webkit-scrollbar-button:horizontal:increment { /* Right */
+	background-image: none;
+}
+
+.scrollbar-sm ::-webkit-scrollbar-button:horizontal:decrement { /* Left */
+	background-image: none;
+}
+
+.scrollbar-sm ::-webkit-scrollbar-button:vertical:increment { /* Down */
+	background-image: none;
+}
+
+.scrollbar-sm ::-webkit-scrollbar-button:vertical:decrement { /* Up */
+	background-image: none;
+}
+
+
+
+
+.scrollbar-unused ::-webkit-scrollbar-button:horizontal:increment { /* Right */
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAmJLR0QA/4ePzL8AAAAHdElNRQfiCAEFKDBi22BgAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE4LTA4LTAxVDA1OjQwOjQ4LTA0OjAwJ5sBnQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOC0wOC0wMVQwNTo0MDo0OC0wNDowMFbGuSEAAABSSURBVBhXY2aAgGog1gTis0DMAsT/gBgMJgDxfyBOBfMYGJiYoIyfUHoWEHcD8X+YBCMQg3SAAD+IgEmAzAVJlgFxGpQNBi1AXA5hMgAdxMAAAJfqCn/N9M7AAAAAAElFTkSuQmCC');
+}
+
+.scrollbar-unused ::-webkit-scrollbar-button:horizontal:decrement { /* Left */
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAmJLR0QA/4ePzL8AAAAHdElNRQfiCAEFKDBi22BgAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE4LTA4LTAxVDA1OjQwOjQ4LTA0OjAwJ5sBnQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOC0wOC0wMVQwNTo0MDo0OC0wNDowMFbGuSEAAABPSURBVBhXY4ACZihdDsQtECYDAxOULgXi/0DcB+YBASMQzwJikOA/IO4CYrjqj1AapAikAAxgkqlADBKcAOKALAVxWID4DBA/B2IgYDgMAE58DYoP9Z2DAAAAAElFTkSuQmCC');
+}
+
+.scrollbar-unused ::-webkit-scrollbar-button:vertical:increment { /* Down */
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAQAAABKxSfDAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfiCAEFKDBi22BgAAAAN0lEQVQI103BwQ1AQBQFwPlrE4k+6UC2ATcdaFEL4rma4accFo+Y3QzxithgF7HChMuJDk0pjQ8UfAxfenVxgAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxOC0wOC0wMVQwNTo0MDo0OC0wNDowMCebAZ0AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTgtMDgtMDFUMDU6NDA6NDgtMDQ6MDBWxrkhAAAAAElFTkSuQmCC');
+}
+
+.scrollbar-unused ::-webkit-scrollbar-button:vertical:decrement { /* Up */
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAmJLR0QA/4ePzL8AAAAHdElNRQfiCAEFKDBi22BgAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE4LTA4LTAxVDA1OjQwOjQ4LTA0OjAwJ5sBnQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOC0wOC0wMVQwNTo0MDo0OC0wNDowMFbGuSEAAABFSURBVBhXY4ACJiBmhGIQGwxYoHQ3EM+CMBmYoTRDKhD/h+JSkAAIpAExTPAflC4HmVkNxKJA/BOIQXyQ0d+AGBtgYAAA+S4LaNgygeIAAAAASUVORK5CYII=');
+}
+
+
+
+
+
 
 
 

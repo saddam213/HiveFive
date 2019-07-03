@@ -21,9 +21,9 @@
 </script>
 
 <script id="myHiveTemplate" type="text/html">
-	<li id="myhive-{{Hive}}" class="myhive-item" data-sort="{{Hive}}" data-hive="{{Hive}}">
+	<li id="myhive-{{Hive}}" data-sort="{{Hive}}">
 		<div class="d-flex justify-content-between">
-			<span>#{{Hive}}</span>
+			<span class="myhive-item" data-hive="{{Hive}}">#{{Hive}}</span>
 			<div class="btn-group">
 				<span data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-grip">
 					<i class="fas fa-ellipsis-v"></i>
@@ -220,3 +220,29 @@
 </script>
 
 
+<script id="createHiveModalTemplate" type="text/html">
+	<form data-ajax="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Create/Join a new Hive</h5>
+					<a class="simplemodal-no" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</a>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label">Hive Name</label>
+						<input name="HiveName" type="text" class="form-control" data-val="true" data-val-required="Hive Name is required" data-val-length="Hive Name must be between 2 and 15 characters" data-val-length-min="2" data-val-length-max="15" data-val-regex="Hive Name must only contain letters, numbers or underscore" data-val-regex-pattern="^\w+$" />
+						<small class="field-validation-valid text-danger" data-valmsg-for="HiveName" data-valmsg-replace="true"></small>
+					</div>
+				</div>
+				<div class="modal-footer btn-group">
+					<button type="submit" class="btn btn-success">Create/Join</button>
+					<button type="button" class="simplemodal-no btn btn-secondary">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script src="/Content/Bundle/validation_bundle.js"></script>
+</script>

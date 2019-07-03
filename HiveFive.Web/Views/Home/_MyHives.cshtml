@@ -1,12 +1,15 @@
-﻿<div class="bg-secondary p-2 section-left">
+﻿<div class="bg-secondary p-2 section-left scrollbar-sm">
 	<div class="d-flex justify-content-between align-items-center">
 		<h5>My Hives</h5>
 		<i class="fa fa-cog section-option"></i>
 	</div>
 	<hr style="margin-top:3px" />
-	<ul id="myhive-hives" class="hive-list"></ul>
-	<input id="hive-input" class="form-control" maxlength="15" />
-	<div style="display:flex" class="mt-1">
-		<button id="joinhive-btn" type="button" class="btn btn-outline-info" style="height:100%;width:100%">Create/Join Hive</button>
+	<div style="max-height:323px;overflow-y:auto;margin-bottom:20px">
+		<ul id="myhive-hives" class="hive-list"></ul>
+	</div>
+	<div class="text-center">
+		<small>
+			<a id="create-hive-btn" href="#">Create/Join Hive</a>
+		</small>
 	</div>
 </div>
