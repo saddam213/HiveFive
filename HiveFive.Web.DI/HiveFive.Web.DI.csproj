@@ -106,6 +106,10 @@
       <Project>{3E545B33-C44A-444D-952F-B9BCC2657222}</Project>
       <Name>HiveFive.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HiveFive.Data.Redis\HiveFive.Data.Redis.csproj">
+      <Project>{71e8f939-5d41-445e-89b1-bf1da4e5d841}</Project>
+      <Name>HiveFive.Data.Redis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HiveFive.Data\HiveFive.Data.csproj">
       <Project>{D80D8F9B-3443-45BA-BE26-173A081DD2D0}</Project>
       <Name>HiveFive.Data</Name>

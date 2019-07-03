@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HiveFive.Core.Common.Throttle;
 using HiveFive.Framework.Extensions;
 using HiveFive.Web.Extensions;
 using Microsoft.AspNet.SignalR;
@@ -10,6 +11,7 @@ namespace HiveFive.Web.Hubs
 {
 	public class HiveHub : Hub<IHiveHub>
 	{
+		public IThrottleStore ThrottleStore { get; set; }
 		public IFollowerStore FollowerStore { get; set; }
 		public IHiveConnectionStore ConnectionStore { get; set; }
 
@@ -35,11 +37,14 @@ namespace HiveFive.Web.Hubs
 			await base.OnDisconnected(stopCalled);
 		}
 
-
 		public async Task<bool> SendMessage(string messageInput, string hiveTargets)
 		{
-			var message = messageInput.Truncate(240);
 			var sender = GetUserHandle();
+			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.SendMessage, sender, IsAuthenticated);
+			if (throttleResult.ThrottleRequest)
+				return await SendErrorMessage("Rate Limit", throttleResult.Message);
+
+			var message = messageInput.Truncate(240);
 			var timestamp = DateTime.UtcNow.ToJavaTime();
 			var hives = HiveValidation.GetHives(message, hiveTargets);
 			var messageId = HiveValidation.GetMessageId(sender, message, timestamp);
@@ -128,6 +133,10 @@ namespace HiveFive.Web.Hubs
 		public async Task<object> SubscribeFollowers(List<string> followers)
 		{
 			var handle = GetUserHandle();
+			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.SubscribeFollowers, handle, IsAuthenticated);
+			if (throttleResult.ThrottleRequest)
+				return await SendErrorMessage("Rate Limit", throttleResult.Message);
+
 			var following = await FollowerStore.GetFollowers(handle);
 
 			if (followers.IsNullOrEmpty())
@@ -158,12 +167,13 @@ namespace HiveFive.Web.Hubs
 		public async Task<bool> FollowUser(string userToFollow)
 		{
 			if (!HiveValidation.ValidateUserHandle(userToFollow))
-			{
-				await SendErrorMessage("Validation Error", "Invalid name format");
-				return false;
-			}
+				return await SendErrorMessage("Validation Error", "Invalid name format");
 
 			var handle = GetUserHandle();
+			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.FollowUser, handle, IsAuthenticated);
+			if (throttleResult.ThrottleRequest)
+				return await SendErrorMessage("Rate Limit", throttleResult.Message);
+
 			await FollowerStore.FollowHandle(handle, userToFollow);
 			await SendFollowUpdate(userToFollow, handle, false);
 			return true;
@@ -172,12 +182,13 @@ namespace HiveFive.Web.Hubs
 		public async Task<bool> UnfollowUser(string userToUnfollow)
 		{
 			if (!HiveValidation.ValidateUserHandle(userToUnfollow))
-			{
-				await SendErrorMessage("Validation Error", "Invalid name format");
-				return false;
-			}
+				return await SendErrorMessage("Validation Error", "Invalid name format");
 
 			var handle = GetUserHandle();
+			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.UnfollowUser, handle, IsAuthenticated);
+			if (throttleResult.ThrottleRequest)
+				return await SendErrorMessage("Rate Limit", throttleResult.Message);
+
 			await FollowerStore.UnfollowHandle(handle, userToUnfollow);
 			await SendFollowUpdate(userToUnfollow, handle, true);
 			return true;
@@ -185,10 +196,17 @@ namespace HiveFive.Web.Hubs
 
 		public async Task<List<string>> SubscribeHives(List<string> hives)
 		{
-			var handle = GetUserHandle();
 			var results = new List<string>();
 			if (hives.IsNullOrEmpty())
 				return results;
+
+			var handle = GetUserHandle();
+			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.SubscribeHives, handle, IsAuthenticated);
+			if (throttleResult.ThrottleRequest)
+			{
+				await SendErrorMessage("Rate Limit", throttleResult.Message);
+				return results;
+			}
 
 			foreach (var hive in hives)
 			{
@@ -204,46 +222,54 @@ namespace HiveFive.Web.Hubs
 
 		public async Task<bool> JoinHive(string hive)
 		{
-			var handle = GetUserHandle();
 			var hiveName = HiveValidation.GetHiveName(hive, true);
 			if (string.IsNullOrEmpty(hiveName))
-			{
-				await SendErrorMessage("Validation Error", "Invalid Hive name");
-				return false;
-			}
+				return await SendErrorMessage("Validation Error", "Invalid Hive name");
+
+			var handle = GetUserHandle();
+			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.JoinHive, handle, IsAuthenticated);
+			if (throttleResult.ThrottleRequest)
+				return await SendErrorMessage("Rate Limit", throttleResult.Message);
+
 			await Subscribe(handle, hiveName);
 			return true;
 		}
 
 		public async Task<bool> LeaveHive(string hive)
 		{
-			var handle = GetUserHandle();
 			var hiveName = HiveValidation.GetHiveName(hive, true);
 			if (string.IsNullOrEmpty(hiveName))
-			{
-				await SendErrorMessage("Validation Error", "Invalid Hive name");
-				return false;
-			}
+				return await SendErrorMessage("Validation Error", "Invalid Hive name");
+
+			var handle = GetUserHandle();
+			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.LeaveHive, handle, IsAuthenticated);
+			if (throttleResult.ThrottleRequest)
+				return await SendErrorMessage("Rate Limit", throttleResult.Message);
+
 			await Unsubscribe(handle, hiveName);
 			return true;
 		}
 
-		public Task<IEnumerable<object>> GetTrending()
+		public async Task<IEnumerable<object>> GetTrending()
 		{
-			return ConnectionStore.GetPopularHives(15);
+			var handle = GetUserHandle();
+			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.JoinHive, handle, IsAuthenticated);
+			if (throttleResult.ThrottleRequest)
+			{
+				await SendErrorMessage("Rate Limit", throttleResult.Message);
+				return Enumerable.Empty<object>();
+			}
+			return await ConnectionStore.GetPopularHives(15);
 		}
 
-
-
-
-
-		private Task SendErrorMessage(string header, string error)
+		private async Task<bool> SendErrorMessage(string header, string error)
 		{
-			return Clients.Caller.OnError(new ErrorMessage
+			await Clients.Caller.OnError(new ErrorMessage
 			{
 				Header = header,
 				Message = error
 			});
+			return false;
 		}
 
 		private Task SendFollowUpdate(string userTarget, string handle, bool isRemove)
@@ -291,13 +317,16 @@ namespace HiveFive.Web.Hubs
 			return FollowerStore.GetFollowers(userHandle);
 		}
 
+		private bool IsAuthenticated
+		{
+			get { return Context.User.Identity.IsAuthenticated; }
+		}
+
 		private string GetUserHandle()
 		{
-			if (Context.User.Identity.IsAuthenticated)
-			{
-				return Context.Request.GetHttpContext().User.Identity.Name;
-			}
-			return Context.Request.GetHttpContext().Request.GetIPAddressUser();
+			return IsAuthenticated
+				? Context.Request.GetHttpContext().User.Identity.Name
+				: Context.Request.GetHttpContext().Request.GetIPAddressUser();
 		}
 	}
 }

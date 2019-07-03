@@ -60,6 +60,7 @@
     <Compile Include="Email\EmailService.cs" />
     <Compile Include="Logon\LogonWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Throttle\ThrottleStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HiveFive.Core.Common\HiveFive.Core.Common.csproj">
@@ -69,6 +70,10 @@
     <ProjectReference Include="..\HiveFive.Data.Common\HiveFive.Data.Common.csproj">
       <Project>{325E0E54-0F19-4D49-977F-FFB4E1769DB0}</Project>
       <Name>HiveFive.Data.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HiveFive.Data.Redis\HiveFive.Data.Redis.csproj">
+      <Project>{71E8F939-5D41-445E-89B1-BF1DA4E5D841}</Project>
+      <Name>HiveFive.Data.Redis</Name>
     </ProjectReference>
     <ProjectReference Include="..\HiveFive.Enums\HiveFive.Enums.csproj">
       <Project>{1C925E14-AB96-4C7C-8537-4237547FB63E}</Project>

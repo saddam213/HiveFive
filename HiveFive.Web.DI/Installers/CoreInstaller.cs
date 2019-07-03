@@ -21,6 +21,13 @@ namespace HiveFive.Web.DI.Installers
 				.DefaultInterfaces()
 				.LifestyleTransient()
 			);
+
+			container.Register(Classes.FromAssemblyContaining<Data.Redis.Redis>()
+				.Pick()
+				.WithService
+				.DefaultInterfaces()
+				.LifestyleTransient()
+			);
 		}
 	}
 }

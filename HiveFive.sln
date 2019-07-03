@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{D9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HiveFive.EmailService", "HiveFive.EmailService\HiveFive.EmailService.csproj", "{CFFA9633-982E-469C-8D18-E47E486AF60E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HiveFive.Data.Redis", "HiveFive.Data.Redis\HiveFive.Data.Redis.csproj", "{71E8F939-5D41-445E-89B1-BF1DA4E5D841}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{CFFA9633-982E-469C-8D18-E47E486AF60E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFFA9633-982E-469C-8D18-E47E486AF60E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFFA9633-982E-469C-8D18-E47E486AF60E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71E8F939-5D41-445E-89B1-BF1DA4E5D841}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71E8F939-5D41-445E-89B1-BF1DA4E5D841}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71E8F939-5D41-445E-89B1-BF1DA4E5D841}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71E8F939-5D41-445E-89B1-BF1DA4E5D841}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +107,7 @@ Global
 		{6F7DDA2C-B7A1-4ACB-A243-006E0B484C6A} = {EE1702AD-5C4C-4ACD-9361-8FDF06F1DFD8}
 		{B867E8F1-A4FF-4191-838E-13F0435D8C2C} = {6E769CE7-87AC-4823-896B-855125B98A60}
 		{CFFA9633-982E-469C-8D18-E47E486AF60E} = {D975A89A-3C48-4DFA-8669-04F2F513710E}
+		{71E8F939-5D41-445E-89B1-BF1DA4E5D841} = {EE1702AD-5C4C-4ACD-9361-8FDF06F1DFD8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BE9291F8-8EB2-4FBF-94EE-728578F1CEBC}

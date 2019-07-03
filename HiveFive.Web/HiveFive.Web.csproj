@@ -351,7 +351,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HiveFive.Core.Common\HiveFive.Core.Common.csproj">
-      <Project>{41566DEB-B796-4D22-AFD2-BC36FC5FF798}</Project>
+      <Project>{41566deb-b796-4d22-afd2-bc36fc5ff798}</Project>
       <Name>HiveFive.Core.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\HiveFive.Data.Common\HiveFive.Data.Common.csproj">

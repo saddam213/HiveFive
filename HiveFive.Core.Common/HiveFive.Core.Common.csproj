@@ -53,9 +53,12 @@
     <Compile Include="Account\ResetTwoFactorModel.cs" />
     <Compile Include="Account\VerifyTwoFactorModel.cs" />
     <Compile Include="Email\IEmailService.cs" />
+    <Compile Include="Throttle\IThrottleStore.cs" />
     <Compile Include="Logon\AddLogonModel.cs" />
     <Compile Include="Logon\ILogonWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Throttle\ThrottleAction.cs" />
+    <Compile Include="Throttle\ThrottleResult.cs" />
     <Compile Include="TwoFactor\CreateTwoFactorModel.cs" />
     <Compile Include="TwoFactor\RemoveTwoFactorModel.cs" />
   </ItemGroup>
