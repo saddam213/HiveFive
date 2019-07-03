@@ -113,6 +113,8 @@
 
 			const renderedMessage = renderEmbeddedTags(data);
 			feedList.prepend(Mustache.render(messageTemplate, renderedMessage));
+			$('#feed-message-filter').trigger("change");
+
 			if (updateUnread) {
 				if (data.Sender != currentUserHandle) {
 					const isActive = $("#feed-tabs-myhives-nav").hasClass("active");
@@ -603,10 +605,17 @@
 
 	$('#feed-message-filter').on('change', function (e) {
 		const filterOptions = $(this).val();
-		$("#feed-messages-myhives > li").hide().filter(function (index) {
-			const messageOptions = $(this).data("filter").split(",");
-			return filterOptions.length == 0 || filterOptions.some(x => messageOptions.includes(x));
-		}).show();
+		if (filterOptions.length == 0) {
+			$("#feed-messages-myhives > .message-item").show();
+			return;
+		}
+
+		$("#feed-messages-myhives > .message-item")
+			.hide()
+			.filter(function () {
+				const messageOptions = $(this).data("filter").split(",");
+				return filterOptions.length == 0 || filterOptions.some(x => messageOptions.includes(x));
+			}).show();
 	});
 
 	$("#myhive-hives").on("click", " .myhive-item", function () {
@@ -614,10 +623,8 @@
 		const filterOptions = $("#feed-message-filter").val();
 		const exists = filterOptions.indexOf(selectedHive);
 		if (exists >= 0) {
-			// Element was found, remove it.
 			filterOptions.splice(exists, 1);
 		} else {
-			// Element was not found, add it.
 			filterOptions.push(selectedHive);
 		}
 		$('#feed-message-filter').val(filterOptions).trigger("change");
