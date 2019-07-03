@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace HiveFive.Web.Hubs
+namespace HiveFive.Core.Common.Hive
 {
 	public interface IHiveConnectionStore
 	{

@@ -53,6 +53,8 @@
     <Compile Include="Account\ResetTwoFactorModel.cs" />
     <Compile Include="Account\VerifyTwoFactorModel.cs" />
     <Compile Include="Email\IEmailService.cs" />
+    <Compile Include="Follow\IFollowerStore.cs" />
+    <Compile Include="Hive\IHiveConnectionStore.cs" />
     <Compile Include="Throttle\IThrottleStore.cs" />
     <Compile Include="Logon\AddLogonModel.cs" />
     <Compile Include="Logon\ILogonWriter.cs" />

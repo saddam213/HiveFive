@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HiveFive.Core.Common.Hive;
 using HiveFive.Framework.Objects;
 
-namespace HiveFive.Web.Hubs
+namespace HiveFive.Core.Hive
 {
 	public class HiveConnectionStore : IHiveConnectionStore
 	{

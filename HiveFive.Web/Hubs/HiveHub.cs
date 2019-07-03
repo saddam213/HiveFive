@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HiveFive.Core.Common.Follow;
+using HiveFive.Core.Common.Hive;
 using HiveFive.Core.Common.Throttle;
 using HiveFive.Framework.Extensions;
 using HiveFive.Web.Extensions;

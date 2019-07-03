@@ -58,6 +58,8 @@
     <Compile Include="AccountSettings\AccountSettingsReader.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="Email\EmailService.cs" />
+    <Compile Include="Follow\FollowerStore.cs" />
+    <Compile Include="Hive\HiveConnectionStore.cs" />
     <Compile Include="Logon\LogonWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Throttle\ThrottleStore.cs" />
@@ -78,6 +80,10 @@
     <ProjectReference Include="..\HiveFive.Enums\HiveFive.Enums.csproj">
       <Project>{1C925E14-AB96-4C7C-8537-4237547FB63E}</Project>
       <Name>HiveFive.Enums</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HiveFive.Framework\HiveFive.Framework.csproj">
+      <Project>{F15F3F51-3A86-46F0-94D6-887E149F7629}</Project>
+      <Name>HiveFive.Framework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

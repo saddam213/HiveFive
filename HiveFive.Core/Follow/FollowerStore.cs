@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HiveFive.Core.Common.Follow;
 using HiveFive.Framework.Objects;
 
-namespace HiveFive.Web.Hubs
+namespace HiveFive.Core.Follow
 {
 	public class FollowerStore : IFollowerStore
 	{

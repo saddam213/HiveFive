@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using HiveFive.Core.Common;
 using HiveFive.Core.Common.Throttle;
 using HiveFive.Data.Redis;
 

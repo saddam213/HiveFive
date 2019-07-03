@@ -7,6 +7,8 @@ using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using HiveFive.Core.Common.Follow;
+using HiveFive.Core.Common.Hive;
 using HiveFive.Web.DI;
 using HiveFive.Web.Hubs;
 
@@ -20,11 +22,7 @@ namespace HiveFive.Web
 			MvcHandler.DisableMvcResponseHeader = true;
 			ViewEngines.Engines.Clear();
 			ViewEngines.Engines.Add(new RazorViewEngine());
-
 			DependencyRegistrar.Register();
-			DependencyRegistrar.RegisterSingletonComponent<IHiveConnectionStore>(() => new HiveConnectionStore());
-			DependencyRegistrar.RegisterSingletonComponent<IFollowerStore>(() => new FollowerStore());
-
 			ModelMetadataProviders.Current = new CachedDataAnnotationsModelMetadataProvider();
 			FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 			RouteConfig.RegisterRoutes(RouteTable.Routes);
