@@ -26,6 +26,7 @@ namespace HiveFive.Web
 			ModelMetadataProviders.Current = new CachedDataAnnotationsModelMetadataProvider();
 			FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 			RouteConfig.RegisterRoutes(RouteTable.Routes);
+			CaptchaConfig.RegisterCaptcha(WebConfigurationManager.AppSettings["Captcha_Key"], WebConfigurationManager.AppSettings["Captcha_Secret"]);
 			ResourceConfig.Init("HiveFive-User", WebConfigurationManager.AppSettings["Localization_EnabledLanguages"]);
 		}
 

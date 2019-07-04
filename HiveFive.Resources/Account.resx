@@ -229,6 +229,9 @@
   <data name="ResetTwoFactorTitle" xml:space="preserve">
     <value>Reset your TwoFactor.</value>
   </data>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>View/Change your account settings.</value>
+  </data>
   <data name="ValidationErrorMessageInvalidEmail" xml:space="preserve">
     <value>Invalid email address</value>
   </data>

@@ -385,6 +385,15 @@ namespace HiveFive.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View/Change your account settings..
+        /// </summary>
+        public static string SettingsTitle {
+            get {
+                return ResourceManager.GetString("SettingsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid email address.
         /// </summary>
         public static string ValidationErrorMessageInvalidEmail {

@@ -1,12 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using HiveFive.Web.ActionResults;
+using HiveFive.Web.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace HiveFive.Web.Controllers
 {
+	public class UserController : BaseController
+	{
+		private IdentityUserManager _userManager;
+		public UserController() { }
+		public UserController(IdentityUserManager userManager)
+		{
+			UserManager = userManager;
+		}
+
+		public IdentityUserManager UserManager
+		{
+			get { return _userManager ?? HttpContext.GetOwinContext().GetUserManager<IdentityUserManager>(); }
+			private set { _userManager = value; }
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_userManager != null)
+				{
+					_userManager.Dispose();
+					_userManager = null;
+				}
+			}
+			base.Dispose(disposing);
+		}
+	}
+
 	public class BaseController : Controller
 	{
 		protected override JsonResult Json(object data, string contentType, System.Text.Encoding contentEncoding, JsonRequestBehavior behavior)

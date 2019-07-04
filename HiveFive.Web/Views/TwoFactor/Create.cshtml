@@ -3,9 +3,9 @@
 	ViewBag.Title = TwoFactor.CreatePageTitle;
 }
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
-	<div class="col-md-6">
+<div class="d-flex justify-content-center pt-3 pt-md-5">
+	<div class="bg-secondary form-container">
+		<h2>@ViewBag.Title</h2>
 		<section>
 
 			@using (Html.BeginForm("Create", "TwoFactor", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -57,7 +57,7 @@
 						<p>@TwoFactor.CreateFieldLabelOtp</p>
 						<div class="input-group  input-group-sm">
 							<span class="input-group-btn">
-								<button id="verify-otp" class="btn btn-sm btn-outline-dark" style="width: 100px" type="button" data-key="@Model.OtpData" data-action="@Url.Action("VerifyOtpCode")" data-success="@TwoFactor.SuccessMessageVerifyOtpCode" data-error="@TwoFactor.ErrorMessageVerifyOtpCode">@TwoFactor.CreateButtonVerifyCode</button>
+								<button id="verify-otp" class="btn btn-sm btn-outline-success" style="width: 100px" type="button" data-key="@Model.OtpData" data-action="@Url.Action("VerifyOtpCode")" data-success="@TwoFactor.SuccessMessageVerifyOtpCode" data-error="@TwoFactor.ErrorMessageVerifyOtpCode">@TwoFactor.CreateButtonVerifyCode</button>
 							</span>
 							@Html.TextBox("OtpCode", "", new { id = "code-otp", @class = "form-control data-input", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessageVerifyRequired })
 						</div>
@@ -69,7 +69,7 @@
 				@*Pincode*@
 				<div class="form-group data-input-pincode form-group-sm">
 					<div class="">
-						<p>@TwoFactor.CreateFieldLabelPin</p>
+						<small>@TwoFactor.CreateFieldLabelPin</small>
 						@Html.TextBoxFor(m => m.DataPin, new { @class = "form-control data-input", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessagePinValidation })
 						@Html.ValidationMessageFor(m => m.DataPin, "", new { @class = "text-danger" })
 					</div>
@@ -78,10 +78,10 @@
 				@*Email*@
 				<div class="form-group data-input-email form-group-sm">
 					<div class="">
-						<p>@TwoFactor.RemoveFieldEmailCode</p>
+						<small>@TwoFactor.RemoveFieldEmailCode</small>
 						<div class="input-group input-group-sm">
 							<span class="input-group-btn input-group-sm">
-								<a id="send-email" class="btn btn-sm btn-outline-dark" style="width: 120px" data-action="@Url.Action("SendEmailCode")" data-success="@TwoFactor.SuccessMessageSendEmailCode" data-error="@TwoFactor.ErrorMessageSendEmailCode">@TwoFactor.CreateButtonSendCode</a>
+								<a id="send-email" class="btn btn-sm btn-outline-success" style="width: 120px" data-action="@Url.Action("SendEmailCode")" data-success="@TwoFactor.SuccessMessageSendEmailCode" data-error="@TwoFactor.ErrorMessageSendEmailCode">@TwoFactor.CreateButtonSendCode</a>
 							</span>
 							@Html.TextBoxFor(m => m.DataEmail, new { @class = "form-control data-input", type = "email", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessageEmailRequired, data_rule_email = true })
 						</div>
@@ -94,7 +94,7 @@
 						<p>@TwoFactor.CreateFieldLabelVerifyEmail</p>
 						<div class="input-group input-group-sm">
 							<span class="input-group-btn">
-								<a id="verify-email" class="btn btn-sm btn-outline-dark" style="width: 120px" data-action="@Url.Action("VerifyEmailCode")" data-success="@TwoFactor.SuccessMessageVerifyEmailCode" data-error="@TwoFactor.ErrorMessageVerifyEmailCode">@TwoFactor.CreateButtonVerifyCode</a>
+								<a id="verify-email" class="btn btn-sm btn-outline-success" style="width: 120px" data-action="@Url.Action("VerifyEmailCode")" data-success="@TwoFactor.SuccessMessageVerifyEmailCode" data-error="@TwoFactor.ErrorMessageVerifyEmailCode">@TwoFactor.CreateButtonVerifyCode</a>
 							</span>
 							@Html.TextBox("EmailCode", "", new { @class = "form-control data-input", id = "code-email", data_rule_required = "true", data_msg_required = TwoFactor.ErrorMessageVerifyRequired })
 						</div>
@@ -104,10 +104,10 @@
 				<hr class="data-input-email" />
 
 				<div class="d-flex">
-					<div class="pr-1">
-						<a class="btn btn-outline-secondary btn-block" href="@Url.Action("Index", "AccountSettings")">@TwoFactor.CreateButtonCancel</a>
+					<div class="flex-fill pr-1">
+						<a class="btn btn-outline-dark btn-block" href="@Url.Action("Index", "AccountSettings")">@TwoFactor.CreateButtonCancel</a>
 					</div>
-					<div class="pl-1">
+					<div class="flex-fill pl-1">
 						<button class="btn btn-outline-primary btn-block" type="submit">@TwoFactor.CreateButtonSubmit</button>
 					</div>
 				</div>

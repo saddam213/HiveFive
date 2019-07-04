@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using HiveFive.Core.Common.Email;
 using HiveFive.Core.Common.TwoFactor;
@@ -10,36 +7,12 @@ using HiveFive.Enums;
 using HiveFive.Web.Extensions;
 using HiveFive.Web.Identity;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 
 namespace HiveFive.Web.Controllers
 {
 	[Authorize]
-	public class TwoFactorController : BaseController
+	public class TwoFactorController : UserController
 	{
-		private IdentityUserManager _userManager;
-
-		public TwoFactorController()
-		{
-		}
-
-		public TwoFactorController(IdentityUserManager userManager)
-		{
-			UserManager = userManager;
-		}
-
-		public IdentityUserManager UserManager
-		{
-			get
-			{
-				return _userManager ?? HttpContext.GetOwinContext().GetUserManager<IdentityUserManager>();
-			}
-			private set
-			{
-				_userManager = value;
-			}
-		}
-
 		public IEmailService EmailService { get; set; }
 
 		#region Create

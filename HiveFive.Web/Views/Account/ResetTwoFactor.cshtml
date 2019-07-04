@@ -3,15 +3,14 @@
 	ViewBag.Title = Account.ResetTwoFactorPageTitle;
 }
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
-	<div class="col-md-6">
+<div class="d-flex justify-content-center pt-3 pt-md-5">
+	<div class="bg-secondary form-container">
+		<h2>@ViewBag.Title</h2>
 		<section>
 			@using (Html.BeginForm("ResetTwoFactor", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 			{
 				@Html.AntiForgeryToken()
 				@Html.HiddenFor(m => m.ReturnUrl)
-				@Html.AntiForgeryToken()
 				<h4>@Account.ResetTwoFactorTitle</h4>
 				<hr />
 				<div class="form-group">
@@ -21,7 +20,7 @@
 					<p style="font-size:13px">Please enter the TwoFactor recovery code that was sent to your registered email address.</p>
 				</div>
 				<div class="form-group">
-					<input id="submit" type="submit" value="@Account.ResetTwoFactorSubmitButton" class="btn btn-outline-primary" />
+					<input id="submit" type="submit" value="@Account.ResetTwoFactorSubmitButton" class="btn btn-block btn-outline-primary" />
 				</div>
 			}
 		</section>

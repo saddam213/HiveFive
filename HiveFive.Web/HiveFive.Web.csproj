@@ -52,6 +52,9 @@
     <Reference Include="Base32, Version=1.0.0.26, Culture=neutral, PublicKeyToken=3427d4dc8cee30c6, processorArchitecture=MSIL">
       <HintPath>..\packages\Base32.1.0.0.26\lib\portable-net40+sl40+win+wp80\Base32.dll</HintPath>
     </Reference>
+    <Reference Include="hbehr.recaptcha, Version=1.7.0.19588, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ReCaptcha-AspNet.1.7.0\lib\net472\hbehr.recaptcha.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
     </Reference>
@@ -169,6 +172,7 @@
   <ItemGroup>
     <Compile Include="ActionResults\CloseModalResult.cs" />
     <Compile Include="ActionResults\JsonNetResult.cs" />
+    <Compile Include="App_Start\CaptchaConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\ResourceConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

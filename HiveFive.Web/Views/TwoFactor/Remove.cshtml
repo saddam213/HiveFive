@@ -3,9 +3,9 @@
 	ViewBag.Title = TwoFactor.RemovePageTitle;
 }
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
-	<div class="col-md-6">
+<div class="d-flex justify-content-center pt-3 pt-md-5">
+	<div class="bg-secondary form-container">
+		<h2>@ViewBag.Title</h2>
 		<section>
 			@using (Html.BeginForm("Remove", "TwoFactor", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 			{

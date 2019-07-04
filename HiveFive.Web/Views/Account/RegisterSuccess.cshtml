@@ -2,9 +2,11 @@
 	ViewBag.Title = Account.RegisterSuccessPageTitle;
 }
 
-<h2>@ViewBag.Title.</h2>
-<div>
-	<p>
-		@Account.RegisterSuccessMessage
-	</p>
+<div class="d-flex justify-content-center pt-3 pt-md-5">
+	<div class="card border-success mb-3" style="max-width: 600px">
+		<div class="card-body">
+			<h4 class="card-title">@ViewBag.Title</h4>
+			<p class="card-text">@Account.RegisterSuccessMessage</p>
+		</div>
+	</div>
 </div>

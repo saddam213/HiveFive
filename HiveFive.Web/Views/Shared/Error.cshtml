@@ -3,6 +3,13 @@
 	ViewBag.Title = General.ErrorPageTitle;
 }
 
-<h1 class="text-danger">@General.ErrorTitle</h1>
-<h2 class="text-danger">@General.ErrorMessage</h2>
+<div class="d-flex justify-content-center pt-3 pt-md-5">
+	<div class="card border-danger mb-3" style="max-width: 600px">
+		<div class="card-body">
+			<h4 class="card-title">@General.ErrorTitle</h4>
+			<p class="card-text">@General.ErrorMessage</p>
+		</div>
+	</div>
+</div>
+
 

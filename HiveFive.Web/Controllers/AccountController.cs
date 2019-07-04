@@ -19,33 +19,10 @@ using Microsoft.Owin.Security;
 namespace HiveFive.Web.Controllers
 {
 	[Authorize]
-	public class AccountController : Controller
+	public class AccountController : UserController
 	{
-		private IdentityUserManager _userManager;
-
-		public AccountController()
-		{
-		}
-
-		public AccountController(IdentityUserManager userManager)
-		{
-			UserManager = userManager;
-		}
-
-		public IdentityUserManager UserManager
-		{
-			get
-			{
-				return _userManager ?? HttpContext.GetOwinContext().GetUserManager<IdentityUserManager>();
-			}
-			private set
-			{
-				_userManager = value;
-			}
-		}
-
-		public IEmailService EmailService { get; set; }
 		public ILogonWriter LogonWriter { get; set; }
+		public IEmailService EmailService { get; set; }
 
 		[AllowAnonymous]
 		public ActionResult Login(string returnUrl)
@@ -59,11 +36,11 @@ namespace HiveFive.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
 		{
-			//if (!CaptchaHelper.Validate())
-			//{
-			//	ModelState.AddModelError("", Resources.Login.LoginErrorMessageInvalidCaptcha);
-			//	return View(model);
-			//}
+			if (!await Request.ValidateCaptcha())
+			{
+				ModelState.AddModelError("", Resources.Account.LoginErrorMessageInvalidCaptcha);
+				return View(model);
+			}
 
 			if (!ModelState.IsValid)
 			{
@@ -157,12 +134,6 @@ namespace HiveFive.Web.Controllers
 		[AllowAnonymous]
 		public async Task<ActionResult> VerifyTwoFactor(VerifyTwoFactorModel model)
 		{
-			//if (!CaptchaHelper.Validate())
-			//{
-			//	ModelState.AddModelError("", Resources.Login.LoginErrorMessageInvalidCaptcha);
-			//	return View(model);
-			//}
-
 			if (!ModelState.IsValid)
 			{
 				return View(model);
@@ -222,12 +193,6 @@ namespace HiveFive.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ResetTwoFactor(ResetTwoFactorModel model)
 		{
-			//if (!CaptchaHelper.Validate())
-			//{
-			//	ModelState.AddModelError("", Resources.Login.LoginErrorMessageInvalidCaptcha);
-			//	return View(model);
-			//}
-
 			if (!ModelState.IsValid)
 				return View(model);
 
@@ -277,11 +242,11 @@ namespace HiveFive.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Register(RegisterViewModel model)
 		{
-			//if (!CaptchaHelper.Validate())
-			//{
-			//	ModelState.AddModelError("", Resources.Login.RegisterErrorMessageInvalidCaptcha);
-			//	return View(model);
-			//}
+			if (!await Request.ValidateCaptcha())
+			{
+				ModelState.AddModelError("", Resources.Account.LoginErrorMessageInvalidCaptcha);
+				return View(model);
+			}
 
 			if (!ModelState.IsValid)
 			{
@@ -359,11 +324,11 @@ namespace HiveFive.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
 		{
-			//if (!CaptchaHelper.Validate())
-			//{
-			//	ModelState.AddModelError("", Resources.Login.ForgotPasswordErrorMessageInvalidCaptcha);
-			//	return View(model);
-			//}
+			if (!await Request.ValidateCaptcha())
+			{
+				ModelState.AddModelError("", Resources.Account.LoginErrorMessageInvalidCaptcha);
+				return View(model);
+			}
 
 			if (!ModelState.IsValid)
 			{
@@ -405,6 +370,12 @@ namespace HiveFive.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
 		{
+			if (!await Request.ValidateCaptcha())
+			{
+				ModelState.AddModelError("", Resources.Account.LoginErrorMessageInvalidCaptcha);
+				return View(model);
+			}
+
 			if (!ModelState.IsValid)
 			{
 				return View(model);
@@ -541,20 +512,6 @@ namespace HiveFive.Web.Controllers
 				Device = Request.GetDevice(),
 				Type = type
 			});
-		}
-
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				if (_userManager != null)
-				{
-					_userManager.Dispose();
-					_userManager = null;
-				}
-			}
-
-			base.Dispose(disposing);
 		}
 
 		#region Helpers

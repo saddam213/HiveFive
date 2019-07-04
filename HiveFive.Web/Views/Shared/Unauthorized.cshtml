@@ -2,6 +2,11 @@
 	ViewBag.Title = General.UnauthorizedPageTitle;
 }
 
-<h1 class="text-warning">@General.UnauthorizedTitle</h1>
-<h2 class="text-danger">@General.UnauthorizedMessage</h2>
-
+<div class="d-flex justify-content-center pt-3 pt-md-5">
+	<div class="card border-warning mb-3" style="max-width: 600px">
+		<div class="card-body">
+			<h4 class="card-title">@General.UnauthorizedTitle</h4>
+			<p class="card-text">@General.UnauthorizedMessage</p>
+		</div>
+	</div>
+</div>
