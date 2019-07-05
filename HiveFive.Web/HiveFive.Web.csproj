@@ -188,11 +188,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Hubs\Messages\ErrorMessage.cs" />
-    <Compile Include="Hubs\Messages\FollowMessage.cs" />
     <Compile Include="Hubs\HiveHub.cs" />
-    <Compile Include="Hubs\Messages\HiveMessage.cs" />
-    <Compile Include="Hubs\Messages\HiveUpdateMessage.cs" />
     <Compile Include="Hubs\HiveValidation.cs" />
     <Compile Include="Hubs\HubIdentityProvider.cs" />
     <Compile Include="Hubs\IHiveHub.cs" />

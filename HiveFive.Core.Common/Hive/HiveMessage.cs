@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HiveFive.Web.Hubs
+namespace HiveFive.Core.Common.Hive
 {
 	public class HiveMessage
 	{

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using HiveFive.Core.Common.Hive;
 
 namespace HiveFive.Web.Hubs
 {

@@ -54,6 +54,10 @@
     <Compile Include="Account\VerifyTwoFactorModel.cs" />
     <Compile Include="Email\IEmailService.cs" />
     <Compile Include="Follow\IFollowerStore.cs" />
+    <Compile Include="Hive\ErrorMessage.cs" />
+    <Compile Include="Hive\FollowMessage.cs" />
+    <Compile Include="Hive\HiveMessage.cs" />
+    <Compile Include="Hive\HiveUpdateMessage.cs" />
     <Compile Include="Hive\IHiveConnectionStore.cs" />
     <Compile Include="Throttle\IThrottleStore.cs" />
     <Compile Include="Logon\AddLogonModel.cs" />

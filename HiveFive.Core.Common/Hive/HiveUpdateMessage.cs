@@ -1,4 +1,4 @@
-﻿namespace HiveFive.Web.Hubs
+﻿namespace HiveFive.Core.Common.Hive
 {
 	public class HiveUpdateMessage
 	{
