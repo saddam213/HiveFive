@@ -87,5 +87,10 @@ namespace HiveFive.Web.Hubs
 
 			return Regex.IsMatch(handle, @"^\w+$");
 		}
+
+		public static string ValidateMessage(string messageInput)
+		{
+			return Regex.Replace(messageInput.Truncate(240), @"[\r\n]+", "\r\n");
+		}
 	}
 }

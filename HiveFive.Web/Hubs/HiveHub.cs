@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HiveFive.Core.Common.Follow;
 using HiveFive.Core.Common.Hive;
@@ -47,7 +48,7 @@ namespace HiveFive.Web.Hubs
 			if (throttleResult.ThrottleRequest)
 				return await SendErrorMessage("Rate Limit", throttleResult.Message);
 
-			var message = messageInput.Truncate(240);
+			var message = HiveValidation.ValidateMessage(messageInput);
 			var timestamp = DateTime.UtcNow.ToJavaTime();
 			var hives = HiveValidation.GetHives(message, hiveTargets);
 			var messageId = HiveValidation.GetMessageId(senderId, message, timestamp);

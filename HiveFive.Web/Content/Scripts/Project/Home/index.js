@@ -17,7 +17,8 @@
 	const createHiveModalTemplate = $("#createHiveModalTemplate").html();
 
 	const linkifyImgurLink = $("#linkifyImgurLink").html();
-	const linkifyImgurRegexp = /https?:\/\/(?:www\.)?(?:i\.)?imgur\.com\/(a|gallery)?\/?([\w+]+).?(?:[\w+]+)?/;
+	//const linkifyImgurRegexp = /https?:\/\/(?:www\.)?(?:i\.)?imgur\.com\/(a|gallery)?\/?([\w+]+).?(?:[\w+]+)?/;
+	const linkifyImgurRegexp = /https?:\/\/(?:www\.)?(?:i\.)?imgur\.com\/(?:a|gallery)?\/?(?:[\w+]+)\.([\w+]{3,})/;
 
 	const linkifyYoutubeLink = $("#linkifyYoutubeLink").html();
 	const linkifyYoutubeRegexp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
@@ -26,10 +27,8 @@
 
 		if (text.match(linkifyImgurRegexp)) {
 			const match = linkifyImgurRegexp.exec(text);
-			const embedCode = match[1] === undefined
-				? match[2]
-				: "a/" + match[2];
-			return Mustache.render(linkifyImgurLink, embedCode);
+			const isVideo = ["mp4","webem"].includes(match[1]);
+			return Mustache.render(linkifyImgurLink, { src: match[0], isVideo: isVideo });
 		}
 
 		if (text.match(linkifyYoutubeRegexp)) {

@@ -44,12 +44,12 @@
 				<span class="action-userhandle message-userhandle message-userhandle-verified" data-user="{{Sender}}"><i class="fa fa-user-check"></i> @@{{Sender}}</span>
 				{{/IsSenderVerified}}
 				{{^IsSenderVerified}}
-					{{#SenderName}}
-					<small class="action-userhandle message-userhandle" data-user="{{Sender}}">{{SenderName}} (<small>@@{{Sender}}</small>)</small>
-					{{/SenderName}}
-					{{^SenderName}}
-					<small class="action-userhandle message-userhandle" data-user="{{Sender}}">@@{{Sender}}</small>
-					{{/SenderName}}
+				{{#SenderName}}
+				<small class="action-userhandle message-userhandle" data-user="{{Sender}}">{{SenderName}} (<small>@@{{Sender}}</small>)</small>
+				{{/SenderName}}
+				{{^SenderName}}
+				<small class="action-userhandle message-userhandle" data-user="{{Sender}}">@@{{Sender}}</small>
+				{{/SenderName}}
 				{{/IsSenderVerified}}
 				<div class="d-flex">
 					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
@@ -219,13 +219,23 @@
 </script>
 
 <script id="linkifyYoutubeLink" type="text/html">
-	<iframe style="width:100%;height:300px;margin-top:10px" src="https://www.youtube-nocookie.com/embed/{{.}}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	<div class="embed-responsive embed-responsive-16by9">
+		<iframe class="embed-responsive-item" src="https://www.youtube-nocookie.com/embed/{{.}}" frameborder="0" allow="autoplay; encrypted-media;" allowfullscreen></iframe>
+	</div>
 </script>
 
 <script id="linkifyImgurLink" type="text/html">
-	<div>
-		<blockquote class="imgur-embed-pub" lang="en" data-id="{{.}}"></blockquote>
-		<script src="https://s.imgur.com/min/embed.js" charset="utf-8"></script>
+	<div class="p-2">
+		{{#isVideo}}
+		<div class="embed-responsive embed-responsive-16by9">
+			<video class="embed-responsive-item" controls="controls" loop="loop" muted="muted" preload="metadata">
+				<source src="{{src}}" />
+			</video>
+		</div>
+		{{/isVideo}}
+		{{^isVideo}}
+		<img src="{{src}}" class="img-fluid" />
+		{{/isVideo}}
 	</div>
 </script>
 
