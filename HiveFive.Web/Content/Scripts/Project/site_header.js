@@ -128,7 +128,7 @@ Settings.UpdateTheme = (theme) => {
 		Settings.Theme = theme;
 		Settings.Save();
 	}
-	$("#theme-css").attr("href", "/Content/Css/bootstrap-" + theme + ".css");
+	$("#theme-css").attr("href", "/Content/Css/bootstrap-" + theme + ".css?v=2");
 };
 
 if (Settings.Theme != "light") {

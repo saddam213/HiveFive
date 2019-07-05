@@ -55,6 +55,13 @@ namespace HiveFive.Web.Extensions
 			return string.Format("{0}", Math.Abs(ipString.GetHashCode()));
 		}
 
+		public static long GetIPAddressUserId(this HttpRequestBase request)
+		{
+			var ip = request.GetIPAddress();
+			var ipString = IPAddress.Parse(ip).ToUncompressedString();
+			return Math.Abs(ipString.GetHashCode());
+		}
+
 		public static string GetIPAddressFromHeader(IHeaderDictionary headers)
 		{
 			var headerValue = headers[Header_CloudFlare_IP];

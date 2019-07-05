@@ -11793,9 +11793,12 @@ label,
 
 
 .message-userhandle {
-	color: #008cba;
+	
 }
 
+.message-userhandle-verified {
+	color: #008cba;
+}
 
 .action-userhandle {
 	cursor: pointer;

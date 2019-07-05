@@ -435,7 +435,7 @@
 		}
 
 		const selectedHives = $("#feed-message-option-hives").val() || [];
-		await hiveHub.server.sendMessage(message.substring(0, 240), selectedHives.join());
+		await hiveHub.server.sendMessage(Settings.Handle, message.substring(0, 240), selectedHives.join());
 		closeMessageContainer();
 		Settings.LastSelectedHives = selectedHives;
 		Settings.Save();
@@ -487,6 +487,7 @@
 
 
 	const rebuildSettings = () => {
+		$("#settings-userhandle").val(Settings.Handle || currentUserHandle);
 		$("#settings-messagestore-max").val(MessageCache.MaxCount);
 		$("#settings-messagestore-enabled").prop('checked', MessageCache.Enabled);
 		$("#settings-messagestore-global-enabled").prop('checked', MessageCache.EnabledGlobal);
@@ -530,7 +531,17 @@
 		rebuildSettings();
 	});
 
-	$("#settings-messagestore-save").on("click", function () {
+	const userHandleRegexp = /^([\w+]{2,15})$/;
+	$("#settings-messagestore-save").on("click",  async function () {
+		const selectedHandle = $("#settings-userhandle").val();
+		if (selectedHandle.length > 0) {
+			if (!userHandleRegexp.test(selectedHandle)) {
+				await notifyModal("Invalid User Handle", "User Handle must only contain letters, numbers and underscore, and be between 2 and 15 charcters.")
+				return;
+			}
+			Settings.Handle = selectedHandle;
+		}
+
 		MessageCache.Enabled = $("#settings-messagestore-enabled").is(":checked");
 		MessageCache.EnabledGlobal = $("#settings-messagestore-global-enabled").is(":checked");
 		MessageCache.MaxCount = Math.max(0, Number($("#settings-messagestore-max").val()));

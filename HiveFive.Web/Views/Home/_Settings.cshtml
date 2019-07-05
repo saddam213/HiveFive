@@ -11,6 +11,14 @@
 
 	<small><b>General</b></small>
 	<hr style="margin:0" />
+	@if (!User.Identity.IsAuthenticated)
+	{
+		<div class="d-flex">
+			<span style="font-size:12px">User Handle</span>
+			<input id="settings-userhandle" class="flex-fill" style="height:20px;margin-left:5px; font-size:12px" />
+			<small class="field-validation-valid text-danger" data-valmsg-for="settings-userhandle" data-valmsg-replace="true"></small>
+		</div>
+	}
 	<div class="d-flex align-items-center mt-1" style="cursor:pointer">
 		<div class="d-flex">
 			<i data-theme="light" class="fa fa-sun text-info bootstrap-theme-select bootstrap-theme-select-sun" style="font-size:20px"></i>
@@ -24,11 +32,11 @@
 
 	<small><b>Local Storage</b></small>
 	<hr style="margin:0" />
-	<div class="custom-control custom-switch">
+	<div class="custom-control custom-switch" style="font-size:12px">
 		<input type="checkbox" class="custom-control-input" id="settings-messagestore-enabled" checked="">
 		<label class="custom-control-label" for="settings-messagestore-enabled">Store hive messages</label>
 	</div>
-	<div class="custom-control custom-switch">
+	<div class="custom-control custom-switch" style="font-size:12px">
 		<input type="checkbox" class="custom-control-input" id="settings-messagestore-global-enabled" checked="">
 		<label class="custom-control-label" for="settings-messagestore-global-enabled">Store #hive messages</label>
 	</div>
@@ -38,11 +46,11 @@
 	</div>
 	<small><b>Render Settings</b></small>
 	<hr style="margin:0" />
-	<div class="custom-control custom-switch">
+	<div class="custom-control custom-switch" style="font-size:12px">
 		<input type="checkbox" class="custom-control-input" id="settings-render-link" checked="">
 		<label class="custom-control-label" for="settings-render-link">Render Links <small>(at own risk!)</small></label>
 	</div>
-	<div class="custom-control custom-switch">
+	<div class="custom-control custom-switch" style="font-size:12px">
 		<input type="checkbox" class="custom-control-input" id="settings-render-followlink" checked="">
 		<label class="custom-control-label" for="settings-render-followlink">Render Links Follow Only</label>
 	</div>

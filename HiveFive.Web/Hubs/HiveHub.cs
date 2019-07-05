@@ -39,21 +39,22 @@ namespace HiveFive.Web.Hubs
 			await base.OnDisconnected(stopCalled);
 		}
 
-		public async Task<bool> SendMessage(string messageInput, string hiveTargets)
+		public async Task<bool> SendMessage(string sender, string messageInput, string hiveTargets)
 		{
-			var sender = GetUserHandle();
-			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.SendMessage, sender, IsAuthenticated);
+			var senderId = GetUserHandle();
+			var senderName = GetSenderName(sender, senderId);
+			var throttleResult = await ThrottleStore.CheckThrottle(ThrottleAction.SendMessage, senderId, IsAuthenticated);
 			if (throttleResult.ThrottleRequest)
 				return await SendErrorMessage("Rate Limit", throttleResult.Message);
 
 			var message = messageInput.Truncate(240);
 			var timestamp = DateTime.UtcNow.ToJavaTime();
 			var hives = HiveValidation.GetHives(message, hiveTargets);
-			var messageId = HiveValidation.GetMessageId(sender, message, timestamp);
+			var messageId = HiveValidation.GetMessageId(senderId, message, timestamp);
 
 			var hivers = await ConnectionStore.GetHiveUsers(hives);
 			var mentions = HiveValidation.GetMentions(message);
-			var followers = await GetFollowers(sender);
+			var followers = await GetFollowers(senderId);
 			var messages = new Dictionary<string, HiveMessage>();
 
 			// Messages to users in hives
@@ -67,8 +68,9 @@ namespace HiveFive.Web.Hubs
 					messages.Add(userHandle, new HiveMessage
 					{
 						Id = messageId,
-						Sender = sender,
-						Receiver = userHandle,
+						Sender = senderId,
+						SenderName = senderName,
+						IsSenderVerified = IsAuthenticated,
 						Message = message,
 						Timestamp = timestamp,
 						Hives = new HashSet<string>(hives),
@@ -91,8 +93,9 @@ namespace HiveFive.Web.Hubs
 					messages.Add(userHandle, new HiveMessage
 					{
 						Id = messageId,
-						Sender = sender,
-						Receiver = userHandle,
+						Sender = senderId,
+						SenderName = senderName,
+						IsSenderVerified = IsAuthenticated,
 						Message = message,
 						Timestamp = timestamp,
 						Hives = new HashSet<string>(hives),
@@ -115,8 +118,9 @@ namespace HiveFive.Web.Hubs
 					messages.Add(userHandle, new HiveMessage
 					{
 						Id = messageId,
-						Sender = sender,
-						Receiver = userHandle,
+						Sender = senderId,
+						SenderName = senderName,
+						IsSenderVerified = IsAuthenticated,
 						Message = message,
 						Timestamp = timestamp,
 						Hives = new HashSet<string>(hives),
@@ -329,6 +333,21 @@ namespace HiveFive.Web.Hubs
 			return IsAuthenticated
 				? Context.Request.GetHttpContext().User.Identity.Name
 				: Context.Request.GetHttpContext().Request.GetIPAddressUser();
+		}
+
+		private string GetSenderName(string sender, string senderId)
+		{
+			if (IsAuthenticated)
+				return null;
+
+			if (string.IsNullOrEmpty(sender) || sender.Equals(senderId))
+				return null;
+
+			var handle = sender.Trim().Truncate(15);
+			if (!HiveValidation.ValidateUserHandle(handle))
+				return null;
+
+			return handle;
 		}
 	}
 }

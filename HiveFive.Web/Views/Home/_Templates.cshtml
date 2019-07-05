@@ -40,7 +40,17 @@
 	<li class="list-group-item message-item message-sender-{{Sender}} message-id-{{Id}}" data-messageid="{{Id}}" data-filter="{{Hives}}">
 		<div class="d-flex flex-column">
 			<div class="d-flex justify-content-between">
-				<span class="action-userhandle message-userhandle" data-user="{{Sender}}">@@{{Sender}}</span>
+				{{#IsSenderVerified}}
+				<span class="action-userhandle message-userhandle message-userhandle-verified" data-user="{{Sender}}"><i class="fa fa-user-check"></i> @@{{Sender}}</span>
+				{{/IsSenderVerified}}
+				{{^IsSenderVerified}}
+					{{#SenderName}}
+					<small class="action-userhandle message-userhandle" data-user="{{Sender}}">{{SenderName}} (<small>@@{{Sender}}</small>)</small>
+					{{/SenderName}}
+					{{^SenderName}}
+					<small class="action-userhandle message-userhandle" data-user="{{Sender}}">@@{{Sender}}</small>
+					{{/SenderName}}
+				{{/IsSenderVerified}}
 				<div class="d-flex">
 					<small class="time-elapsed" data-time="{{Timestamp}}">{{TimeElapsed}}</small>
 					<div class="btn-group">

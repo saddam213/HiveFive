@@ -11560,6 +11560,9 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .message-userhandle {
+}
+
+.message-userhandle-verified {
 	color: #00bc8c;
 }
 
