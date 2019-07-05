@@ -17,8 +17,8 @@
 	const createHiveModalTemplate = $("#createHiveModalTemplate").html();
 
 	const linkifyImgurLink = $("#linkifyImgurLink").html();
-	//const linkifyImgurRegexp = /https?:\/\/(?:www\.)?(?:i\.)?imgur\.com\/(a|gallery)?\/?([\w+]+).?(?:[\w+]+)?/;
 	const linkifyImgurRegexp = /https?:\/\/(?:www\.)?(?:i\.)?imgur\.com\/(?:a|gallery)?\/?(?:[\w+]+)\.([\w+]{3,})/;
+	const linkifyRedditRegexp = /https:\/\/preview.redd.it\/(?:[\w+]+)\.([\w+]{3,})\?width=(?:[0-9]+)&crop=(?:[\w+]+)&auto=(?:[\w+]+)&s=(?:[\w+]+)/;
 
 	const linkifyYoutubeLink = $("#linkifyYoutubeLink").html();
 	const linkifyYoutubeRegexp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
@@ -28,6 +28,12 @@
 		if (text.match(linkifyImgurRegexp)) {
 			const match = linkifyImgurRegexp.exec(text);
 			const isVideo = ["mp4","webem"].includes(match[1]);
+			return Mustache.render(linkifyImgurLink, { src: match[0], isVideo: isVideo });
+		}
+
+		if (text.match(linkifyRedditRegexp)) {
+			const match = linkifyRedditRegexp.exec(text);
+			const isVideo = ["mp4", "webem"].includes(match[1]);
 			return Mustache.render(linkifyImgurLink, { src: match[0], isVideo: isVideo });
 		}
 
@@ -109,7 +115,7 @@
 	const addNewMessage = (data, updateUnread) => {
 		const feedList = $("#feed-messages-myhives");
 		if (feedList.find(".message-id-" + data.Id).length == 0) {
-			$("#feed-placeholder-myhives").remove();
+			$("#feed-placeholder-myhives").hide();
 
 			const renderedMessage = renderEmbeddedTags(data);
 			feedList.prepend(Mustache.render(messageTemplate, renderedMessage));
@@ -130,7 +136,7 @@
 	const addNewMentionMessage = (data, updateUnread) => {
 		const feedList = $("#feed-messages-mention");
 		if (feedList.find(".message-id-" + data.Id).length == 0) {
-			$("#feed-placeholder-mention").remove();
+			$("#feed-placeholder-mention").hide();
 
 			const renderedMessage = renderEmbeddedTags(data);
 			feedList.prepend(Mustache.render(mentionTemplate, renderedMessage));
@@ -149,7 +155,7 @@
 	const addNewFollowMessage = (data, updateUnread) => {
 		const feedList = $("#feed-messages-friends");
 		if (feedList.find(".message-id-" + data.Id).length == 0) {
-			$("#feed-placeholder-friends").remove();
+			$("#feed-placeholder-friends").hide();
 
 			const renderedMessage = renderEmbeddedTags(data);
 			feedList.prepend(Mustache.render(friendsTemplate, renderedMessage));
@@ -242,6 +248,7 @@
 
 
 	const renderMessageCache = () => {
+		$("#feed-messages-myhives, #feed-messages-mention, #feed-messages-friends").show();
 		if (MessageCache.Enabled == true) {
 			for (const message of MessageCache.GetMessages()) {
 				message.Message = message.Message.substring(0, 240);
@@ -549,12 +556,16 @@
 		Settings.RenderLinks = $("#settings-render-link").is(":checked");
 		Settings.RenderLinksFollowOnly = $("#settings-render-followlink").is(":checked");
 		Settings.Save();
+		renderMessageCache();
 	});
 
-	$("#settings-messagestore-clear").on("click", function () {
-		Settings.Clear();
-		MessageCache.Clear();
-		location.reload();
+	$("#settings-messagestore-clear").on("click", async function () {
+		const result = await confirmModal("Clear Settings", "Are you sure you want to clear settings, this includes saved followers, hives and messages");
+		if (result.Success === true) {
+			Settings.Clear();
+			MessageCache.Clear();
+			location.reload();
+		}
 	});
 
 
