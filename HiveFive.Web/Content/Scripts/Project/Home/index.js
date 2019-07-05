@@ -534,7 +534,7 @@
 	const userHandleRegexp = /^([\w+]{2,15})$/;
 	$("#settings-messagestore-save").on("click",  async function () {
 		const selectedHandle = $("#settings-userhandle").val();
-		if (selectedHandle.length > 0) {
+		if (selectedHandle !== undefined && selectedHandle.length > 0) {
 			if (!userHandleRegexp.test(selectedHandle)) {
 				await notifyModal("Invalid User Handle", "User Handle must only contain letters, numbers and underscore, and be between 2 and 15 charcters.")
 				return;
