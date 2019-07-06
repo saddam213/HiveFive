@@ -1,4 +1,15 @@
-﻿INSERT INTO [dbo].[EmailTemplate] ([Type], [Culture], [Parameters],[FromAddress],[Subject],[Template], [TemplateHtml], [IsEnabled])
+﻿--Insert Dev
+SET IDENTITY_INSERT [dbo].[Users] ON 
+INSERT [dbo].[Users] ([Id], [UserName], [Email], [EmailConfirmed], [PasswordHash], [SecurityStamp], [LockoutEndDateUtc], [LockoutEnabled], [AccessFailedCount], [IsEnabled], [Registered], [TwoFactorType], [TwoFactorPrivateKey], [TwoFactorPublicKey], [TwoFactorRecoveryCode], [Culture], [Avatar]) 
+VALUES (1, N'sa_ddam213', N'sa_ddam213@live.com', 1, N'ANiZbf7paATjj7MF6UxBuFNc65OqsWC8BAS7RB+D9TJbsRk2bA34wU9FfhwWO1JpCQ==', N'd4a72430-c6f2-4861-98ac-714620ac0ceb', NULL, 1, 0, 1, GETUTCDATE(), 0, NULL, NULL, NULL, N'en-US', N'Avatar.png')
+SET IDENTITY_INSERT [dbo].[Users] OFF
+
+--User Roles
+INSERT [dbo].[UserRoles] ([Id], [Name]) VALUES (1, N'Admin')
+INSERT [dbo].[UserInRoles] ([UserId], [RoleId]) VALUES (1, 1)
+
+-- Email templates
+INSERT INTO [dbo].[EmailTemplate] ([Type], [Culture], [Parameters],[FromAddress],[Subject],[Template], [TemplateHtml], [IsEnabled])
 Values
 (
 	1, --Registration

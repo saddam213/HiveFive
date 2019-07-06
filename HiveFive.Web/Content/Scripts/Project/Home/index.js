@@ -18,7 +18,7 @@
 
 	const linkifyImgurLink = $("#linkifyImgurLink").html();
 	const linkifyImgurRegexp = /https?:\/\/(?:www\.)?(?:i\.)?imgur\.com\/(?:a|gallery)?\/?(?:[\w+]+)\.([\w+]{3,})/;
-	const linkifyRedditRegexp = /https:\/\/preview.redd.it\/(?:[\w+]+)\.([\w+]{3,})\?width=(?:[0-9]+)&crop=(?:[\w+]+)&auto=(?:[\w+]+)&s=(?:[\w+]+)/;
+	const linkifyRedditRegexp = /https:\/\/(?:preview|external-preview|i).redd.it\/(?:[\w+-]+)\.([\w+]{3,})(?:[\w+=&?]+)?/;
 
 	const linkifyYoutubeLink = $("#linkifyYoutubeLink").html();
 	const linkifyYoutubeRegexp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;

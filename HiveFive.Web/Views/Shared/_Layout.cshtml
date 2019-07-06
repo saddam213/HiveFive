@@ -47,6 +47,14 @@
 							{
 								@Html.AntiForgeryToken()
 								<ul class="navbar-nav">
+									@if (User.IsInRole("Admin"))
+									{
+										<li class="nav-item">
+											<a class="nav-link" href="/Admin">
+												<i class="fa fa-shield-alt"></i>
+											</a>
+										</li>
+									}
 									<li class="nav-item">
 										<a class="nav-link" href="/AccountSettings">@General.NavAccount</a>
 									</li>
