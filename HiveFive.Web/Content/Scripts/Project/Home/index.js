@@ -27,13 +27,13 @@
 
 		if (text.match(linkifyImgurRegexp)) {
 			const match = linkifyImgurRegexp.exec(text);
-			const isVideo = ["mp4", "webem"].includes(match[1]);
-			return Mustache.render(linkifyImgurLink, { src: match[0], isVideo: isVideo });
+			const isVideo = ["mp4", "webem", "gifv"].includes(match[1]);
+			return Mustache.render(linkifyImgurLink, { src: match[0].replace(".gifv", ".mp4"), isVideo: isVideo });
 		}
 
 		if (text.match(linkifyRedditRegexp)) {
 			const match = linkifyRedditRegexp.exec(text);
-			const isVideo = ["mp4", "webem"].includes(match[1]);
+			const isVideo = ["mp4", "webem", "gifv"].includes(match[1]);
 			return Mustache.render(linkifyImgurLink, { src: match[0], isVideo: isVideo });
 		}
 
@@ -387,7 +387,6 @@
 
 	let currentSyncRequest;
 	let currentSyncTimeout;
-	let currentSyncResults;
 
 	const processSyncRequest = async (request) => {
 		if (MessageCache.AllowSync === true) {
@@ -414,11 +413,8 @@
 				return;
 			}
 
+			const messages = [];
 			for (const message of response.Messages) {
-				if (currentSyncResults[message.Id] !== undefined) {
-					continue;
-				}
-
 				if (!message.Hives.some(x => Settings.MyHives.includes(x))) {
 					continue;
 				}
@@ -432,7 +428,12 @@
 				}
 
 				message.MessageType = feedTypes;
-				currentSyncResults[message.Id] = message;
+				messages.push(message);
+			}
+
+			if (messages.length > 0) {
+				MessageCache.AddRange(messages);
+				renderMessageCache();
 			}
 
 			currentSyncRequest.Candidates.splice(currentSyncRequest.Candidates.indexOf(response.UserId), 1);
@@ -447,15 +448,7 @@
 			clearTimeout(currentSyncTimeout);
 			console.log("[MessageSync]  - Completing sync", currentSyncRequest);
 			await hiveHub.server.syncCompleteRequest(currentSyncRequest.SyncId);
-
-			const messages = Object.values(currentSyncResults);
-			if (messages.length > 0) {
-				MessageCache.AddRange(messages);
-				renderMessageCache();
-			}
-
 			currentSyncRequest = undefined;
-			currentSyncResults = undefined;
 		}
 	}
 
@@ -465,7 +458,6 @@
 				return;
 			}
 
-			currentSyncResults = {};
 			currentSyncRequest = await hiveHub.server.syncRequest({ MaxCount: MessageCache.MaxCount, CacheTime: MessageCache.GetCacheTime() });
 			if (currentSyncRequest.SyncId.length == 0 || currentSyncRequest.Candidates.length == 0) {
 				currentSyncRequest = undefined;
@@ -486,7 +478,6 @@
 	await subscribeHives();
 	await renderMessageCache();
 	await requestSync();
-
 
 
 	$("#trending-hives").on("click", ".trendinghive-join", async function () {
