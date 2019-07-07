@@ -27,7 +27,7 @@
 
 		if (text.match(linkifyImgurRegexp)) {
 			const match = linkifyImgurRegexp.exec(text);
-			const isVideo = ["mp4","webem"].includes(match[1]);
+			const isVideo = ["mp4", "webem"].includes(match[1]);
 			return Mustache.render(linkifyImgurLink, { src: match[0], isVideo: isVideo });
 		}
 
@@ -248,9 +248,12 @@
 
 
 	const renderMessageCache = () => {
-		$("#feed-messages-myhives, #feed-messages-mention, #feed-messages-friends").show();
+		$("#feed-messages-myhives, #feed-messages-mention, #feed-messages-friends").empty();
 		if (MessageCache.Enabled == true) {
 			for (const message of MessageCache.GetMessages()) {
+				if (message.IsDeleted === true) {
+					continue;
+				}
 				message.Message = message.Message.substring(0, 240);
 				renderMessage(message, false);
 			}
@@ -295,6 +298,7 @@
 
 	const subscribeFollowers = async () => {
 		$("#following-list, #follower-list").empty();
+
 		const result = await hiveHub.server.subscribeFollowers(FollowCache.GetFollowers());
 		const followingList = $("#following-list");
 		for (const follower of result.Following) {
@@ -347,6 +351,7 @@
 		await getTrendingHives();
 		await subscribeFollowers();
 		await subscribeHives();
+		await requestSync();
 	});
 	$.connection.hub.reconnecting(async function () {
 		updateConnectionState(false);
@@ -361,7 +366,7 @@
 	};
 	hiveHub.client.OnMessage = function (data) {
 		renderMessage(data, true);
-		MessageCache.AddMessage(data);
+		MessageCache.Add(data);
 	};
 
 	hiveHub.client.OnHiveUpdate = function (data) {
@@ -371,6 +376,108 @@
 		updateFollowers(data);
 	};
 
+	hiveHub.client.OnSyncRequest = function (data) {
+		processSyncRequest(data)
+	};
+
+	hiveHub.client.OnSyncResponse = function (data) {
+		processSyncResponse(data);
+	};
+
+
+	let currentSyncRequest;
+	let currentSyncTimeout;
+	let currentSyncResults;
+
+	const processSyncRequest = async (request) => {
+		if (MessageCache.AllowSync === true) {
+			console.log("[MessageSync]  - Received sync request from " + request.UserId);
+			const messages = MessageCache.GetSyncMessages(request);
+			const data = {
+				UserId: request.UserId,
+				SyncId: request.SyncId,
+				Messages: messages
+			};
+			console.log("[MessageSync]  - Sending sync response to " + data.UserId);
+			await hiveHub.server.syncResponse(data);
+		}
+	}
+
+	const processSyncResponse = (response) => {
+		if (MessageCache.AllowSync === true) {
+			console.log("[MessageSync]  - Received sync response from " + response.UserId);
+			if (currentSyncRequest.SyncId !== response.SyncId) {
+				return;
+			}
+
+			if (!currentSyncRequest.Candidates.includes(response.UserId)) {
+				return;
+			}
+
+			for (const message of response.Messages) {
+				if (currentSyncResults[message.Id] !== undefined) {
+					continue;
+				}
+
+				if (!message.Hives.some(x => Settings.MyHives.includes(x))) {
+					continue;
+				}
+
+				const feedTypes = ["Feed"];
+				if (FollowCache.IsFollower(message.Sender)) {
+					feedTypes.push("Follow");
+				}
+				if (message.Message.includes("@" + currentUserHandle)) {
+					feedTypes.push("Mention");
+				}
+
+				message.MessageType = feedTypes;
+				currentSyncResults[message.Id] = message;
+			}
+
+			currentSyncRequest.Candidates.splice(currentSyncRequest.Candidates.indexOf(response.UserId), 1);
+			if (currentSyncRequest.Candidates.length == 0) {
+				completeSync();
+			}
+		}
+	}
+
+	const completeSync = async () => {
+		if (currentSyncRequest !== undefined) {
+			clearTimeout(currentSyncTimeout);
+			console.log("[MessageSync]  - Completing sync", currentSyncRequest);
+			await hiveHub.server.syncCompleteRequest(currentSyncRequest.SyncId);
+
+			const messages = Object.values(currentSyncResults);
+			if (messages.length > 0) {
+				MessageCache.AddRange(messages);
+				renderMessageCache();
+			}
+
+			currentSyncRequest = undefined;
+			currentSyncResults = undefined;
+		}
+	}
+
+	const requestSync = async () => {
+		if (MessageCache.AllowSync === true) {
+			if (currentSyncRequest !== undefined) {
+				return;
+			}
+
+			currentSyncResults = {};
+			currentSyncRequest = await hiveHub.server.syncRequest({ MaxCount: MessageCache.MaxCount, CacheTime: MessageCache.GetCacheTime() });
+			if (currentSyncRequest.SyncId.length == 0 || currentSyncRequest.Candidates.length == 0) {
+				currentSyncRequest = undefined;
+				return;
+			}
+
+			console.log("[MessageSync] - Requesting sync from followers", currentSyncRequest);
+			currentSyncTimeout = setTimeout(completeSync, 10000);
+		}
+	}
+
+
 	//Startup
 	await $.connection.hub.start({ transport: ['webSockets'] });
 	updateConnectionState(true);
@@ -378,6 +485,7 @@
 	await subscribeFollowers();
 	await subscribeHives();
 	await renderMessageCache();
+	await requestSync();
 
 
 
@@ -488,7 +596,7 @@
 		const message = $(this).parents("li");
 		const messageId = message.data("messageid");
 		message.remove();
-		MessageCache.RemoveMessage(messageId);
+		MessageCache.Remove(messageId);
 	});
 
 
@@ -496,7 +604,7 @@
 		$("#settings-userhandle").val(Settings.Handle || currentUserHandle);
 		$("#settings-messagestore-max").val(MessageCache.MaxCount);
 		$("#settings-messagestore-enabled").prop('checked', MessageCache.Enabled);
-		$("#settings-messagestore-global-enabled").prop('checked', MessageCache.EnabledGlobal);
+		$("#settings-messagestore-sync-enabled").prop('checked', MessageCache.AllowSync);
 
 		$("#settings-render-link").prop("checked", Settings.RenderLinks);
 		$("#settings-render-followlink").prop("checked", Settings.RenderLinksFollowOnly);
@@ -538,7 +646,7 @@
 	});
 
 	const userHandleRegexp = /^([\w+]{2,15})$/;
-	$("#settings-messagestore-save").on("click",  async function () {
+	$("#settings-messagestore-save").on("click", async function () {
 		const selectedHandle = $("#settings-userhandle").val();
 		if (selectedHandle !== undefined && selectedHandle.length > 0) {
 			if (!userHandleRegexp.test(selectedHandle)) {
@@ -549,14 +657,15 @@
 		}
 
 		MessageCache.Enabled = $("#settings-messagestore-enabled").is(":checked");
-		MessageCache.EnabledGlobal = $("#settings-messagestore-global-enabled").is(":checked");
 		MessageCache.MaxCount = Math.max(0, Number($("#settings-messagestore-max").val()));
+		MessageCache.AllowSync = $("#settings-messagestore-sync-enabled").is(":checked");
 		MessageCache.Update();
 
 		Settings.RenderLinks = $("#settings-render-link").is(":checked");
 		Settings.RenderLinksFollowOnly = $("#settings-render-followlink").is(":checked");
 		Settings.Save();
 		renderMessageCache();
+		await requestSync();
 	});
 
 	$("#settings-messagestore-clear").on("click", async function () {

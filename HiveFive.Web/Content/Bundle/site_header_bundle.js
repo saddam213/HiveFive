@@ -10628,8 +10628,8 @@ const SettingsDefaults = {
 
 const MessageCacheDefaults = {
 	Enabled: true,
-	EnabledGlobal: true,
 	MaxCount: 25,
+	AllowSync: false,
 	Messages: {}
 };
 
@@ -10750,16 +10750,12 @@ MessageCache.Clear = () => {
 	MessageCache.Update();
 };
 
-MessageCache.AddMessage = (message) => {
+MessageCache.Add = (message) => {
 	if (!message) {
 		return false;
 	}
 
-	if (message.Hive == "hive" && MessageCache.EnabledGlobal == false) {
-		return false;
-	}
-
-	if (MessageCache.Messages.hasOwnProperty(message.Id)) {
+	if (MessageCache.Messages[message.Id] !== undefined) {
 		return false;
 	}
 
@@ -10769,35 +10765,76 @@ MessageCache.AddMessage = (message) => {
 	return true;
 }
 
-MessageCache.RemoveMessage = (messageId) => {
+MessageCache.AddRange = (messages) => {
+	if (!messages) {
+		return false;
+	}
+
+	for (const message of messages) {
+		if (MessageCache.Messages[message.Id] !== undefined) {
+			continue;
+		}
+		MessageCache.Messages[message.Id] = message;
+	}
+
+	MessageCache.Trim();
+	MessageCache.Update();
+	return true;
+}
+
+MessageCache.Remove = (messageId) => {
 	if (!messageId) {
 		return;
 	}
 
-	delete MessageCache.Messages[messageId]
+	const message = MessageCache.Messages[messageId];
+	if (message === undefined) {
+		return;
+	}
+
+	message.Message = "[deleted]";
+	message.IsDeleted = true;
 	MessageCache.Update();
 }
 
 MessageCache.GetMessages = () => {
-	return Object.keys(MessageCache.Messages)
-		.sort((a, b) => { return MessageCache.Messages[a].Timestamp - MessageCache.Messages[b].Timestamp })
-		.map(key => MessageCache.Messages[key]);
+	return Object.values(MessageCache.Messages)
+		.sort((a, b) => { return a.Timestamp - b.Timestamp });
 }
 
 MessageCache.Trim = () => {
-	const messageCount = Object.keys(MessageCache.Messages).length;
-	if (messageCount > MessageCache.MaxCount) {
-		const oldestKeys = Object.keys(MessageCache.Messages)
-			.sort((a, b) => { return MessageCache.Messages[b].Timestamp - MessageCache.Messages[a].Timestamp })
-		for (const key of oldestKeys.slice(MessageCache.MaxCount)) {
+	const values = Object.values(MessageCache.Messages);
+	if (values.length > MessageCache.MaxCount) {
+		const oldestKeys = values
+			.sort((a, b) => { return b.Timestamp - a.Timestamp })
+			.map(x => x.Id)
+			.slice(MessageCache.MaxCount);
+		for (const key of oldestKeys) {
 			delete MessageCache.Messages[key]
 		}
 	}
 }
 
+MessageCache.GetCacheTime = () => {
+	const values = Object.values(MessageCache.Messages);
+	if (values.length > 0) {
+		const timestamps = values.map(x => x.Timestamp);
+		return Math.max(...timestamps);
+	}
+	return 0;
+}
+
+MessageCache.GetSyncMessages = (request) => {
+	return Object.values(MessageCache.Messages)
+		.filter(x => x.Timestamp > request.CacheTime && x.MessageType.includes("Feed"))
+		.sort((a, b) => { return b.Timestamp - a.Timestamp })
+		.slice(0, Math.min(request.MaxCount, MessageCache.MaxCount));
+}
+
+
 //Upgrade
-if (MessageCache.EnabledGlobal == undefined) {
-	MessageCache.EnabledGlobal = true;
+if (MessageCache.AllowSync == undefined) {
+	MessageCache.AllowSync = false;
 	MessageCache.Update();
 }
 

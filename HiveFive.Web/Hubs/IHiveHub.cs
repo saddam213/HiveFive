@@ -9,5 +9,8 @@ namespace HiveFive.Web.Hubs
 		Task OnFollowUpdate(FollowMessage followMessage);
 		Task OnError(ErrorMessage errorMessage);
 		Task OnHiveUpdate(HiveUpdateMessage hiveUpdateMessage);
+
+		Task OnSyncRequest(OnSyncRequestMessage request);
+		Task OnSyncResponse(OnSyncResponseMessage response);
 	}
 }

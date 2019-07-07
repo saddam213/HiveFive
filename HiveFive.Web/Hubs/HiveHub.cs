@@ -171,6 +171,60 @@ namespace HiveFive.Web.Hubs
 			};
 		}
 
+		public async Task<SyncReponseMessage> SyncRequest(SyncRequestMessage request)
+		{
+			var handle = GetUserHandle();
+			var syncId = string.Empty;
+			var followers = await FollowerStore.GetFollowers(handle);
+			var following = await FollowerStore.GetFollowing(handle);
+			var friends = followers.Intersect(following).ToList();
+			if (friends.Count > 0)
+			{
+				// Create a group for this sync
+				syncId = Guid.NewGuid().ToString("N");
+				await Groups.Add(Context.ConnectionId, syncId);
+
+				// Find users that follow each other
+				// TODO: maybe cap/randomize the nodes
+				foreach (var userTarget in friends)
+				{
+
+					// send them sync info from this user
+					await Clients.User(userTarget).OnSyncRequest(new OnSyncRequestMessage
+					{
+						UserId = handle,
+						SyncId = syncId,
+						MaxCount = request.MaxCount,
+						CacheTime = request.CacheTime
+					});
+				}
+			}
+			return new SyncReponseMessage
+			{
+				SyncId = syncId,
+				Candidates = friends
+			};
+		}
+
+		public Task SyncCompleteRequest(string syncId)
+		{
+			return Groups.Remove(Context.ConnectionId, syncId);
+		}
+
+		public async Task<bool> SyncResponse(SyncResponseMessage response)
+		{
+			await Task.Delay(100);
+			var handle = GetUserHandle();
+			await Clients.Group(response.SyncId).OnSyncResponse(new OnSyncResponseMessage
+			{
+				UserId = handle,
+				SyncId = response.SyncId,
+				Messages = response.Messages
+			});
+			return true;
+		}
+
+
 		public async Task<bool> FollowUser(string userToFollow)
 		{
 			if (!HiveValidation.ValidateUserHandle(userToFollow))

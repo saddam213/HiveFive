@@ -59,6 +59,7 @@
     <Compile Include="Hive\HiveMessage.cs" />
     <Compile Include="Hive\HiveUpdateMessage.cs" />
     <Compile Include="Hive\IHiveConnectionStore.cs" />
+    <Compile Include="Hive\SubscribeFollowRequest.cs" />
     <Compile Include="Throttle\IThrottleStore.cs" />
     <Compile Include="Logon\AddLogonModel.cs" />
     <Compile Include="Logon\ILogonWriter.cs" />
